@@ -3,11 +3,49 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>나의 인생 Project 2026 — 디디 Life OS v13</title>
+<title>나의 인생 Project 2026 — 디디 Life OS v16.3</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css">
+
+<script>
+(function(){
+  window.switchMainTab=function(tabKey){
+    var target=document.getElementById('tab-'+tabKey);
+    if(!target) return false;
+    var tabs=document.querySelectorAll('.tab[data-tab]');
+    for(var i=0;i<tabs.length;i++){
+      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab')===tabKey);
+    }
+    var panels=document.querySelectorAll('.panel');
+    for(var j=0;j<panels.length;j++){
+      panels[j].classList.remove('active');
+      panels[j].style.display='none';
+    }
+    target.classList.add('active');
+    target.style.display='block';
+    if(location.hash !== '#tab-'+tabKey){
+      history.replaceState(null,'','#tab-'+tabKey);
+    }
+    if(tabKey==='money' && typeof window.refreshMoney==='function'){
+      setTimeout(window.refreshMoney,40);
+    }
+    return false;
+  };
+  window.addEventListener('hashchange', function(){
+    var key=(location.hash||'#tab-today').replace('#tab-','');
+    if(['today','life','money','records'].indexOf(key)>=0) window.switchMainTab(key);
+  });
+  document.addEventListener('DOMContentLoaded',function(){
+    var active=document.querySelector('.panel.active');
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.style.display=p.classList.contains('active')?'block':'none';
+    });
+  });
+})();
+</script>
+
 <style>
 :root{
   --navy:#1F3864; --navy-soft:#2E4D80; --gold:#B8924A; --gold-soft:#D4AF6A;
@@ -784,6 +822,686 @@ textarea{min-height:88px}
   border-left:3px solid rgba(216,90,48,.55);
 }
 
+
+/* v14 iPhone 16 Pro mobile no-wrap polish */
+@media(max-width:480px){
+  body{
+    padding:8px 8px 72px !important;
+    overflow-x:hidden;
+  }
+  .wrap{
+    width:100%;
+    max-width:100%;
+  }
+  .section,.card,.modal-body{
+    padding:18px 16px !important;
+  }
+
+  /* top tabs: keep labels clean */
+  .tabs{
+    padding:8px 0 !important;
+    margin:0 0 12px !important;
+  }
+  .tabrow{
+    gap:8px !important;
+  }
+  .tab{
+    min-height:70px;
+    padding:12px 6px !important;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    line-height:1.12 !important;
+    white-space:nowrap;
+  }
+  .tab small{
+    white-space:nowrap;
+    font-size:10.5px !important;
+    line-height:1.15 !important;
+  }
+
+  /* project cards */
+  .today-project{
+    padding:20px 16px !important;
+    border-radius:18px !important;
+  }
+  .today-project-title,
+  .tpc-name,
+  .pipe-item-name,
+  .slot-main{
+    word-break:keep-all !important;
+  }
+  .today-project-title{
+    line-height:1.34 !important;
+  }
+
+  /* pipeline / stage tracks: one row on iPhone 16 Pro */
+  .tpc-track,
+  .stage-track{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:4px !important;
+    align-items:flex-start !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:2px 0 4px !important;
+  }
+  .tpc-track::-webkit-scrollbar,
+  .stage-track::-webkit-scrollbar{
+    display:none;
+  }
+  .tpc-cell,
+  .stage-cell{
+    flex:0 0 calc((100% - 16px) / 5) !important;
+    min-width:0 !important;
+    width:auto !important;
+    gap:2px !important;
+    padding:2px 0 !important;
+  }
+  .tpc-cell.cur{
+    padding:3px 0 !important;
+  }
+  .tpc-cell .tpc-dot,
+  .stage-cell .stage-dot{
+    font-size:15px !important;
+    line-height:1 !important;
+  }
+  .tpc-cell span,
+  .stage-cell .stage-name{
+    display:block;
+    width:100%;
+    max-width:100%;
+    font-size:10px !important;
+    line-height:1.12 !important;
+    letter-spacing:-0.07em !important;
+    white-space:nowrap !important;
+    word-break:keep-all !important;
+    overflow:visible !important;
+    text-align:center !important;
+  }
+
+  /* action button: keep text in one line */
+  .tpc-next,
+  .btn,
+  .toggle,
+  .linked-pill,
+  .due-tag{
+    white-space:nowrap !important;
+  }
+  .tpc-next{
+    min-height:48px;
+    padding-left:10px !important;
+    padding-right:10px !important;
+    font-size:13px !important;
+  }
+
+  /* compact details */
+  .tpc-head{
+    gap:8px;
+  }
+  .tpc-head .tpc-name{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .tpc-head .tpc-prog{
+    flex:0 0 auto;
+  }
+  .tpc-memo{
+    line-height:1.45 !important;
+    word-break:keep-all;
+  }
+
+  /* nested children and pipe item rows */
+  .pipe-item-head{
+    grid-template-columns:1fr auto !important;
+  }
+  .pipe-item-head .pipe-count,
+  .pipe-due-label{
+    white-space:nowrap;
+  }
+  .pipe-item-meta{
+    grid-template-columns:1fr !important;
+  }
+  .child-row{
+    grid-template-columns:auto 1fr auto !important;
+  }
+  .child-row input[type=date]{
+    width:112px !important;
+  }
+}
+
+/* smaller devices still keep one row; allow horizontal scroll if needed */
+@media(max-width:380px){
+  .tpc-cell,
+  .stage-cell{
+    flex-basis:56px !important;
+  }
+}
+
+
+/* v15 Value Pillars drill-down */
+.value-shell{
+  position:relative;
+}
+.value-view-toggle{
+  display:inline-flex;
+  gap:6px;
+  padding:5px;
+  margin:4px 0 16px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:999px;
+}
+.value-view-toggle button{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-weight:800;
+  font-size:12px;
+  border-radius:999px;
+  padding:8px 12px;
+}
+.value-view-toggle button.on{
+  background:var(--navy);
+  color:#fff;
+}
+.pillar-selector{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+}
+.pillar-pick{
+  text-align:left;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:16px;
+  padding:14px 13px;
+  cursor:pointer;
+  min-height:118px;
+  box-shadow:0 8px 22px rgba(31,56,100,.04);
+}
+.pillar-pick.on{
+  border-color:var(--navy);
+  box-shadow:0 0 0 2px rgba(31,56,100,.08), 0 12px 28px rgba(31,56,100,.10);
+}
+.pp-title{
+  font-size:15px;
+  font-weight:900;
+  color:var(--navy);
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.pp-cap{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.35;
+  min-height:30px;
+  word-break:keep-all;
+}
+.pp-stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-top:9px;
+}
+.pp-stats span{
+  font-size:10px;
+  font-weight:800;
+  color:#5F6470;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:2px 6px;
+}
+.pillar-dash-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:16px;
+}
+.pillar-dash-title{
+  color:var(--navy);
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:-.04em;
+  line-height:1.15;
+}
+.pillar-dash-cap{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:13px;
+}
+.pillar-dash-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.pillar-overview{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+.po-card{
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px;
+}
+.po-card b{
+  display:block;
+  color:var(--navy);
+  font-size:25px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.04em;
+}
+.po-card span{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+.pillar-detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.pillar-detail-section{
+  border:1px solid var(--line);
+  background:var(--soft);
+  border-radius:18px;
+  padding:16px;
+  min-width:0;
+}
+.pillar-detail-section.span-full{
+  grid-column:1/-1;
+}
+.section-title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.section-title-row h4{
+  margin:0;
+  color:var(--navy);
+  font-size:17px;
+  font-weight:900;
+}
+.pillar-project-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;
+}
+.pillar-routine-list{
+  display:grid;
+  gap:9px;
+}
+.pillar-routine-tile{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 13px;
+}
+.prt-name{
+  color:var(--navy);
+  font-weight:850;
+  line-height:1.25;
+}
+.prt-meta{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:12px;
+}
+.prt-dots{
+  display:flex;
+  gap:4px;
+  margin-top:7px;
+}
+.prt-dots i{
+  width:12px;
+  height:12px;
+  border-radius:3px;
+  border:1px solid var(--line);
+  background:#F1EFE8;
+}
+.prt-dots i.on{
+  background:var(--ok);
+  border-color:var(--ok);
+}
+.pillar-metric-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:9px;
+}
+.pillar-metric{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:12px;
+}
+.pillar-metric b{
+  display:block;
+  color:var(--navy);
+  font-weight:850;
+}
+.pillar-metric span{
+  display:block;
+  margin-top:3px;
+  color:var(--ink);
+  font-size:13px;
+}
+.pillar-metric em{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:11px;
+  font-style:normal;
+}
+@media(max-width:930px){
+  .pillar-selector{grid-template-columns:repeat(3,1fr)}
+  .pillar-overview{grid-template-columns:repeat(2,1fr)}
+  .pillar-detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .pillar-selector{grid-template-columns:repeat(2,1fr);gap:8px}
+  .pillar-pick{min-height:104px;padding:12px}
+  .pp-title{font-size:14px}
+  .pp-cap{font-size:10.5px}
+  .value-view-toggle{width:100%;display:grid;grid-template-columns:repeat(3,1fr);border-radius:18px}
+  .value-view-toggle button{padding:9px 6px;font-size:11px}
+  .pillar-dash-head{flex-direction:column}
+  .pillar-dash-actions{justify-content:flex-start}
+  .pillar-overview{grid-template-columns:repeat(2,1fr)}
+  .pillar-project-list{grid-template-columns:1fr}
+}
+
+
+/* v15.1 tab click hardening */
+.tabs{
+  z-index:999 !important;
+  pointer-events:auto !important;
+}
+.tabrow,.tab{
+  pointer-events:auto !important;
+}
+
+
+/* v16 Goal Matrix Project type */
+.kind-toggle{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.kind-btn{
+  min-width:0 !important;
+  line-height:1.25;
+}
+.goal-matrix-list{
+  display:grid;
+  gap:12px;
+  margin-bottom:12px;
+}
+.goal-matrix-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+}
+.gmc-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+.gmc-label{
+  font-size:16px !important;
+  font-weight:850 !important;
+  color:var(--navy) !important;
+}
+.goal-grid4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.goal-journey{
+  margin:8px 0 10px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--soft);
+}
+.goal-journey.compact{
+  margin:8px 0;
+  padding:10px;
+}
+.gj-row{
+  display:grid;
+  grid-template-columns:auto auto 1fr auto auto 1fr auto auto;
+  gap:6px;
+  align-items:center;
+  margin-bottom:9px;
+  font-size:11px;
+  color:var(--muted);
+}
+.gj-row b{
+  color:var(--navy);
+  font-size:13px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.gj-row i{
+  height:1px;
+  background:var(--line);
+  display:block;
+}
+.goal-left{
+  margin-top:7px;
+  color:var(--today);
+  font-size:12px;
+  font-weight:850;
+}
+.goal-update-row{
+  display:grid;
+  grid-template-columns:132px 1fr auto;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+}
+.goal-history{
+  margin-top:10px;
+}
+.goal-history-title{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+.goal-history-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-top:1px solid var(--soft);
+  font-size:12px;
+}
+.goal-history-row span{color:var(--muted)}
+.goal-history-row b{color:var(--navy)}
+.tile-goals{
+  display:grid;
+  gap:5px;
+  margin-top:9px;
+}
+.tile-goal-row{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:11px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:5px 7px;
+}
+.tile-goal-row span{
+  color:var(--navy);
+  font-weight:800;
+}
+.tile-goal-row b{
+  color:var(--today);
+  font-weight:850;
+}
+.today-goal-wrap{
+  display:grid;
+  gap:10px;
+  margin-top:10px;
+}
+.motivation-copy{
+  background:linear-gradient(135deg,rgba(216,90,48,.12),rgba(31,56,100,.06));
+  border:1px solid rgba(216,90,48,.20);
+  border-radius:14px;
+  padding:12px 13px;
+}
+.motivation-copy b{
+  display:block;
+  color:var(--navy);
+  font-size:15px;
+  font-weight:900;
+}
+.motivation-copy span{
+  display:block;
+  color:var(--today);
+  font-size:12px;
+  font-weight:850;
+  margin-top:3px;
+}
+.today-goal-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:13px;
+}
+.tgc-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.tgc-head b{
+  display:block;
+  color:var(--navy);
+  font-size:16px;
+  font-weight:900;
+}
+.tgc-head span{
+  display:block;
+  color:var(--today);
+  font-size:12px;
+  font-weight:850;
+  margin-top:2px;
+}
+.tgc-head em{
+  font-style:normal;
+  color:var(--navy);
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:4px 9px;
+  font-size:12px;
+  font-weight:900;
+}
+@media(max-width:560px){
+  .kind-toggle{
+    grid-template-columns:1fr !important;
+  }
+  .goal-grid4{
+    grid-template-columns:1fr 1fr;
+  }
+  .goal-update-row{
+    grid-template-columns:1fr;
+  }
+  .gj-row{
+    grid-template-columns:auto auto 1fr auto auto 1fr auto auto;
+    gap:4px;
+    font-size:9.5px;
+  }
+  .gj-row b{
+    font-size:11px;
+  }
+}
+
+
+/* v16.1 main-tab hard fix */
+.panel{display:none}
+.panel.active{display:block}
+.tabs,.tabrow,.tab{
+  pointer-events:auto !important;
+  touch-action:manipulation;
+}
+.tab{
+  -webkit-tap-highlight-color:rgba(31,56,100,.12);
+  user-select:none;
+}
+
+
+/* v16.3 pure CSS hash tab fallback: anchors + :has() */
+.tab{
+  text-decoration:none !important;
+  text-align:center;
+}
+@supports selector(body:has(#tab-life:target)){
+  .panel{
+    display:none !important;
+  }
+  #tab-today{
+    display:block !important;
+  }
+  body:has(#tab-life:target) #tab-today,
+  body:has(#tab-money:target) #tab-today,
+  body:has(#tab-records:target) #tab-today{
+    display:none !important;
+  }
+  body:has(#tab-today:target) #tab-today,
+  body:has(#tab-life:target) #tab-life,
+  body:has(#tab-money:target) #tab-money,
+  body:has(#tab-records:target) #tab-records{
+    display:block !important;
+  }
+
+  body:has(#tab-life:target) .tab,
+  body:has(#tab-money:target) .tab,
+  body:has(#tab-records:target) .tab{
+    background:#fff !important;
+    color:var(--muted) !important;
+    border-color:var(--line) !important;
+    box-shadow:none !important;
+  }
+  body:has(#tab-today:target) .tab[data-tab="today"],
+  body:has(#tab-life:target) .tab[data-tab="life"],
+  body:has(#tab-money:target) .tab[data-tab="money"],
+  body:has(#tab-records:target) .tab[data-tab="records"]{
+    background:var(--navy) !important;
+    color:#fff !important;
+    border-color:var(--navy) !important;
+    box-shadow:0 8px 22px rgba(31,56,100,.18) !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -824,10 +1542,10 @@ textarea{min-height:88px}
 
   <nav class="tabs">
     <div class="tabrow">
-      <button class="tab active" data-tab="today">Today<small>오늘</small></button>
-      <button class="tab" data-tab="life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></button>
-      <button class="tab" data-tab="money">Money<small>자산</small></button>
-      <button class="tab" data-tab="records">Logs<small>하루 기록</small></button>
+      <a class="tab active" data-tab="today" href="#tab-today" onclick="return switchMainTab('today')">Today<small>오늘</small></a>
+      <a class="tab" data-tab="life" href="#tab-life" onclick="return switchMainTab('life')">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></a>
+      <a class="tab" data-tab="money" href="#tab-money" onclick="return switchMainTab('money')">Money<small>자산</small></a>
+      <a class="tab" data-tab="records" href="#tab-records" onclick="return switchMainTab('records')">Logs<small>하루 기록</small></a>
     </div>
   </nav>
 
@@ -949,40 +1667,43 @@ textarea{min-height:88px}
     </div>
   </section>
 
+  
   <section class="panel" id="tab-life">
     <div class="grid">
-      <div class="card span-12">
-        <div class="pill-eyebrow">Pillar Map</div>
-        <h3>5대 가치 축</h3>
-        <div class="hint">삶의 큰 방향입니다. 각 Pillar 아래에 Projects와 Routines가 연결됩니다.</div>
-        <div class="category-board" id="categoryBoard"></div>
-        <div class="misc-wrap" id="miscWrap">
-          <div class="misc-head" id="miscHead">
-            <span>▸ Misc / Quick Capture</span>
-            <span id="miscSummary" class="hint" style="margin:0"></span>
-          </div>
-          <div class="misc-body" id="miscBody"></div>
+      <div class="card span-12 value-shell">
+        <div class="pill-eyebrow">Value Pillars</div>
+        <h3>Value Pillars <span class="ko-gloss">5대 가치 축</span></h3>
+        <div class="hint">먼저 Pillar를 고르고, 그 안의 Projects / Routines / Metrics를 봅니다. 전체 목록은 관리 모드에서만 확인합니다.</div>
+        <div class="value-view-toggle" id="valueViewToggle">
+          <button class="on" data-view="pillar">Pillar View</button>
+          <button data-view="projects">All Projects</button>
+          <button data-view="routines">All Routines</button>
         </div>
+        <div class="pillar-selector" id="pillarSelector"></div>
       </div>
 
-      <div class="card span-12">
-        <div class="pill-eyebrow">Projects</div>
-        <h3>Projects</h3>
-        <div class="hint">목적, 마감, Done 기준이 있는 실행 과제입니다.</div>
+      <div class="card span-12 value-view-pane" id="pillarViewPane">
+        <div id="pillarDashboard"></div>
+      </div>
+
+      <div class="card span-12 value-view-pane" id="allProjectsPane" style="display:none">
+        <div class="pill-eyebrow">Management View</div>
+        <h3>All Projects <span class="ko-gloss">전체 프로젝트</span></h3>
+        <div class="hint">Pillar와 무관하게 전체 Project를 한 번에 관리할 때만 사용합니다.</div>
         <div class="group-board" id="groupBoard"></div>
       </div>
 
-      <div class="card span-12">
-        <div class="pill-eyebrow">Routines</div>
-        <h3>Routines</h3>
-        <div class="hint">반복해서 유지하는 생활 Routine입니다. Today 탭의 체크와 같은 데이터를 씁니다.</div>
+      <div class="card span-12 value-view-pane" id="allRoutinesPane" style="display:none">
+        <div class="pill-eyebrow">Management View</div>
+        <h3>All Routines <span class="ko-gloss">전체 루틴</span></h3>
+        <div class="hint">Pillar와 무관하게 전체 Routine을 한 번에 관리할 때만 사용합니다.</div>
         <div class="habit-list" id="habitList"></div>
         <button class="btn ghost" id="addHabit" style="margin-top:12px">+ Routine</button>
       </div>
     </div>
   </section>
 
-  <section class="panel" id="tab-money">
+<section class="panel" id="tab-money">
     <div class="grid">
       <div class="card span-12">
         <div class="pill-eyebrow">Financial Goal</div>
@@ -1106,6 +1827,8 @@ textarea{min-height:88px}
   ];
   const ETC_PILLAR={key:'etc',emo:'📌',name:'Misc',cap:'단발 업무·Quick Capture'};
   const ALL_PILLARS=[...PRIMARY_PILLARS,ETC_PILLAR];
+  let selectedPillarKey='viola';
+  let valueView='pillar';
 
   const DEF_HABITS=[
     {title:'운동',pillar:'body',freq:'weekly',target:3},
@@ -1181,8 +1904,13 @@ textarea{min-height:88px}
     p.todayFocus=!!p.todayFocus;
     if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
     p.linkedHabits=p.linkedHabits.map(String);
-    // project kind: 'free' (default) or 'pipeline'
-    p.kind = p.kind==='pipeline' ? 'pipeline' : 'free';
+    // project kind: 'free' (default), 'pipeline', or 'goal'
+    p.kind = ['pipeline','goal'].includes(p.kind) ? p.kind : 'free';
+    if(!Array.isArray(p.goalMetrics)) p.goalMetrics=[];
+    if(!p.goalMetrics.length && Array.isArray(p.goals) && p.goals.length){
+      p.goalMetrics=p.goals.map(g=>({id:g.id||uid(),label:g.label||g.title||'',unit:g.unit||'',start:g.start||g.current||'',current:g.current||'',target:g.target||'',history:g.history||[]}));
+    }
+    p.goalMetrics=p.goalMetrics.map(normalizeGoalMetric);
     if(!Array.isArray(p.stages)) p.stages=[];
     p.stages = p.stages.map(s=> typeof s==='string' ? {id:uid(),name:s} : {id:s.id||uid(), name:s.name||''});
     if(!Array.isArray(p.items)) p.items=[];
@@ -1341,21 +2069,131 @@ textarea{min-height:88px}
 
   /* Tabs */
   function renderTabs(){
-    document.querySelectorAll('.tab').forEach(btn=>{
-      btn.onclick=()=>{
-        document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
-        if(btn.dataset.tab==='money') setTimeout(refreshMoney,40);
+    document.querySelectorAll('.tab[data-tab]').forEach(btn=>{
+      btn.onclick=(e)=>{
+        e.preventDefault();
+        activateLifeTab(btn.dataset.tab);
       };
     });
+  }
+
+  function activateLifeTab(tabKey){
+    const target=document.getElementById('tab-'+tabKey);
+    if(!target) return;
+    document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tabKey));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    target.classList.add('active');
+    if(tabKey==='money') setTimeout(refreshMoney,40);
   }
 
   /* Project stats */
   function projectsByPillar(key){ return state.projects.filter(p=>p.pillar===key); }
   function activeProjectsByPillar(key){ return projectsByPillar(key).filter(p=>p.status!=='done'); }
+  
+function parseGoalValue(v){
+    const s=String(v??'').trim();
+    const m=s.match(/-?\d+(?:\.\d+)?/);
+    const n=m ? parseFloat(m[0]) : null;
+    const unitMatch=s.match(/-?\d+(?:\.\d+)?\s*([^\d\s.,]+)?/);
+    const unit=unitMatch && unitMatch[1] ? unitMatch[1] : '';
+    return {n,unit};
+  }
+
+  function normalizeGoalMetric(g){
+    g=g||{};
+    const cur=parseGoalValue(g.current);
+    const start=parseGoalValue(g.start || g.initial || g.current);
+    const target=parseGoalValue(g.target);
+    const unit=g.unit || cur.unit || start.unit || target.unit || '';
+    const history=Array.isArray(g.history)?g.history:[];
+    const normalized={
+      id:g.id||uid(),
+      label:g.label||g.title||'',
+      unit,
+      start:g.start ?? (start.n!=null?String(start.n):''),
+      current:g.current ?? (cur.n!=null?String(cur.n):''),
+      target:g.target ?? (target.n!=null?String(target.n):''),
+      history:history.map(h=>({date:h.date||todayStr(), value:h.value??'', memo:h.memo||''})).filter(h=>String(h.value).trim())
+    };
+    if(!normalized.history.length && String(normalized.start).trim()){
+      normalized.history.push({date:todayStr(),value:normalized.start,memo:'Start'});
+    }
+    return normalized;
+  }
+
+  
+function goalNum(g,key){
+    const parsed=parseGoalValue(g[key]);
+    return parsed.n;
+  }
+
+  function goalUnit(g){
+    return g.unit || parseGoalValue(g.current).unit || parseGoalValue(g.start).unit || parseGoalValue(g.target).unit || '';
+  }
+
+  function fmtGoalNum(n,unit){
+    if(n===null || n===undefined || Number.isNaN(n)) return '—';
+    const rounded=Math.round(n*10)/10;
+    return (Number.isInteger(rounded)?String(rounded):String(rounded))+(unit||'');
+  }
+
+  function goalCalc(g){
+    const unit=goalUnit(g);
+    const start=goalNum(g,'start');
+    const current=goalNum(g,'current');
+    const target=goalNum(g,'target');
+    if(start===null || current===null || target===null || start===target){
+      return {unit,start,current,target,pct:0,moved:null,remaining:null,done:false,direction:0};
+    }
+    const total=Math.abs(target-start);
+    const moved=Math.abs(current-start);
+    const pct=Math.max(0,Math.min(100,Math.round((moved/total)*100)));
+    const direction=target>=start ? 1 : -1;
+    const remaining=Math.max(0, direction>0 ? target-current : current-target);
+    const done=direction>0 ? current>=target : current<=target;
+    return {unit,start,current,target,pct:done?100:pct,moved,remaining,done,direction};
+  }
+
+  function goalRemainingText(g){
+    const c=goalCalc(g);
+    if(c.remaining===null) return '값 입력 필요';
+    if(c.done) return '목표 달성';
+    return '목표까지 '+fmtGoalNum(c.remaining,c.unit)+' 남음';
+  }
+
+  function goalMovedText(g){
+    const c=goalCalc(g);
+    if(c.moved===null) return '—';
+    return fmtGoalNum(c.moved,c.unit)+' 이동';
+  }
+
+  function updateGoalMetric(g,value,date=todayStr(),memo=''){
+    if(!String(value||'').trim()) return;
+    g.current=value;
+    const existing=(g.history||[]).find(h=>h.date===date);
+    if(existing){ existing.value=value; existing.memo=memo||existing.memo||''; }
+    else { if(!Array.isArray(g.history)) g.history=[]; g.history.push({date,value,memo}); }
+    g.history.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  }
+
+  function goalBadgeLabel(p){
+    const ms=p.goalMetrics||[];
+    if(!ms.length) return 'No Metrics';
+    const left=ms.map(goalRemainingText).filter(Boolean).slice(0,2).join(' · ');
+    return left || 'Goal Matrix';
+  }
+
   function projectProgress(p){
+    if(p.kind==='goal'){
+      const ms=p.goalMetrics||[];
+      if(ms.length){
+        const avg=Math.round(ms.reduce((a,g)=>a+goalCalc(g).pct,0)/ms.length);
+        const done=ms.filter(g=>goalCalc(g).done).length;
+        return {done,total:ms.length,pct:avg};
+      }
+      if(p.status==='done') return {done:1,total:1,pct:100};
+      return {done:0,total:0,pct:0};
+    }
     if(p.kind==='pipeline'){
       const stageCount=p.stages.length, itemCount=p.items.length;
       if(stageCount && itemCount){
@@ -1408,9 +2246,172 @@ textarea{min-height:88px}
   function statusLabel(s){ return s==='done'?'Done':s==='paused'?'Paused':'Active'; }
   function statusClass(s){ return s==='done'?'done':s==='paused'?'paused':'active'; }
 
+
+  /* Value Pillars drill-down */
+  function currentPillar(){
+    return ALL_PILLARS.find(p=>p.key===selectedPillarKey) || PRIMARY_PILLARS[0] || ALL_PILLARS[0];
+  }
+
+  function renderValuePillars(){
+    renderValueViewToggle();
+    renderPillarSelector();
+    renderPillarDashboard();
+    renderGroupBoard();
+    renderHabits();
+    updateValueViewPanes();
+  }
+
+  function renderValueViewToggle(){
+    const box=document.getElementById('valueViewToggle');
+    if(!box) return;
+    box.querySelectorAll('button').forEach(btn=>{
+      btn.classList.toggle('on',btn.dataset.view===valueView);
+      btn.onclick=()=>{
+        valueView=btn.dataset.view||'pillar';
+        renderValuePillars();
+      };
+    });
+  }
+
+  function updateValueViewPanes(){
+    const map={pillar:'pillarViewPane',projects:'allProjectsPane',routines:'allRoutinesPane'};
+    Object.values(map).forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display=(id===map[valueView])?'block':'none';
+    });
+  }
+
+  function pillarMetricCount(key){
+    return projectsByPillar(key).reduce((a,p)=>a+((p.kind==='goal'&&Array.isArray(p.goalMetrics))?p.goalMetrics.length:(Array.isArray(p.goals)?p.goals.length:0)),0);
+  }
+
+  function pillarRoutineStats(key){
+    const rs=state.habits.filter(h=>h.pillar===key);
+    const done=rs.filter(h=>habitDoneOn(h)).length;
+    const target=rs.reduce((a,h)=>a+habitTargetCount(h),0);
+    const week=rs.reduce((a,h)=>a+habitWeekCount(h),0);
+    return {rs,done,target,week};
+  }
+
+  function renderPillarSelector(){
+    const box=document.getElementById('pillarSelector');
+    if(!box) return;
+    box.innerHTML='';
+    ALL_PILLARS.forEach(p=>{
+      const st=pillarStats(p.key);
+      const rt=pillarRoutineStats(p.key);
+      const card=document.createElement('button');
+      card.className='pillar-pick '+(p.key===selectedPillarKey?'on':'');
+      card.innerHTML=
+        '<div class="pp-title">'+p.emo+' '+escape(p.name)+'</div>'+
+        '<div class="pp-cap">'+escape(state.pillarMeta[p.key]?.cap||p.cap||'')+'</div>'+
+        '<div class="pp-stats"><span>Projects '+st.ps.length+'</span><span>Routines '+rt.rs.length+'</span><span>Metrics '+pillarMetricCount(p.key)+'</span></div>';
+      card.onclick=()=>{
+        selectedPillarKey=p.key;
+        valueView='pillar';
+        renderValuePillars();
+      };
+      box.appendChild(card);
+    });
+  }
+
+  function renderPillarDashboard(){
+    const box=document.getElementById('pillarDashboard');
+    if(!box) return;
+    const p=currentPillar();
+    const st=pillarStats(p.key);
+    const rt=pillarRoutineStats(p.key);
+    const cap=state.pillarMeta[p.key]?.cap||p.cap||'';
+    box.innerHTML='';
+
+    const head=document.createElement('div');
+    head.className='pillar-dash-head';
+    head.innerHTML=
+      '<div><div class="pillar-dash-title">'+p.emo+' '+escape(p.name)+'</div><div class="pillar-dash-cap">'+escape(cap)+'</div></div>'+
+      '<div class="pillar-dash-actions"><button class="btn small ghost" id="dashAddProject">+ Project</button><button class="btn small ghost" id="dashAddRoutine">+ Routine</button></div>';
+    box.appendChild(head);
+    head.querySelector('#dashAddProject').onclick=()=>createProject(p.key);
+    head.querySelector('#dashAddRoutine').onclick=()=>createRoutineForPillar(p.key);
+
+    const overview=document.createElement('div');
+    overview.className='pillar-overview';
+    overview.innerHTML=
+      '<div class="po-card"><b>'+st.active.length+'</b><span>Active Projects</span></div>'+
+      '<div class="po-card"><b>'+st.pct+'%</b><span>Project Progress</span></div>'+
+      '<div class="po-card"><b>'+rt.done+'/'+rt.rs.length+'</b><span>Today Routines</span></div>'+
+      '<div class="po-card"><b>'+rt.week+'/'+rt.target+'</b><span>Weekly Routine</span></div>';
+    box.appendChild(overview);
+
+    const grid=document.createElement('div');
+    grid.className='pillar-detail-grid';
+
+    const projects=document.createElement('div');
+    projects.className='pillar-detail-section';
+    projects.innerHTML='<div class="section-title-row"><h4>Projects</h4><button class="btn small ghost">+ Project</button></div>';
+    projects.querySelector('button').onclick=()=>createProject(p.key);
+    const plist=document.createElement('div');
+    plist.className='pillar-project-list';
+    if(!st.ps.length) plist.innerHTML='<div class="empty">No Projects</div>';
+    st.ps.forEach(pr=>plist.appendChild(makeProjectTile(pr)));
+    projects.appendChild(plist);
+
+    const routines=document.createElement('div');
+    routines.className='pillar-detail-section';
+    routines.innerHTML='<div class="section-title-row"><h4>Routines</h4><button class="btn small ghost">+ Routine</button></div>';
+    routines.querySelector('button').onclick=()=>createRoutineForPillar(p.key);
+    const rlist=document.createElement('div');
+    rlist.className='pillar-routine-list';
+    if(!rt.rs.length) rlist.innerHTML='<div class="empty">No Routines</div>';
+    rt.rs.forEach(h=>rlist.appendChild(makePillarRoutineTile(h)));
+    routines.appendChild(rlist);
+
+    const metrics=document.createElement('div');
+    metrics.className='pillar-detail-section span-full';
+    metrics.innerHTML='<div class="section-title-row"><h4>Metrics</h4><span class="hint" style="margin:0">Project의 Goal Metrics를 Pillar 단위로 모아 봅니다.</span></div>';
+    const mlist=document.createElement('div');
+    mlist.className='pillar-metric-list';
+    const goals=[];
+    st.ps.forEach(pr=>{
+      ((pr.kind==='goal'?pr.goalMetrics:pr.goals)||[]).forEach(g=>goals.push({project:pr.title||'Project',...g, remaining: pr.kind==='goal'?goalRemainingText(g):''}));
+    });
+    if(!goals.length) mlist.innerHTML='<div class="empty">No Metrics</div>';
+    goals.forEach(g=>{
+      const item=document.createElement('div');
+      item.className='pillar-metric';
+      item.innerHTML='<b>'+escape(g.label||'Metric')+'</b><span>'+escape(g.current||'—')+' → '+escape(g.target||'—')+'</span><em>'+escape((g.remaining?g.remaining+' · ':'')+(g.project||'Project'))+'</em>';
+      mlist.appendChild(item);
+    });
+    metrics.appendChild(mlist);
+
+    grid.append(projects,routines,metrics);
+    box.appendChild(grid);
+  }
+
+  function createRoutineForPillar(key){
+    const title=prompt('Routine Name');
+    if(!title) return;
+    state.habits.push(normalizeHabit({id:uid(),title,pillar:key||selectedPillarKey||'etc',freq:'daily',target:7,log:[]}));
+    save();
+    renderAllLinked();
+  }
+
+  function makePillarRoutineTile(h){
+    const el=document.createElement('div');
+    el.className='pillar-routine-tile';
+    const week=habitWeekCount(h), target=habitTargetCount(h), done=habitDoneOn(h);
+    const dates=last7Dates();
+    const dots=dates.map(d=>'<i class="'+((h.log||[]).includes(d)?'on':'')+'"></i>').join('');
+    el.innerHTML=
+      '<div><div class="prt-name">'+escape(h.title||'Routine')+'</div><div class="prt-meta">'+(h.freq==='daily'?'Daily':'Weekly '+target)+' · Week '+week+'/'+target+'</div><div class="prt-dots">'+dots+'</div></div>'+
+      '<button class="toggle '+(done?'on':'')+'">'+(done?'Done':'Check')+'</button>';
+    el.querySelector('button').onclick=()=>{ setHabitDone(h,todayStr(),!habitDoneOn(h)); save(); renderAllLinked(); };
+    return el;
+  }
+
+
   /* Category board */
   function renderCategoryBoard(){
-    const box=document.getElementById('categoryBoard'); box.innerHTML='';
+    const box=document.getElementById('categoryBoard'); if(!box) return; box.innerHTML='';
     PRIMARY_PILLARS.forEach(p=>{
       const st=pillarStats(p.key);
       const card=document.createElement('div'); card.className='cat-card'; card.onclick=()=>openCategoryModal(p.key);
@@ -1458,7 +2459,7 @@ textarea{min-height:88px}
 
   /* Project board grouped */
   function renderGroupBoard(){
-    const box=document.getElementById('groupBoard'); box.innerHTML='';
+    const box=document.getElementById('groupBoard'); if(!box) return; box.innerHTML='';
     ALL_PILLARS.forEach(p=>{
       const st=pillarStats(p.key);
       const group=document.createElement('div'); group.className='group';
@@ -1477,10 +2478,27 @@ textarea{min-height:88px}
   function makeProjectTile(p){
     const tile=document.createElement('div'); tile.className='project-tile '+statusClass(p.status); tile.onclick=()=>openProjectModal(p.id);
     const pg=projectProgress(p);
-    const metaText = p.kind==='pipeline'
-      ? (p.items.length? p.items.length+'개 항목 · '+p.stages.length+'단계' : '항목 없음')
-      : (pg.total?pg.done+'/'+pg.total+' Actions 완료':'No Actions');
-    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+(p.kind==='pipeline'?'🎼 ':'')+escape(p.title||'(제목 None)')+'</div><span class="tag">'+statusLabel(p.status)+'</span></div><div class="progress"><span style="width:'+pg.pct+'%"></span></div><div class="tile-meta">'+metaText+(p.dueDate?' · 마감 '+p.dueDate:'')+'</div>';
+    let icon='', metaText='';
+    if(p.kind==='pipeline'){
+      icon='🎼 ';
+      metaText=p.items.length? p.items.length+' items · '+p.stages.length+' stages' : 'No items';
+    } else if(p.kind==='goal'){
+      icon='🎯 ';
+      metaText=goalBadgeLabel(p);
+    } else {
+      metaText=pg.total?pg.done+'/'+pg.total+' Actions Done':'No Actions';
+    }
+    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+icon+escape(p.title||'(제목 None)')+'</div><span class="tag">'+(p.kind==='goal'?'Goal Matrix':statusLabel(p.status))+'</span></div><div class="progress"><span style="width:'+pg.pct+'%"></span></div><div class="tile-meta">'+escape(metaText)+(p.dueDate?' · 마감 '+p.dueDate:'')+'</div>';
+    if(p.kind==='goal' && p.goalMetrics.length){
+      const wrap=document.createElement('div'); wrap.className='tile-goals';
+      p.goalMetrics.slice(0,3).forEach(g=>{
+        const c=goalCalc(g);
+        const row=document.createElement('div'); row.className='tile-goal-row';
+        row.innerHTML='<span>'+escape(g.label||'Metric')+'</span><b>'+escape(goalRemainingText(g))+'</b>';
+        wrap.appendChild(row);
+      });
+      tile.appendChild(wrap);
+    }
     if(p.kind==='pipeline' && p.items.length){
       const wrap=document.createElement('div'); wrap.className='tile-pipe';
       p.items.slice(0,6).forEach(it=>{
@@ -1493,7 +2511,7 @@ textarea{min-height:88px}
       if(p.items.length>6){ const more=document.createElement('div'); more.className='hint'; more.style.margin='4px 0 0'; more.textContent='+'+(p.items.length-6)+'개 더'; wrap.appendChild(more); }
       tile.appendChild(wrap);
     }
-    if(p.goals.length){
+    if(p.kind!=='goal' && p.goals.length){
       const goals=document.createElement('div'); goals.className='goal-pills';
       p.goals.slice(0,4).forEach(g=>{ const sp=document.createElement('span'); sp.className='goal-pill'; sp.textContent=(g.label||'목표')+(g.target?' '+g.target:''); goals.appendChild(sp); });
       tile.appendChild(goals);
@@ -1501,7 +2519,7 @@ textarea{min-height:88px}
     return tile;
   }
 
-  /* Modal */
+    /* Modal */
   const modal=document.getElementById('modalBackdrop');
   document.getElementById('modalClose').onclick=closeModal;
   modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
@@ -1601,6 +2619,125 @@ textarea{min-height:88px}
     itSec.appendChild(addItem); c.appendChild(itSec);
   }
 
+  
+function renderGoalMatrixSection(c,p,pid){
+    const sec=document.createElement('div');
+    sec.className='modal-section goal-matrix-section';
+    sec.innerHTML='<h4>Goal Matrix</h4><div class="hint">최초값 → 현재값 → 목표값을 관리합니다. 현재값을 업데이트하면 날짜별 히스토리가 남습니다.</div>';
+
+    const list=document.createElement('div');
+    list.className='goal-matrix-list';
+
+    if(!p.goalMetrics.length){
+      list.innerHTML='<div class="empty">No Goal Metrics</div>';
+    }
+
+    p.goalMetrics.forEach(g=>{
+      const card=document.createElement('div');
+      card.className='goal-matrix-card';
+      const calc=goalCalc(g);
+      card.innerHTML=
+        '<div class="gmc-head"><input class="gmc-label" placeholder="Metric" value="'+escape(g.label||'')+'"><button class="btn small ghost">삭제</button></div>'+
+        '<div class="goal-grid4">'+
+          '<div class="field"><label>Start</label><input class="gmc-start" placeholder="63cm" value="'+escape(g.start||'')+'"></div>'+
+          '<div class="field"><label>Current</label><input class="gmc-current" placeholder="58cm" value="'+escape(g.current||'')+'"></div>'+
+          '<div class="field"><label>Target</label><input class="gmc-target" placeholder="53cm" value="'+escape(g.target||'')+'"></div>'+
+          '<div class="field"><label>Unit</label><input class="gmc-unit" placeholder="cm" value="'+escape(g.unit||'')+'"></div>'+
+        '</div>'+
+        '<div class="goal-journey">'+
+          '<div class="gj-row"><span>Start</span><b>'+escape(fmtGoalNum(calc.start,calc.unit))+'</b><i></i><span>Now</span><b>'+escape(fmtGoalNum(calc.current,calc.unit))+'</b><i></i><span>Target</span><b>'+escape(fmtGoalNum(calc.target,calc.unit))+'</b></div>'+
+          '<div class="progress"><span style="width:'+calc.pct+'%"></span></div>'+
+          '<div class="goal-left">'+escape(goalMovedText(g))+' · '+escape(goalRemainingText(g))+' · '+calc.pct+'%</div>'+
+        '</div>'+
+        '<div class="goal-update-row"><input type="date" class="gmc-date" value="'+todayStr()+'"><input class="gmc-new" placeholder="오늘 값 입력"><button class="btn small today">Update</button></div>'+
+        '<div class="goal-history"></div>';
+
+      card.querySelector('.gmc-label').oninput=e=>{ g.label=e.target.value; save(); renderAllLinkedNoModal(); };
+      card.querySelector('.gmc-start').oninput=e=>{ g.start=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      card.querySelector('.gmc-current').oninput=e=>{ g.current=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      card.querySelector('.gmc-target').oninput=e=>{ g.target=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      card.querySelector('.gmc-unit').oninput=e=>{ g.unit=e.target.value; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      card.querySelector('.gmc-head button').onclick=()=>{ p.goalMetrics=p.goalMetrics.filter(x=>String(x.id)!==String(g.id)); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      card.querySelector('.goal-update-row button').onclick=()=>{
+        const val=card.querySelector('.gmc-new').value.trim();
+        const date=card.querySelector('.gmc-date').value||todayStr();
+        if(!val) return;
+        if(!g.unit) g.unit=parseGoalValue(val).unit;
+        updateGoalMetric(g,val,date,'Update');
+        card.querySelector('.gmc-new').value='';
+        save(); renderProjectModal(pid); renderAllLinkedNoModal();
+      };
+
+      const hist=card.querySelector('.goal-history');
+      const h=(g.history||[]).slice(0,6);
+      if(!h.length){ hist.innerHTML='<div class="hint" style="margin:8px 0 0">No history yet</div>'; }
+      else {
+        hist.innerHTML='<div class="goal-history-title">History</div>'+h.map(x=>'<div class="goal-history-row"><span>'+escape(x.date||'')+'</span><b>'+escape(String(x.value||''))+'</b></div>').join('');
+      }
+
+      list.appendChild(card);
+    });
+
+    sec.appendChild(list);
+    const add=document.createElement('button');
+    add.className='btn small ghost';
+    add.textContent='+ Goal Metric';
+    add.onclick=()=>{ p.goalMetrics.push(normalizeGoalMetric({label:'',start:'',current:'',target:'',unit:'',history:[]})); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+    sec.appendChild(add);
+    c.appendChild(sec);
+  }
+
+  function makeGoalTodayMetricCard(p,g){
+    const card=document.createElement('div');
+    card.className='today-goal-card';
+    const calc=goalCalc(g);
+    card.innerHTML=
+      '<div class="tgc-head"><div><b>'+escape(g.label||'Metric')+'</b><span>'+escape(goalRemainingText(g))+'</span></div><em>'+calc.pct+'%</em></div>'+
+      '<div class="goal-journey compact">'+
+        '<div class="gj-row"><span>Start</span><b>'+escape(fmtGoalNum(calc.start,calc.unit))+'</b><i></i><span>Now</span><b>'+escape(fmtGoalNum(calc.current,calc.unit))+'</b><i></i><span>Target</span><b>'+escape(fmtGoalNum(calc.target,calc.unit))+'</b></div>'+
+        '<div class="progress"><span style="width:'+calc.pct+'%"></span></div>'+
+        '<div class="goal-left">'+escape(goalMovedText(g))+' · '+escape(goalRemainingText(g))+'</div>'+
+      '</div>'+
+      '<div class="goal-update-row today"><input type="date" value="'+todayStr()+'"><input placeholder="오늘 값"><button class="btn small today">Update</button></div>';
+    card.querySelector('button').onclick=()=>{
+      const inputs=card.querySelectorAll('input');
+      const date=inputs[0].value||todayStr();
+      const val=inputs[1].value.trim();
+      if(!val) return;
+      if(!g.unit) g.unit=parseGoalValue(val).unit;
+      updateGoalMetric(g,val,date,'Today update');
+      save();
+      renderAllLinked();
+    };
+    return card;
+  }
+
+  function renderGoalTodayProject(el,p){
+    const wrap=document.createElement('div');
+    wrap.className='today-goal-wrap';
+    const ms=p.goalMetrics||[];
+    if(!ms.length){
+      wrap.innerHTML='<div class="hint" style="margin:0">Goal Metric이 없습니다. 상세에서 Start / Current / Target을 설정하세요.</div>';
+    } else {
+      const copy=document.createElement('div');
+      copy.className='motivation-copy';
+      const avg=projectProgress(p).pct;
+      const remain=ms.map(goalRemainingText).filter(Boolean).slice(0,2).join(' · ');
+      copy.innerHTML='<b>오늘은 숫자를 하나라도 전진시키는 날.</b><span>'+escape(remain || ('Progress '+avg+'%'))+'</span>';
+      wrap.appendChild(copy);
+      ms.slice(0,4).forEach(g=>wrap.appendChild(makeGoalTodayMetricCard(p,g)));
+      if(ms.length>4){
+        const more=document.createElement('div');
+        more.className='hint';
+        more.style.margin='8px 0 0';
+        more.textContent='+'+(ms.length-4)+' metrics more';
+        wrap.appendChild(more);
+      }
+    }
+    el.appendChild(wrap);
+  }
+
+  
   function renderProjectModal(pid){
     const p=state.projects.find(x=>String(x.id)===String(pid));
     if(!p) return;
@@ -1628,15 +2765,19 @@ textarea{min-height:88px}
 
     /* Project kind toggle */
     const kindSec=document.createElement('div'); kindSec.className='modal-section';
-    kindSec.innerHTML='<h4>Project Type · 유형</h4><div class="hint">자유형: 액션을 자유롭게. 단계형: 항목(곡 등)마다 공통 단계를 점선 지표로 진행.</div>';
+    kindSec.innerHTML='<h4>Project Type · 유형</h4><div class="hint">Freeform은 할 일형, Pipeline은 단계 통과형, Goal Matrix는 수치 목표형입니다.</div>';
     const kindRow=document.createElement('div'); kindRow.className='kind-toggle';
-    kindRow.innerHTML='<button class="kind-btn'+(p.kind==='free'?' on':'')+'" data-kind="free">자유형 (Freeform)</button><button class="kind-btn'+(p.kind==='pipeline'?' on':'')+'" data-kind="pipeline">단계형 (Pipeline)</button>';
+    kindRow.innerHTML='<button class="kind-btn'+(p.kind==='free'?' on':'')+'" data-kind="free">자유형 (Freeform)</button><button class="kind-btn'+(p.kind==='pipeline'?' on':'')+'" data-kind="pipeline">단계형 (Pipeline)</button><button class="kind-btn'+(p.kind==='goal'?' on':'')+'" data-kind="goal">Goal Matrix</button>';
     kindRow.querySelectorAll('.kind-btn').forEach(b=>b.onclick=()=>{
       const nk=b.dataset.kind;
       if(nk===p.kind) return;
       if(nk==='pipeline' && !p.stages.length){
         // seed default stages for first-time pipeline
         p.stages=['악보 스터디','초견','구간 연습','템포 맞추기','암보'].map(n=>({id:uid(),name:n}));
+      }
+      if(nk==='goal' && !p.goalMetrics.length){
+        p.goalMetrics=(p.goals&&p.goals.length?p.goals.map(g=>normalizeGoalMetric({label:g.label,current:g.current,start:g.current,target:g.target})):[]);
+        if(!p.goalMetrics.length) p.goalMetrics.push(normalizeGoalMetric({label:'',start:'',current:'',target:'',unit:''}));
       }
       p.kind=nk; save(); renderProjectModal(pid); renderAllLinkedNoModal();
     });
@@ -1645,23 +2786,27 @@ textarea{min-height:88px}
     base.querySelector('#pmDue').oninput=e=>{ p.dueDate=e.target.value; save(); renderAllLinkedNoModal(); };
     base.querySelector('#pmMemo').oninput=e=>{ p.memo=e.target.value; save(); };
 
-    const goals=document.createElement('div'); goals.className='modal-section';
-    goals.innerHTML='<h4>Goal Metrics</h4><div class="hint">허리 53cm, 체중 52kg처럼 같은 실행을 공유하는 목표값은 여기 넣습니다.</div>';
-    const glist=document.createElement('div');
-    p.goals.forEach(g=>{
-      const row=document.createElement('div'); row.className='goal-row';
-      row.innerHTML='<input placeholder="지표명" value="'+escape(g.label)+'"><input placeholder="현재" value="'+escape(g.current)+'"><input placeholder="목표" value="'+escape(g.target)+'"><button class="btn small ghost">삭제</button>';
-      const ins=row.querySelectorAll('input');
-      ins[0].oninput=e=>{g.label=e.target.value;save();renderAllLinkedNoModal();};
-      ins[1].oninput=e=>{g.current=e.target.value;save();renderAllLinkedNoModal();};
-      ins[2].oninput=e=>{g.target=e.target.value;save();renderAllLinkedNoModal();};
-      row.querySelector('button').onclick=()=>{p.goals=p.goals.filter(x=>x.id!==g.id);save();renderProjectModal(pid);renderAllLinkedNoModal();};
-      glist.appendChild(row);
-    });
-    goals.appendChild(glist);
-    const addGoal=document.createElement('button'); addGoal.className='btn small ghost'; addGoal.textContent='+ Metric';
-    addGoal.onclick=()=>{ p.goals.push({id:uid(),label:'',current:'',target:''}); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-    goals.appendChild(addGoal); c.appendChild(goals);
+    if(p.kind==='goal'){
+      renderGoalMatrixSection(c,p,pid);
+    } else {
+      const goals=document.createElement('div'); goals.className='modal-section';
+      goals.innerHTML='<h4>Goal Metrics</h4><div class="hint">보조 목표값이나 완료 기준을 관리합니다.</div>';
+      const glist=document.createElement('div');
+      p.goals.forEach(g=>{
+        const row=document.createElement('div'); row.className='goal-row';
+        row.innerHTML='<input placeholder="지표명" value="'+escape(g.label)+'"><input placeholder="현재" value="'+escape(g.current)+'"><input placeholder="목표" value="'+escape(g.target)+'"><button class="btn small ghost">삭제</button>';
+        const ins=row.querySelectorAll('input');
+        ins[0].oninput=e=>{g.label=e.target.value;save();renderAllLinkedNoModal();};
+        ins[1].oninput=e=>{g.current=e.target.value;save();renderAllLinkedNoModal();};
+        ins[2].oninput=e=>{g.target=e.target.value;save();renderAllLinkedNoModal();};
+        row.querySelector('button').onclick=()=>{p.goals=p.goals.filter(x=>x.id!==g.id);save();renderProjectModal(pid);renderAllLinkedNoModal();};
+        glist.appendChild(row);
+      });
+      goals.appendChild(glist);
+      const addGoal=document.createElement('button'); addGoal.className='btn small ghost'; addGoal.textContent='+ Metric';
+      addGoal.onclick=()=>{ p.goals.push({id:uid(),label:'',current:'',target:''}); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      goals.appendChild(addGoal); c.appendChild(goals);
+    }
 
     /* Linked Routines — feature 1 */
     const linkSec=document.createElement('div'); linkSec.className='modal-section';
@@ -1698,7 +2843,7 @@ textarea{min-height:88px}
     }
     c.appendChild(linkSec);
 
-    if(p.kind!=='pipeline'){
+    if(p.kind==='free'){
       const subs=document.createElement('div'); subs.className='modal-section';
       subs.innerHTML='<h4>Actions</h4>';
       const slist=document.createElement('div');
@@ -1744,7 +2889,7 @@ textarea{min-height:88px}
       addLine.innerHTML='<input id="newSubText" placeholder="Add Action"><button class="btn small ghost">추가</button>';
       addLine.querySelector('button').onclick=()=>{ const text=addLine.querySelector('input').value.trim(); if(!text)return; addProjectSub(p,text,'project_modal'); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
       subs.appendChild(addLine); c.appendChild(subs);
-    } else {
+    } else if(p.kind==='pipeline'){
       renderPipelineSection(c,p,pid);
     }
 
@@ -1776,7 +2921,7 @@ textarea{min-height:88px}
     actions.querySelector('#projectDelete').onclick=()=>{ if(confirm('Delete this Project?')){ clearSlotsReferencingProject(p.id); state.projects=state.projects.filter(x=>x.id!==p.id); save(); closeModal(); renderAllLinked(); } };
   }
 
-  function renderAllLinkedNoModal(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
+  function renderAllLinkedNoModal(){ renderValuePillars(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
 
   /* Shared operations */
   function habitDoneOn(h,date=todayStr()){ return h.log.includes(date); }
@@ -2015,7 +3160,7 @@ textarea{min-height:88px}
         empty:false, actionable:true, done:!!sub.done,
         badge:sub.done?'✓ Project Done':'Project',
         title:sub.title||'Actions',
-        detail:pillarOf(p.pillar).emo+' '+(p.title||'Project')+' · Project 데이터와 연결'
+        detail:pillarOf(p.pillar).emo+' '+(p.title||'Project')+' · '+(p.kind==='goal'?'Goal Matrix':p.kind==='pipeline'?'Pipeline':'Project')+' 데이터와 연결'
       };
     }
 
@@ -2327,7 +3472,7 @@ textarea{min-height:88px}
       const meta=document.createElement('div');
       meta.className='hint';
       meta.style.margin='0 0 8px';
-      meta.textContent=(pg.total?pg.done+'/'+pg.total+' 완료':'No Actions')+(p.goals.length?' · Goal Metrics '+p.goals.length+'개':'');
+      meta.textContent=p.kind==='goal' ? goalBadgeLabel(p) : ((pg.total?pg.done+'/'+pg.total+' 완료':'No Actions')+(p.goals.length?' · Goal Metrics '+p.goals.length+'개':''));
       el.appendChild(meta);
 
       /* linked routine mini-display */
@@ -2336,6 +3481,12 @@ textarea{min-height:88px}
         p.linkedHabits.forEach(hid=>{ const h=getHabit(hid); if(!h)return; const wc=habitWeekCount(h),tg=habitTargetCount(h);
           const tag=document.createElement('span'); tag.className='lr-mini'+(wc>=tg?' ok':''); tag.textContent=(pillarOf(h.pillar).emo)+' '+h.title+' '+wc+'/'+tg; lr.appendChild(tag); });
         if(lr.children.length) el.appendChild(lr);
+      }
+
+      if(p.kind==='goal'){
+        renderGoalTodayProject(el,p);
+        box.appendChild(el);
+        return;
       }
 
       if(p.kind==='pipeline'){
@@ -2702,7 +3853,7 @@ function renderWeekMetrics(){
 
   /* Habits */
   function renderHabits(){
-    const box=document.getElementById('habitList'); box.innerHTML='';
+    const box=document.getElementById('habitList'); if(!box) return; box.innerHTML='';
     if(!state.habits.length){ box.innerHTML='<div class="empty">No Routines</div>'; return; }
     const monday=mondayOf(new Date()), dates=weekDates(monday), t=todayStr();
     state.habits.forEach(h=>{
@@ -2721,7 +3872,7 @@ function renderWeekMetrics(){
       el.appendChild(week); box.appendChild(el);
     });
   }
-  document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
+  if(document.getElementById('addHabit')) document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
 
   /* Money */
   function latestRecord(){ if(!state.records.length)return null; return [...state.records].sort((a,b)=>new Date(b.date)-new Date(a.date))[0]; }
@@ -2766,7 +3917,7 @@ function renderWeekMetrics(){
   document.getElementById('exportBtn').onclick=exportBackup; document.getElementById('exportBtnTop').onclick=exportBackup; document.getElementById('importBtn').onclick=importBackup; document.getElementById('importBtnTop').onclick=importBackup; document.getElementById('resetBtn').onclick=resetAll; document.getElementById('resetBtnTop').onclick=resetAll;
 
   /* Render orchestration */
-  function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
+  function renderAllLinked(){ renderValuePillars(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
   function rerenderAll(){ document.getElementById('v-identity').value=state.identity||''; document.getElementById('v-daily').value=state.daily||''; autoSize(document.getElementById('v-identity')); autoSize(document.getElementById('v-daily')); renderGrat(); renderQuotes(); renderAllLinked(); refreshMoney(); renderBackupStatus(); }
   function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; }
 
@@ -2783,5 +3934,63 @@ function renderWeekMetrics(){
   })();
 })();
 </script>
+
+<script>
+(function(){
+  function findTabNode(node){
+    while(node && node!==document){
+      if(node.nodeType===1 && node.matches && node.matches('.tab[data-tab]')) return node;
+      node=node.parentNode;
+    }
+    return null;
+  }
+  function activateLifeTabSafe(tabKey){
+    if(window.switchMainTab) return window.switchMainTab(tabKey);
+    var target=document.getElementById('tab-'+tabKey);
+    if(!target) return false;
+    document.querySelectorAll('.tab[data-tab]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-tab')===tabKey);
+    });
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.classList.remove('active');
+      p.style.display='none';
+    });
+    target.classList.add('active');
+    target.style.display='block';
+    return false;
+  }
+  window.activateLifeTabSafe=activateLifeTabSafe;
+  document.addEventListener('click', function(e){
+    var btn=findTabNode(e.target);
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    activateLifeTabSafe(btn.getAttribute('data-tab'));
+  }, true);
+})();
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.tab[data-tab]').forEach(function(btn){
+    btn.onclick = function(e){
+      if(e){ e.preventDefault(); e.stopPropagation(); }
+      return window.switchMainTab(btn.getAttribute('data-tab'));
+    };
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var key=(location.hash||'#tab-today').replace('#tab-','');
+  if(['today','life','money','records'].indexOf(key)>=0 && window.switchMainTab){
+    window.switchMainTab(key);
+  }
+});
+</script>
+
 </body>
 </html>
