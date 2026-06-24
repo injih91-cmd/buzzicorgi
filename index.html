@@ -37,17 +37,17 @@
 
   /* PILLARS — 5 PARALLEL, vertical 2-stage */
   .pillars{display:grid; grid-template-columns:repeat(5,1fr); gap:12px;}
-  .pillar{border:1px solid var(--line); border-radius:14px; padding:14px 12px; background:var(--soft); display:flex; flex-direction:column;}
-  .pillar-head{margin-bottom:12px;}
+  .pillar{border:1px solid var(--line); border-radius:14px; padding:14px 12px; background:var(--soft); display:flex; flex-direction:column; min-width:0;}
+  .pillar-head{margin-bottom:12px; min-width:0;}
   .pillar-head .top{display:flex; align-items:center; gap:6px;}
   .pillar-head .emo{font-size:18px;}
   .pillar-head h4{font-size:14px; margin:0;}
   .pillar-head .cap-in{width:100%; border:none; border-bottom:1px dashed var(--line); background:transparent; font-family:inherit; font-size:11px; color:var(--muted); padding:4px 2px 2px; outline:none; margin-top:5px;}
   .pillar-head .cap-in:focus{border-bottom-color:var(--navy); color:var(--ink);}
   .pillar-head .pcount{display:inline-block; font-size:10px; color:var(--gold); font-weight:600; background:#fff; border:1px solid var(--line); border-radius:999px; padding:2px 8px; margin-top:7px;}
-  .stage{border-radius:10px; padding:8px; margin-bottom:8px; transition:background .15s, border-color .15s; border:1px solid transparent;}
+  .stage{border-radius:10px; padding:8px; margin-bottom:8px; transition:background .15s, border-color .15s; border:1px solid transparent; min-width:0;}
   .stage[data-stage=doing]{background:#fff; border-color:var(--line);}
-  .stage[data-stage=done]{background:#FBF6EA; border-color:var(--gold-soft); flex:1; margin-bottom:0;}
+  .stage[data-stage=done]{background:#FBF6EA; border-color:var(--gold-soft);}
   .stage.drag-over{border-color:var(--gold); border-style:dashed;}
   .stage-title{font-size:10px; font-weight:600; letter-spacing:.5px; margin-bottom:7px; display:flex; align-items:center; gap:4px; padding:0 2px;}
   .stage[data-stage=doing] .stage-title{color:var(--navy);}
