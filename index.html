@@ -1346,6 +1346,7 @@ textarea{min-height:88px}
   function load(){ try{ const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):fresh(); }catch(e){ state=fresh(); } migrate(); }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} cloudPushDebounced(); }
   function cloudPushDebounced(){ if(!cloudReady)return; setSync('saving','Saving…'); clearTimeout(pushTimer); pushTimer=setTimeout(cloudPush,700); }
+  let lastSyncError='';
   async function cloudPush(){
     try{
       const res=await fetch(SB_REST+'?on_conflict=id', {
@@ -1353,17 +1354,17 @@ textarea{min-height:88px}
         headers:Object.assign({}, SB_HEADERS, {'Prefer':'resolution=merge-duplicates,return=minimal'}),
         body:JSON.stringify({ id:ROW_ID, data:state, updated_at:new Date().toISOString() })
       });
-      if(!res.ok) throw new Error('push '+res.status);
+      if(!res.ok){ lastSyncError='push '+res.status+' '+(await res.text()).slice(0,80); throw new Error(lastSyncError); }
       setSync('ok','Synced');
-    }catch(e){ setSync('err','Save failed · Local saved'); }
+    }catch(e){ lastSyncError=lastSyncError||('push '+(e.message||e)); setSync('err','저장실패: '+lastSyncError.slice(0,60)); }
   }
   async function cloudPull(){
     try{
       const res=await fetch(SB_REST+'?id=eq.'+encodeURIComponent(ROW_ID)+'&select=data', { headers:SB_HEADERS });
-      if(!res.ok) throw new Error('pull '+res.status);
+      if(!res.ok){ lastSyncError='pull '+res.status+' '+(await res.text()).slice(0,80); return undefined; }
       const arr=await res.json();
       return (Array.isArray(arr) && arr.length) ? arr[0].data : null;
-    }catch(e){ return undefined; }
+    }catch(e){ lastSyncError='pull '+(e.message||e); return undefined; }
   }
 
   /* Header */
@@ -2966,7 +2967,7 @@ function renderWeekMetrics(){
       setSync('saving','Loading… ('+tries+')');
     }
     if(cloud==='__timeout__' || cloud===undefined){
-      setSync('err','연결 지연 · 탭하여 재시도');
+      setSync('err','연결실패: '+(lastSyncError||'시간초과').slice(0,55)+' · 탭하여 재시도');
       const el=document.getElementById('syncStatus');
       if(el){ el.style.cursor='pointer'; el.onclick=()=>{ el.onclick=null; el.style.cursor=''; initCloud(); }; }
       return;
