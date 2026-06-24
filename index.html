@@ -1784,9 +1784,10 @@ textarea{min-height:88px}
         card.appendChild(head);
 
         const vals=document.createElement('div'); vals.className='metric-vals';
-        vals.innerHTML='<label>최초<input type="number" class="m-start" value="'+escape(g.start)+'"></label>'
-          +'<label>현재<input type="number" class="m-cur" value="'+escape(g.current)+'"></label>'
-          +'<label>목표<input type="number" class="m-tgt" value="'+escape(g.target)+'"></label>';
+        const numOrEmpty=v=>{ const n=metricNum(v); return n===null?'':n; };
+        vals.innerHTML='<label>최초<input type="number" class="m-start" value="'+numOrEmpty(g.start)+'"></label>'
+          +'<label>현재<input type="number" class="m-cur" value="'+numOrEmpty(g.current)+'"></label>'
+          +'<label>목표<input type="number" class="m-tgt" value="'+numOrEmpty(g.target)+'"></label>';
         vals.querySelector('.m-start').oninput=e=>{g.start=e.target.value;save();renderProjectModal(pid);renderAllLinkedNoModal();};
         vals.querySelector('.m-cur').onchange=e=>{ g.current=e.target.value; if(e.target.value!=='') pushMetricHistory(g, metricNum(e.target.value)); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
         vals.querySelector('.m-tgt').oninput=e=>{g.target=e.target.value;save();renderProjectModal(pid);renderAllLinkedNoModal();};
@@ -2511,7 +2512,7 @@ textarea{min-height:88px}
           const mc=document.createElement('div'); mc.className='today-metric-card';
           mc.innerHTML='<div class="tmc-head"><span class="tmc-name">'+escape(g.label||'지표')+'</span><span class="tmc-remain">'+escape(metricRemainText(g)||'값 입력')+'</span></div>'
             +'<div class="metric-bar"><span style="width:'+pct+'%"></span></div>'
-            +'<div class="tmc-update">현재값 <input type="number" class="tmc-input" value="'+escape(g.current)+'"> '+(g.unit||'')+' <button class="btn small today tmc-save">기록</button></div>';
+            +'<div class="tmc-update">현재값 <input type="number" class="tmc-input" value="'+(metricNum(g.current)===null?'':metricNum(g.current))+'"> '+(g.unit||'')+' <button class="btn small today tmc-save">기록</button></div>';
           const inp=mc.querySelector('.tmc-input');
           mc.querySelector('.tmc-save').onclick=()=>{ if(inp.value==='')return; g.current=inp.value; pushMetricHistory(g, metricNum(inp.value)); save(); renderAllLinked(); };
           list.appendChild(mc);
@@ -2522,6 +2523,10 @@ textarea{min-height:88px}
       }
 
       if(p.kind==='pipeline'){
+        const list=document.createElement('div'); list.className='today-pipe-list';
+        const focusItems=p.items.filter(it=>it.todayFocus || it.date===todayStr());
+        const showItems=focusItems.length?focusItems:p.items.filter(it=>itemDoneCount(p,it)<p.stages.length).slice(0,3);
+        if(!showItems.length){ list.innerHTML='<div class="hint" style="margin:0">오늘 표시할 항목 없음. 상세에서 곡 옆 “Add Today”를 누르세요.</div>'; }
         showItems.forEach(it=>{
           const ni=itemStageIndex(p,it);
           const curStage = it.todayStageId ? (p.stages.find(s=>String(s.id)===String(it.todayStageId))||p.stages[ni]) : p.stages[ni];
