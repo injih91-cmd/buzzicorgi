@@ -3,37 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>나의 인생 Project 2026 — 디디 Life OS v16.4</title>
+<title>나의 인생 Project 2026 — 디디 Life OS v13</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css">
-
-<script>
-(function(){
-  window.switchMainTab=function(tabKey){
-    var target=document.getElementById('tab-'+tabKey);
-    if(!target) return true;
-    document.querySelectorAll('.tab[data-tab]').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-tab')===tabKey);
-    });
-    document.querySelectorAll('.panel').forEach(function(p){
-      p.classList.toggle('active', p.id==='tab-'+tabKey);
-    });
-    if(tabKey==='money' && typeof window.refreshMoney==='function'){
-      setTimeout(window.refreshMoney,40);
-    }
-    return true;
-  };
-  function syncFromHash(){
-    var key=(location.hash||'#tab-today').replace('#tab-','');
-    if(['today','life','money','records'].indexOf(key)>=0) window.switchMainTab(key);
-  }
-  window.addEventListener('hashchange', syncFromHash);
-  document.addEventListener('DOMContentLoaded', syncFromHash);
-})();
-</script>
-
 <style>
 :root{
   --navy:#1F3864; --navy-soft:#2E4D80; --gold:#B8924A; --gold-soft:#D4AF6A;
@@ -399,6 +373,40 @@ td.memo{text-align:left;color:var(--muted)}
 .due-tag.soon{background:var(--soft,#f7f5ef);color:var(--muted);border:1px solid var(--line)}
 .pipe-due-label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
 .pipe-due-label input{border:1px solid var(--line);border-radius:8px;padding:5px 7px;font-size:12px}
+
+/* Goal Metric editor */
+.metric-card{border:1px solid var(--line,#e3dfd4);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.metric-head{display:grid;grid-template-columns:1fr 70px auto;gap:8px;margin-bottom:10px;align-items:center}
+.metric-head .m-label{border:0;border-bottom:1px solid var(--line);font-weight:700;font-size:14px;padding:3px 2px;background:transparent}
+.metric-head .m-unit{border:1px solid var(--line);border-radius:7px;font-size:12px;padding:5px;text-align:center}
+.metric-vals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.metric-vals label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.metric-vals input{border:1px solid var(--line);border-radius:8px;padding:7px;font-size:14px;font-weight:700;text-align:center;background:#fff}
+.metric-vals label:nth-child(2) input{border-color:var(--navy,#1f3864);color:var(--navy,#1f3864)}
+.metric-prog{margin-bottom:8px}
+.metric-bar{height:8px;background:var(--soft,#f7f5ef);border-radius:999px;overflow:hidden;margin-bottom:5px}
+.metric-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--navy,#1f3864),var(--gold,#b8924a));border-radius:999px;transition:width .4s}
+.metric-remain{font-size:13px;font-weight:700;color:var(--gold,#b8924a)}
+.metric-hist{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+.spark{margin-bottom:6px}
+.metric-hist-rows{display:flex;flex-wrap:wrap;gap:6px}
+.metric-hist-row{display:flex;gap:5px;font-size:11px;background:var(--soft,#f7f5ef);border-radius:6px;padding:2px 8px;color:var(--muted)}
+.metric-hist-row span:last-child{font-weight:700;color:var(--navy,#1f3864)}
+
+/* Metric summary on tile */
+.tile-metric{margin-top:8px;display:grid;gap:5px}
+.tile-metric-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px}
+.tile-metric-row .tm-name{font-weight:700;color:var(--navy,#1f3864)}
+.tile-metric-row .tm-vals{color:var(--muted)}
+.tile-metric-row .tm-remain{margin-left:auto;color:var(--gold,#b8924a);font-weight:700}
+
+/* Today metric card */
+.today-metric-card{background:var(--soft,#f7f5ef);border:1px solid var(--line,#e3dfd4);border-radius:11px;padding:10px 12px;margin-bottom:8px}
+.tmc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.tmc-head .tmc-name{font-weight:700;color:var(--navy,#1f3864)}
+.tmc-head .tmc-remain{font-size:12px;font-weight:700;color:var(--gold,#b8924a)}
+.tmc-update{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:7px}
+.tmc-update .tmc-input{width:80px;border:1px solid var(--line);border-radius:7px;padding:5px;font-size:13px;font-weight:700;text-align:center}
 .sub-row{display:grid;grid-template-columns:auto 1fr 120px auto auto;gap:7px;align-items:center;margin-bottom:7px}
 .sub-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
 .sub-row .focus-on{background:var(--today);color:#fff;border-color:var(--today)}
@@ -810,677 +818,6 @@ textarea{min-height:88px}
   border-left:3px solid rgba(216,90,48,.55);
 }
 
-
-/* v14 iPhone 16 Pro mobile no-wrap polish */
-@media(max-width:480px){
-  body{
-    padding:8px 8px 72px !important;
-    overflow-x:hidden;
-  }
-  .wrap{
-    width:100%;
-    max-width:100%;
-  }
-  .section,.card,.modal-body{
-    padding:18px 16px !important;
-  }
-
-  /* top tabs: keep labels clean */
-  .tabs{
-    padding:8px 0 !important;
-    margin:0 0 12px !important;
-  }
-  .tabrow{
-    gap:8px !important;
-  }
-  .tab{
-    min-height:70px;
-    padding:12px 6px !important;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    line-height:1.12 !important;
-    white-space:nowrap;
-  }
-  .tab small{
-    white-space:nowrap;
-    font-size:10.5px !important;
-    line-height:1.15 !important;
-  }
-
-  /* project cards */
-  .today-project{
-    padding:20px 16px !important;
-    border-radius:18px !important;
-  }
-  .today-project-title,
-  .tpc-name,
-  .pipe-item-name,
-  .slot-main{
-    word-break:keep-all !important;
-  }
-  .today-project-title{
-    line-height:1.34 !important;
-  }
-
-  /* pipeline / stage tracks: one row on iPhone 16 Pro */
-  .tpc-track,
-  .stage-track{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    gap:4px !important;
-    align-items:flex-start !important;
-    overflow-x:auto !important;
-    overflow-y:hidden !important;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    padding:2px 0 4px !important;
-  }
-  .tpc-track::-webkit-scrollbar,
-  .stage-track::-webkit-scrollbar{
-    display:none;
-  }
-  .tpc-cell,
-  .stage-cell{
-    flex:0 0 calc((100% - 16px) / 5) !important;
-    min-width:0 !important;
-    width:auto !important;
-    gap:2px !important;
-    padding:2px 0 !important;
-  }
-  .tpc-cell.cur{
-    padding:3px 0 !important;
-  }
-  .tpc-cell .tpc-dot,
-  .stage-cell .stage-dot{
-    font-size:15px !important;
-    line-height:1 !important;
-  }
-  .tpc-cell span,
-  .stage-cell .stage-name{
-    display:block;
-    width:100%;
-    max-width:100%;
-    font-size:10px !important;
-    line-height:1.12 !important;
-    letter-spacing:-0.07em !important;
-    white-space:nowrap !important;
-    word-break:keep-all !important;
-    overflow:visible !important;
-    text-align:center !important;
-  }
-
-  /* action button: keep text in one line */
-  .tpc-next,
-  .btn,
-  .toggle,
-  .linked-pill,
-  .due-tag{
-    white-space:nowrap !important;
-  }
-  .tpc-next{
-    min-height:48px;
-    padding-left:10px !important;
-    padding-right:10px !important;
-    font-size:13px !important;
-  }
-
-  /* compact details */
-  .tpc-head{
-    gap:8px;
-  }
-  .tpc-head .tpc-name{
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .tpc-head .tpc-prog{
-    flex:0 0 auto;
-  }
-  .tpc-memo{
-    line-height:1.45 !important;
-    word-break:keep-all;
-  }
-
-  /* nested children and pipe item rows */
-  .pipe-item-head{
-    grid-template-columns:1fr auto !important;
-  }
-  .pipe-item-head .pipe-count,
-  .pipe-due-label{
-    white-space:nowrap;
-  }
-  .pipe-item-meta{
-    grid-template-columns:1fr !important;
-  }
-  .child-row{
-    grid-template-columns:auto 1fr auto !important;
-  }
-  .child-row input[type=date]{
-    width:112px !important;
-  }
-}
-
-/* smaller devices still keep one row; allow horizontal scroll if needed */
-@media(max-width:380px){
-  .tpc-cell,
-  .stage-cell{
-    flex-basis:56px !important;
-  }
-}
-
-
-/* v15 Value Pillars drill-down */
-.value-shell{
-  position:relative;
-}
-.value-view-toggle{
-  display:inline-flex;
-  gap:6px;
-  padding:5px;
-  margin:4px 0 16px;
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:999px;
-}
-.value-view-toggle button{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  font-weight:800;
-  font-size:12px;
-  border-radius:999px;
-  padding:8px 12px;
-}
-.value-view-toggle button.on{
-  background:var(--navy);
-  color:#fff;
-}
-.pillar-selector{
-  display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
-  gap:10px;
-}
-.pillar-pick{
-  text-align:left;
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:16px;
-  padding:14px 13px;
-  cursor:pointer;
-  min-height:118px;
-  box-shadow:0 8px 22px rgba(31,56,100,.04);
-}
-.pillar-pick.on{
-  border-color:var(--navy);
-  box-shadow:0 0 0 2px rgba(31,56,100,.08), 0 12px 28px rgba(31,56,100,.10);
-}
-.pp-title{
-  font-size:15px;
-  font-weight:900;
-  color:var(--navy);
-  line-height:1.25;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.pp-cap{
-  margin-top:5px;
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.35;
-  min-height:30px;
-  word-break:keep-all;
-}
-.pp-stats{
-  display:flex;
-  flex-wrap:wrap;
-  gap:4px;
-  margin-top:9px;
-}
-.pp-stats span{
-  font-size:10px;
-  font-weight:800;
-  color:#5F6470;
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:2px 6px;
-}
-.pillar-dash-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:14px;
-  margin-bottom:16px;
-}
-.pillar-dash-title{
-  color:var(--navy);
-  font-size:27px;
-  font-weight:900;
-  letter-spacing:-.04em;
-  line-height:1.15;
-}
-.pillar-dash-cap{
-  margin-top:5px;
-  color:var(--muted);
-  font-size:13px;
-}
-.pillar-dash-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-.pillar-overview{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-.po-card{
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:15px;
-}
-.po-card b{
-  display:block;
-  color:var(--navy);
-  font-size:25px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.04em;
-}
-.po-card span{
-  display:block;
-  margin-top:5px;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:700;
-}
-.pillar-detail-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-.pillar-detail-section{
-  border:1px solid var(--line);
-  background:var(--soft);
-  border-radius:18px;
-  padding:16px;
-  min-width:0;
-}
-.pillar-detail-section.span-full{
-  grid-column:1/-1;
-}
-.section-title-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:12px;
-}
-.section-title-row h4{
-  margin:0;
-  color:var(--navy);
-  font-size:17px;
-  font-weight:900;
-}
-.pillar-project-list{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:10px;
-}
-.pillar-routine-list{
-  display:grid;
-  gap:9px;
-}
-.pillar-routine-tile{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px 13px;
-}
-.prt-name{
-  color:var(--navy);
-  font-weight:850;
-  line-height:1.25;
-}
-.prt-meta{
-  margin-top:3px;
-  color:var(--muted);
-  font-size:12px;
-}
-.prt-dots{
-  display:flex;
-  gap:4px;
-  margin-top:7px;
-}
-.prt-dots i{
-  width:12px;
-  height:12px;
-  border-radius:3px;
-  border:1px solid var(--line);
-  background:#F1EFE8;
-}
-.prt-dots i.on{
-  background:var(--ok);
-  border-color:var(--ok);
-}
-.pillar-metric-list{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-  gap:9px;
-}
-.pillar-metric{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:12px;
-}
-.pillar-metric b{
-  display:block;
-  color:var(--navy);
-  font-weight:850;
-}
-.pillar-metric span{
-  display:block;
-  margin-top:3px;
-  color:var(--ink);
-  font-size:13px;
-}
-.pillar-metric em{
-  display:block;
-  margin-top:5px;
-  color:var(--muted);
-  font-size:11px;
-  font-style:normal;
-}
-@media(max-width:930px){
-  .pillar-selector{grid-template-columns:repeat(3,1fr)}
-  .pillar-overview{grid-template-columns:repeat(2,1fr)}
-  .pillar-detail-grid{grid-template-columns:1fr}
-}
-@media(max-width:560px){
-  .pillar-selector{grid-template-columns:repeat(2,1fr);gap:8px}
-  .pillar-pick{min-height:104px;padding:12px}
-  .pp-title{font-size:14px}
-  .pp-cap{font-size:10.5px}
-  .value-view-toggle{width:100%;display:grid;grid-template-columns:repeat(3,1fr);border-radius:18px}
-  .value-view-toggle button{padding:9px 6px;font-size:11px}
-  .pillar-dash-head{flex-direction:column}
-  .pillar-dash-actions{justify-content:flex-start}
-  .pillar-overview{grid-template-columns:repeat(2,1fr)}
-  .pillar-project-list{grid-template-columns:1fr}
-}
-
-
-/* v15.1 tab click hardening */
-.tabs{
-  z-index:999 !important;
-  pointer-events:auto !important;
-}
-.tabrow,.tab{
-  pointer-events:auto !important;
-}
-
-
-/* v16 Goal Matrix Project type */
-.kind-toggle{
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-}
-.kind-btn{
-  min-width:0 !important;
-  line-height:1.25;
-}
-.goal-matrix-list{
-  display:grid;
-  gap:12px;
-  margin-bottom:12px;
-}
-.goal-matrix-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:14px;
-}
-.gmc-head{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px;
-}
-.gmc-label{
-  font-size:16px !important;
-  font-weight:850 !important;
-  color:var(--navy) !important;
-}
-.goal-grid4{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-}
-.goal-journey{
-  margin:8px 0 10px;
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:var(--soft);
-}
-.goal-journey.compact{
-  margin:8px 0;
-  padding:10px;
-}
-.gj-row{
-  display:grid;
-  grid-template-columns:auto auto 1fr auto auto 1fr auto auto;
-  gap:6px;
-  align-items:center;
-  margin-bottom:9px;
-  font-size:11px;
-  color:var(--muted);
-}
-.gj-row b{
-  color:var(--navy);
-  font-size:13px;
-  font-weight:900;
-  white-space:nowrap;
-}
-.gj-row i{
-  height:1px;
-  background:var(--line);
-  display:block;
-}
-.goal-left{
-  margin-top:7px;
-  color:var(--today);
-  font-size:12px;
-  font-weight:850;
-}
-.goal-update-row{
-  display:grid;
-  grid-template-columns:132px 1fr auto;
-  gap:8px;
-  align-items:center;
-  margin-top:10px;
-}
-.goal-history{
-  margin-top:10px;
-}
-.goal-history-title{
-  color:var(--muted);
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:5px;
-}
-.goal-history-row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:6px 0;
-  border-top:1px solid var(--soft);
-  font-size:12px;
-}
-.goal-history-row span{color:var(--muted)}
-.goal-history-row b{color:var(--navy)}
-.tile-goals{
-  display:grid;
-  gap:5px;
-  margin-top:9px;
-}
-.tile-goal-row{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  font-size:11px;
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:5px 7px;
-}
-.tile-goal-row span{
-  color:var(--navy);
-  font-weight:800;
-}
-.tile-goal-row b{
-  color:var(--today);
-  font-weight:850;
-}
-.today-goal-wrap{
-  display:grid;
-  gap:10px;
-  margin-top:10px;
-}
-.motivation-copy{
-  background:linear-gradient(135deg,rgba(216,90,48,.12),rgba(31,56,100,.06));
-  border:1px solid rgba(216,90,48,.20);
-  border-radius:14px;
-  padding:12px 13px;
-}
-.motivation-copy b{
-  display:block;
-  color:var(--navy);
-  font-size:15px;
-  font-weight:900;
-}
-.motivation-copy span{
-  display:block;
-  color:var(--today);
-  font-size:12px;
-  font-weight:850;
-  margin-top:3px;
-}
-.today-goal-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:13px;
-}
-.tgc-head{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:flex-start;
-}
-.tgc-head b{
-  display:block;
-  color:var(--navy);
-  font-size:16px;
-  font-weight:900;
-}
-.tgc-head span{
-  display:block;
-  color:var(--today);
-  font-size:12px;
-  font-weight:850;
-  margin-top:2px;
-}
-.tgc-head em{
-  font-style:normal;
-  color:var(--navy);
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:4px 9px;
-  font-size:12px;
-  font-weight:900;
-}
-@media(max-width:560px){
-  .kind-toggle{
-    grid-template-columns:1fr !important;
-  }
-  .goal-grid4{
-    grid-template-columns:1fr 1fr;
-  }
-  .goal-update-row{
-    grid-template-columns:1fr;
-  }
-  .gj-row{
-    grid-template-columns:auto auto 1fr auto auto 1fr auto auto;
-    gap:4px;
-    font-size:9.5px;
-  }
-  .gj-row b{
-    font-size:11px;
-  }
-}
-
-
-
-
-
-
-/* v16.4 stable anchor tabs: no JS required */
-.tab{
-  text-decoration:none !important;
-  text-align:center;
-  pointer-events:auto !important;
-  touch-action:manipulation;
-  -webkit-tap-highlight-color:rgba(31,56,100,.12);
-  user-select:none;
-}
-
-/* default: Today */
-.panel{display:none}
-#tab-today{display:block}
-#tab-today:target,
-#tab-life:target,
-#tab-money:target,
-#tab-records:target{display:block}
-
-/* hide Today when any other tab is targeted */
-body:has(#tab-life:target) #tab-today,
-body:has(#tab-money:target) #tab-today,
-body:has(#tab-records:target) #tab-today{display:none}
-
-/* tab active visual fallback */
-body:has(#tab-life:target) .tab,
-body:has(#tab-money:target) .tab,
-body:has(#tab-records:target) .tab{
-  background:#fff !important;
-  color:var(--muted) !important;
-  border-color:var(--line) !important;
-  box-shadow:none !important;
-}
-body:not(:has(#tab-life:target)):not(:has(#tab-money:target)):not(:has(#tab-records:target)) .tab[data-tab="today"],
-body:has(#tab-today:target) .tab[data-tab="today"],
-body:has(#tab-life:target) .tab[data-tab="life"],
-body:has(#tab-money:target) .tab[data-tab="money"],
-body:has(#tab-records:target) .tab[data-tab="records"]{
-  background:var(--navy) !important;
-  color:#fff !important;
-  border-color:var(--navy) !important;
-  box-shadow:0 8px 22px rgba(31,56,100,.18) !important;
-}
-
 </style>
 </head>
 <body>
@@ -1521,10 +858,10 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
 
   <nav class="tabs">
     <div class="tabrow">
-      <a class="tab active" data-tab="today" href="#tab-today">Today<small>오늘</small></a>
-      <a class="tab" data-tab="life" href="#tab-life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></a>
-      <a class="tab" data-tab="money" href="#tab-money">Money<small>자산</small></a>
-      <a class="tab" data-tab="records" href="#tab-records">Logs<small>하루 기록</small></a>
+      <button class="tab active" data-tab="today">Today<small>오늘</small></button>
+      <button class="tab" data-tab="life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></button>
+      <button class="tab" data-tab="money">Money<small>자산</small></button>
+      <button class="tab" data-tab="records">Logs<small>하루 기록</small></button>
     </div>
   </nav>
 
@@ -1646,43 +983,40 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
     </div>
   </section>
 
-  
   <section class="panel" id="tab-life">
     <div class="grid">
-      <div class="card span-12 value-shell">
-        <div class="pill-eyebrow">Value Pillars</div>
-        <h3>Value Pillars <span class="ko-gloss">5대 가치 축</span></h3>
-        <div class="hint">먼저 Pillar를 고르고, 그 안의 Projects / Routines / Metrics를 봅니다. 전체 목록은 관리 모드에서만 확인합니다.</div>
-        <div class="value-view-toggle" id="valueViewToggle">
-          <button class="on" data-view="pillar">Pillar View</button>
-          <button data-view="projects">All Projects</button>
-          <button data-view="routines">All Routines</button>
+      <div class="card span-12">
+        <div class="pill-eyebrow">Pillar Map</div>
+        <h3>5대 가치 축</h3>
+        <div class="hint">삶의 큰 방향입니다. 각 Pillar 아래에 Projects와 Routines가 연결됩니다.</div>
+        <div class="category-board" id="categoryBoard"></div>
+        <div class="misc-wrap" id="miscWrap">
+          <div class="misc-head" id="miscHead">
+            <span>▸ Misc / Quick Capture</span>
+            <span id="miscSummary" class="hint" style="margin:0"></span>
+          </div>
+          <div class="misc-body" id="miscBody"></div>
         </div>
-        <div class="pillar-selector" id="pillarSelector"></div>
       </div>
 
-      <div class="card span-12 value-view-pane" id="pillarViewPane">
-        <div id="pillarDashboard"></div>
-      </div>
-
-      <div class="card span-12 value-view-pane" id="allProjectsPane" style="display:none">
-        <div class="pill-eyebrow">Management View</div>
-        <h3>All Projects <span class="ko-gloss">전체 프로젝트</span></h3>
-        <div class="hint">Pillar와 무관하게 전체 Project를 한 번에 관리할 때만 사용합니다.</div>
+      <div class="card span-12">
+        <div class="pill-eyebrow">Projects</div>
+        <h3>Projects</h3>
+        <div class="hint">목적, 마감, Done 기준이 있는 실행 과제입니다.</div>
         <div class="group-board" id="groupBoard"></div>
       </div>
 
-      <div class="card span-12 value-view-pane" id="allRoutinesPane" style="display:none">
-        <div class="pill-eyebrow">Management View</div>
-        <h3>All Routines <span class="ko-gloss">전체 루틴</span></h3>
-        <div class="hint">Pillar와 무관하게 전체 Routine을 한 번에 관리할 때만 사용합니다.</div>
+      <div class="card span-12">
+        <div class="pill-eyebrow">Routines</div>
+        <h3>Routines</h3>
+        <div class="hint">반복해서 유지하는 생활 Routine입니다. Today 탭의 체크와 같은 데이터를 씁니다.</div>
         <div class="habit-list" id="habitList"></div>
         <button class="btn ghost" id="addHabit" style="margin-top:12px">+ Routine</button>
       </div>
     </div>
   </section>
 
-<section class="panel" id="tab-money">
+  <section class="panel" id="tab-money">
     <div class="grid">
       <div class="card span-12">
         <div class="pill-eyebrow">Financial Goal</div>
@@ -1796,6 +1130,7 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
   const ROW_ID='didi_main';
   let sb=null, cloudReady=false, pushTimer=null;
   try{ if(window.supabase) sb=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){ sb=null; }
+  function hasChart(){ return typeof Chart!=='undefined'; }
 
   const PRIMARY_PILLARS=[
     {key:'bvichi',emo:'🐾',name:'버찌',cap:'반려와의 일상'},
@@ -1806,8 +1141,6 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
   ];
   const ETC_PILLAR={key:'etc',emo:'📌',name:'Misc',cap:'단발 업무·Quick Capture'};
   const ALL_PILLARS=[...PRIMARY_PILLARS,ETC_PILLAR];
-  let selectedPillarKey='viola';
-  let valueView='pillar';
 
   const DEF_HABITS=[
     {title:'운동',pillar:'body',freq:'weekly',target:3},
@@ -1883,13 +1216,8 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
     p.todayFocus=!!p.todayFocus;
     if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
     p.linkedHabits=p.linkedHabits.map(String);
-    // project kind: 'free' (default), 'pipeline', or 'goal'
-    p.kind = ['pipeline','goal'].includes(p.kind) ? p.kind : 'free';
-    if(!Array.isArray(p.goalMetrics)) p.goalMetrics=[];
-    if(!p.goalMetrics.length && Array.isArray(p.goals) && p.goals.length){
-      p.goalMetrics=p.goals.map(g=>({id:g.id||uid(),label:g.label||g.title||'',unit:g.unit||'',start:g.start||g.current||'',current:g.current||'',target:g.target||'',history:g.history||[]}));
-    }
-    p.goalMetrics=p.goalMetrics.map(normalizeGoalMetric);
+    // project kind: 'free' (default), 'pipeline', or 'metric'
+    p.kind = (p.kind==='pipeline'||p.kind==='metric') ? p.kind : 'free';
     if(!Array.isArray(p.stages)) p.stages=[];
     p.stages = p.stages.map(s=> typeof s==='string' ? {id:uid(),name:s} : {id:s.id||uid(), name:s.name||''});
     if(!Array.isArray(p.items)) p.items=[];
@@ -1905,7 +1233,18 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
     }));
     if(!Array.isArray(p.dailyNotes)) p.dailyNotes=[];
     if(!Array.isArray(p.goals)) p.goals=[];
-    p.goals=p.goals.map(g=>({id:g.id||uid(),label:g.label||g.title||'',current:g.current||'',target:g.target||''}));
+    p.goals=p.goals.map(g=>{
+      const start = (g.start!==undefined && g.start!=='') ? g.start : (g.current||'');
+      return {
+        id:g.id||uid(),
+        label:g.label||g.title||'',
+        unit:g.unit||'',
+        start: start,
+        current: (g.current!==undefined?g.current:''),
+        target: (g.target!==undefined?g.target:''),
+        history: Array.isArray(g.history) ? g.history.map(h=>({date:h.date||'', value:h.value})) : []
+      };
+    });
     if(!Array.isArray(p.subs)) p.subs=[];
     p.subs=p.subs.map(s=>({
       id:s.id||uid(),
@@ -2047,122 +1386,65 @@ body:has(#tab-records:target) .tab[data-tab="records"]{
   document.getElementById('quoteAdd').onclick=()=>{ state.quotes.push({text:'',src:''}); save(); renderQuotes(); };
 
   /* Tabs */
-  function renderTabs(){ /* v16.4: main tabs are pure anchors; no JS interception */ }
-
-  function activateLifeTab(tabKey){
-    const target=document.getElementById('tab-'+tabKey);
-    if(!target) return;
-    document.querySelectorAll('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tabKey));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    target.classList.add('active');
-    if(tabKey==='money') setTimeout(refreshMoney,40);
+  function renderTabs(){
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.onclick=()=>{
+        document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab==='money') setTimeout(refreshMoney,40);
+      };
+    });
   }
 
   /* Project stats */
   function projectsByPillar(key){ return state.projects.filter(p=>p.pillar===key); }
   function activeProjectsByPillar(key){ return projectsByPillar(key).filter(p=>p.status!=='done'); }
-  
-function parseGoalValue(v){
-    const s=String(v??'').trim();
-    const m=s.match(/-?\d+(?:\.\d+)?/);
-    const n=m ? parseFloat(m[0]) : null;
-    const unitMatch=s.match(/-?\d+(?:\.\d+)?\s*([^\d\s.,]+)?/);
-    const unit=unitMatch && unitMatch[1] ? unitMatch[1] : '';
-    return {n,unit};
+  function makeSparkline(g){
+    const wrap=document.createElement('div'); wrap.className='spark';
+    const vals=(g.history||[]).map(h=>metricNum(h.value)).filter(v=>v!==null);
+    if(vals.length<2){ wrap.innerHTML='<span class="hint" style="margin:0">기록 2개 이상이면 추이가 나와요</span>'; return wrap; }
+    const t=metricNum(g.target);
+    const all=t!==null?[...vals,t]:vals;
+    const min=Math.min(...all), max=Math.max(...all), rng=(max-min)||1;
+    const W=180,H=40,pad=4;
+    const pts=vals.map((v,i)=>{ const x=pad+(W-2*pad)*(i/(vals.length-1)); const y=H-pad-(H-2*pad)*((v-min)/rng); return x.toFixed(1)+','+y.toFixed(1); });
+    let svg='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+    if(t!==null){ const ty=H-pad-(H-2*pad)*((t-min)/rng); svg+='<line x1="0" y1="'+ty.toFixed(1)+'" x2="'+W+'" y2="'+ty.toFixed(1)+'" stroke="#B8924A" stroke-dasharray="3 3" stroke-width="1"/>'; }
+    svg+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    const last=pts[pts.length-1].split(','); svg+='<circle cx="'+last[0]+'" cy="'+last[1]+'" r="3" fill="#1F3864"/></svg>';
+    wrap.innerHTML=svg; return wrap;
   }
-
-  function normalizeGoalMetric(g){
-    g=g||{};
-    const cur=parseGoalValue(g.current);
-    const start=parseGoalValue(g.start || g.initial || g.current);
-    const target=parseGoalValue(g.target);
-    const unit=g.unit || cur.unit || start.unit || target.unit || '';
-    const history=Array.isArray(g.history)?g.history:[];
-    const normalized={
-      id:g.id||uid(),
-      label:g.label||g.title||'',
-      unit,
-      start:g.start ?? (start.n!=null?String(start.n):''),
-      current:g.current ?? (cur.n!=null?String(cur.n):''),
-      target:g.target ?? (target.n!=null?String(target.n):''),
-      history:history.map(h=>({date:h.date||todayStr(), value:h.value??'', memo:h.memo||''})).filter(h=>String(h.value).trim())
-    };
-    if(!normalized.history.length && String(normalized.start).trim()){
-      normalized.history.push({date:todayStr(),value:normalized.start,memo:'Start'});
-    }
-    return normalized;
+  function metricNum(v){ const n=parseFloat(v); return isNaN(n)?null:n; }
+  function metricDirection(g){ const s=metricNum(g.start), t=metricNum(g.target); if(s===null||t===null) return 'none'; return t<s?'down':(t>s?'up':'none'); }
+  function metricRemainText(g){
+    const c=metricNum(g.current), t=metricNum(g.target);
+    if(c===null||t===null) return '';
+    const dir=metricDirection(g), unit=g.unit||'';
+    if(c===t) return '목표 달성! 🎉';
+    const gap=Math.round(Math.abs(t-c)*100)/100;
+    const gapStr=gap+unit;
+    if(dir==='down') return c>t ? (gapStr+' 더 줄이면 끝') : ('목표 초과 '+gapStr);
+    if(dir==='up')   return c<t ? (gapStr+' 더 올리면 끝') : ('목표 초과 '+gapStr);
+    return gapStr+' 남음';
   }
-
-  
-function goalNum(g,key){
-    const parsed=parseGoalValue(g[key]);
-    return parsed.n;
+  function metricPct(g){
+    const s=metricNum(g.start), c=metricNum(g.current), t=metricNum(g.target);
+    if(s===null||c===null||t===null||s===t) return 0;
+    return Math.max(0,Math.min(100,Math.round((s-c)/(s-t)*100)));
   }
-
-  function goalUnit(g){
-    return g.unit || parseGoalValue(g.current).unit || parseGoalValue(g.start).unit || parseGoalValue(g.target).unit || '';
+  function pushMetricHistory(g,newVal){
+    const today=todayStr();
+    if(!Array.isArray(g.history)) g.history=[];
+    const ex=g.history.find(h=>h.date===today);
+    if(ex) ex.value=newVal; else g.history.push({date:today,value:newVal});
+    g.history.sort((a,b)=>a.date<b.date?-1:1);
   }
-
-  function fmtGoalNum(n,unit){
-    if(n===null || n===undefined || Number.isNaN(n)) return '—';
-    const rounded=Math.round(n*10)/10;
-    return (Number.isInteger(rounded)?String(rounded):String(rounded))+(unit||'');
-  }
-
-  function goalCalc(g){
-    const unit=goalUnit(g);
-    const start=goalNum(g,'start');
-    const current=goalNum(g,'current');
-    const target=goalNum(g,'target');
-    if(start===null || current===null || target===null || start===target){
-      return {unit,start,current,target,pct:0,moved:null,remaining:null,done:false,direction:0};
-    }
-    const total=Math.abs(target-start);
-    const moved=Math.abs(current-start);
-    const pct=Math.max(0,Math.min(100,Math.round((moved/total)*100)));
-    const direction=target>=start ? 1 : -1;
-    const remaining=Math.max(0, direction>0 ? target-current : current-target);
-    const done=direction>0 ? current>=target : current<=target;
-    return {unit,start,current,target,pct:done?100:pct,moved,remaining,done,direction};
-  }
-
-  function goalRemainingText(g){
-    const c=goalCalc(g);
-    if(c.remaining===null) return '값 입력 필요';
-    if(c.done) return '목표 달성';
-    return '목표까지 '+fmtGoalNum(c.remaining,c.unit)+' 남음';
-  }
-
-  function goalMovedText(g){
-    const c=goalCalc(g);
-    if(c.moved===null) return '—';
-    return fmtGoalNum(c.moved,c.unit)+' 이동';
-  }
-
-  function updateGoalMetric(g,value,date=todayStr(),memo=''){
-    if(!String(value||'').trim()) return;
-    g.current=value;
-    const existing=(g.history||[]).find(h=>h.date===date);
-    if(existing){ existing.value=value; existing.memo=memo||existing.memo||''; }
-    else { if(!Array.isArray(g.history)) g.history=[]; g.history.push({date,value,memo}); }
-    g.history.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  }
-
-  function goalBadgeLabel(p){
-    const ms=p.goalMetrics||[];
-    if(!ms.length) return 'No Metrics';
-    const left=ms.map(goalRemainingText).filter(Boolean).slice(0,2).join(' · ');
-    return left || 'Goal Matrix';
-  }
-
   function projectProgress(p){
-    if(p.kind==='goal'){
-      const ms=p.goalMetrics||[];
-      if(ms.length){
-        const avg=Math.round(ms.reduce((a,g)=>a+goalCalc(g).pct,0)/ms.length);
-        const done=ms.filter(g=>goalCalc(g).done).length;
-        return {done,total:ms.length,pct:avg};
-      }
+    if(p.kind==='metric'){
+      const ms=p.goals.filter(g=>metricNum(g.start)!==null && metricNum(g.target)!==null);
+      if(ms.length){ const avg=Math.round(ms.reduce((a,g)=>a+metricPct(g),0)/ms.length); return {done:0,total:0,pct:avg}; }
       if(p.status==='done') return {done:1,total:1,pct:100};
       return {done:0,total:0,pct:0};
     }
@@ -2218,172 +1500,9 @@ function goalNum(g,key){
   function statusLabel(s){ return s==='done'?'Done':s==='paused'?'Paused':'Active'; }
   function statusClass(s){ return s==='done'?'done':s==='paused'?'paused':'active'; }
 
-
-  /* Value Pillars drill-down */
-  function currentPillar(){
-    return ALL_PILLARS.find(p=>p.key===selectedPillarKey) || PRIMARY_PILLARS[0] || ALL_PILLARS[0];
-  }
-
-  function renderValuePillars(){
-    renderValueViewToggle();
-    renderPillarSelector();
-    renderPillarDashboard();
-    renderGroupBoard();
-    renderHabits();
-    updateValueViewPanes();
-  }
-
-  function renderValueViewToggle(){
-    const box=document.getElementById('valueViewToggle');
-    if(!box) return;
-    box.querySelectorAll('button').forEach(btn=>{
-      btn.classList.toggle('on',btn.dataset.view===valueView);
-      btn.onclick=()=>{
-        valueView=btn.dataset.view||'pillar';
-        renderValuePillars();
-      };
-    });
-  }
-
-  function updateValueViewPanes(){
-    const map={pillar:'pillarViewPane',projects:'allProjectsPane',routines:'allRoutinesPane'};
-    Object.values(map).forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) el.style.display=(id===map[valueView])?'block':'none';
-    });
-  }
-
-  function pillarMetricCount(key){
-    return projectsByPillar(key).reduce((a,p)=>a+((p.kind==='goal'&&Array.isArray(p.goalMetrics))?p.goalMetrics.length:(Array.isArray(p.goals)?p.goals.length:0)),0);
-  }
-
-  function pillarRoutineStats(key){
-    const rs=state.habits.filter(h=>h.pillar===key);
-    const done=rs.filter(h=>habitDoneOn(h)).length;
-    const target=rs.reduce((a,h)=>a+habitTargetCount(h),0);
-    const week=rs.reduce((a,h)=>a+habitWeekCount(h),0);
-    return {rs,done,target,week};
-  }
-
-  function renderPillarSelector(){
-    const box=document.getElementById('pillarSelector');
-    if(!box) return;
-    box.innerHTML='';
-    ALL_PILLARS.forEach(p=>{
-      const st=pillarStats(p.key);
-      const rt=pillarRoutineStats(p.key);
-      const card=document.createElement('button');
-      card.className='pillar-pick '+(p.key===selectedPillarKey?'on':'');
-      card.innerHTML=
-        '<div class="pp-title">'+p.emo+' '+escape(p.name)+'</div>'+
-        '<div class="pp-cap">'+escape(state.pillarMeta[p.key]?.cap||p.cap||'')+'</div>'+
-        '<div class="pp-stats"><span>Projects '+st.ps.length+'</span><span>Routines '+rt.rs.length+'</span><span>Metrics '+pillarMetricCount(p.key)+'</span></div>';
-      card.onclick=()=>{
-        selectedPillarKey=p.key;
-        valueView='pillar';
-        renderValuePillars();
-      };
-      box.appendChild(card);
-    });
-  }
-
-  function renderPillarDashboard(){
-    const box=document.getElementById('pillarDashboard');
-    if(!box) return;
-    const p=currentPillar();
-    const st=pillarStats(p.key);
-    const rt=pillarRoutineStats(p.key);
-    const cap=state.pillarMeta[p.key]?.cap||p.cap||'';
-    box.innerHTML='';
-
-    const head=document.createElement('div');
-    head.className='pillar-dash-head';
-    head.innerHTML=
-      '<div><div class="pillar-dash-title">'+p.emo+' '+escape(p.name)+'</div><div class="pillar-dash-cap">'+escape(cap)+'</div></div>'+
-      '<div class="pillar-dash-actions"><button class="btn small ghost" id="dashAddProject">+ Project</button><button class="btn small ghost" id="dashAddRoutine">+ Routine</button></div>';
-    box.appendChild(head);
-    head.querySelector('#dashAddProject').onclick=()=>createProject(p.key);
-    head.querySelector('#dashAddRoutine').onclick=()=>createRoutineForPillar(p.key);
-
-    const overview=document.createElement('div');
-    overview.className='pillar-overview';
-    overview.innerHTML=
-      '<div class="po-card"><b>'+st.active.length+'</b><span>Active Projects</span></div>'+
-      '<div class="po-card"><b>'+st.pct+'%</b><span>Project Progress</span></div>'+
-      '<div class="po-card"><b>'+rt.done+'/'+rt.rs.length+'</b><span>Today Routines</span></div>'+
-      '<div class="po-card"><b>'+rt.week+'/'+rt.target+'</b><span>Weekly Routine</span></div>';
-    box.appendChild(overview);
-
-    const grid=document.createElement('div');
-    grid.className='pillar-detail-grid';
-
-    const projects=document.createElement('div');
-    projects.className='pillar-detail-section';
-    projects.innerHTML='<div class="section-title-row"><h4>Projects</h4><button class="btn small ghost">+ Project</button></div>';
-    projects.querySelector('button').onclick=()=>createProject(p.key);
-    const plist=document.createElement('div');
-    plist.className='pillar-project-list';
-    if(!st.ps.length) plist.innerHTML='<div class="empty">No Projects</div>';
-    st.ps.forEach(pr=>plist.appendChild(makeProjectTile(pr)));
-    projects.appendChild(plist);
-
-    const routines=document.createElement('div');
-    routines.className='pillar-detail-section';
-    routines.innerHTML='<div class="section-title-row"><h4>Routines</h4><button class="btn small ghost">+ Routine</button></div>';
-    routines.querySelector('button').onclick=()=>createRoutineForPillar(p.key);
-    const rlist=document.createElement('div');
-    rlist.className='pillar-routine-list';
-    if(!rt.rs.length) rlist.innerHTML='<div class="empty">No Routines</div>';
-    rt.rs.forEach(h=>rlist.appendChild(makePillarRoutineTile(h)));
-    routines.appendChild(rlist);
-
-    const metrics=document.createElement('div');
-    metrics.className='pillar-detail-section span-full';
-    metrics.innerHTML='<div class="section-title-row"><h4>Metrics</h4><span class="hint" style="margin:0">Project의 Goal Metrics를 Pillar 단위로 모아 봅니다.</span></div>';
-    const mlist=document.createElement('div');
-    mlist.className='pillar-metric-list';
-    const goals=[];
-    st.ps.forEach(pr=>{
-      ((pr.kind==='goal'?pr.goalMetrics:pr.goals)||[]).forEach(g=>goals.push({project:pr.title||'Project',...g, remaining: pr.kind==='goal'?goalRemainingText(g):''}));
-    });
-    if(!goals.length) mlist.innerHTML='<div class="empty">No Metrics</div>';
-    goals.forEach(g=>{
-      const item=document.createElement('div');
-      item.className='pillar-metric';
-      item.innerHTML='<b>'+escape(g.label||'Metric')+'</b><span>'+escape(g.current||'—')+' → '+escape(g.target||'—')+'</span><em>'+escape((g.remaining?g.remaining+' · ':'')+(g.project||'Project'))+'</em>';
-      mlist.appendChild(item);
-    });
-    metrics.appendChild(mlist);
-
-    grid.append(projects,routines,metrics);
-    box.appendChild(grid);
-  }
-
-  function createRoutineForPillar(key){
-    const title=prompt('Routine Name');
-    if(!title) return;
-    state.habits.push(normalizeHabit({id:uid(),title,pillar:key||selectedPillarKey||'etc',freq:'daily',target:7,log:[]}));
-    save();
-    renderAllLinked();
-  }
-
-  function makePillarRoutineTile(h){
-    const el=document.createElement('div');
-    el.className='pillar-routine-tile';
-    const week=habitWeekCount(h), target=habitTargetCount(h), done=habitDoneOn(h);
-    const dates=last7Dates();
-    const dots=dates.map(d=>'<i class="'+((h.log||[]).includes(d)?'on':'')+'"></i>').join('');
-    el.innerHTML=
-      '<div><div class="prt-name">'+escape(h.title||'Routine')+'</div><div class="prt-meta">'+(h.freq==='daily'?'Daily':'Weekly '+target)+' · Week '+week+'/'+target+'</div><div class="prt-dots">'+dots+'</div></div>'+
-      '<button class="toggle '+(done?'on':'')+'">'+(done?'Done':'Check')+'</button>';
-    el.querySelector('button').onclick=()=>{ setHabitDone(h,todayStr(),!habitDoneOn(h)); save(); renderAllLinked(); };
-    return el;
-  }
-
-
   /* Category board */
   function renderCategoryBoard(){
-    const box=document.getElementById('categoryBoard'); if(!box) return; box.innerHTML='';
+    const box=document.getElementById('categoryBoard'); box.innerHTML='';
     PRIMARY_PILLARS.forEach(p=>{
       const st=pillarStats(p.key);
       const card=document.createElement('div'); card.className='cat-card'; card.onclick=()=>openCategoryModal(p.key);
@@ -2431,7 +1550,7 @@ function goalNum(g,key){
 
   /* Project board grouped */
   function renderGroupBoard(){
-    const box=document.getElementById('groupBoard'); if(!box) return; box.innerHTML='';
+    const box=document.getElementById('groupBoard'); box.innerHTML='';
     ALL_PILLARS.forEach(p=>{
       const st=pillarStats(p.key);
       const group=document.createElement('div'); group.className='group';
@@ -2450,23 +1569,17 @@ function goalNum(g,key){
   function makeProjectTile(p){
     const tile=document.createElement('div'); tile.className='project-tile '+statusClass(p.status); tile.onclick=()=>openProjectModal(p.id);
     const pg=projectProgress(p);
-    let icon='', metaText='';
-    if(p.kind==='pipeline'){
-      icon='🎼 ';
-      metaText=p.items.length? p.items.length+' items · '+p.stages.length+' stages' : 'No items';
-    } else if(p.kind==='goal'){
-      icon='🎯 ';
-      metaText=goalBadgeLabel(p);
-    } else {
-      metaText=pg.total?pg.done+'/'+pg.total+' Actions Done':'No Actions';
-    }
-    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+icon+escape(p.title||'(제목 None)')+'</div><span class="tag">'+(p.kind==='goal'?'Goal Matrix':statusLabel(p.status))+'</span></div><div class="progress"><span style="width:'+pg.pct+'%"></span></div><div class="tile-meta">'+escape(metaText)+(p.dueDate?' · 마감 '+p.dueDate:'')+'</div>';
-    if(p.kind==='goal' && p.goalMetrics.length){
-      const wrap=document.createElement('div'); wrap.className='tile-goals';
-      p.goalMetrics.slice(0,3).forEach(g=>{
-        const c=goalCalc(g);
-        const row=document.createElement('div'); row.className='tile-goal-row';
-        row.innerHTML='<span>'+escape(g.label||'Metric')+'</span><b>'+escape(goalRemainingText(g))+'</b>';
+    const metaText = p.kind==='pipeline'
+      ? (p.items.length? p.items.length+'개 항목 · '+p.stages.length+'단계' : '항목 없음')
+      : p.kind==='metric'
+      ? (p.goals.length? p.goals.length+'개 지표' : '지표 없음')
+      : (pg.total?pg.done+'/'+pg.total+' Actions 완료':'No Actions');
+    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+(p.kind==='pipeline'?'🎼 ':p.kind==='metric'?'📊 ':'')+escape(p.title||'(제목 None)')+'</div><span class="tag">'+statusLabel(p.status)+'</span></div><div class="progress"><span style="width:'+pg.pct+'%"></span></div><div class="tile-meta">'+metaText+(p.dueDate?' · 마감 '+p.dueDate:'')+'</div>';
+    if(p.kind==='metric' && p.goals.length){
+      const wrap=document.createElement('div'); wrap.className='tile-metric';
+      p.goals.slice(0,4).forEach(g=>{
+        const row=document.createElement('div'); row.className='tile-metric-row';
+        row.innerHTML='<span class="tm-name">'+escape(g.label||'지표')+'</span><span class="tm-vals">'+(g.current!==''?g.current+(g.unit||''):'—')+' → '+(g.target!==''?g.target+(g.unit||''):'—')+'</span><span class="tm-remain">'+escape(metricRemainText(g))+'</span>';
         wrap.appendChild(row);
       });
       tile.appendChild(wrap);
@@ -2483,7 +1596,7 @@ function goalNum(g,key){
       if(p.items.length>6){ const more=document.createElement('div'); more.className='hint'; more.style.margin='4px 0 0'; more.textContent='+'+(p.items.length-6)+'개 더'; wrap.appendChild(more); }
       tile.appendChild(wrap);
     }
-    if(p.kind!=='goal' && p.goals.length){
+    if(p.goals.length){
       const goals=document.createElement('div'); goals.className='goal-pills';
       p.goals.slice(0,4).forEach(g=>{ const sp=document.createElement('span'); sp.className='goal-pill'; sp.textContent=(g.label||'목표')+(g.target?' '+g.target:''); goals.appendChild(sp); });
       tile.appendChild(goals);
@@ -2491,7 +1604,7 @@ function goalNum(g,key){
     return tile;
   }
 
-    /* Modal */
+  /* Modal */
   const modal=document.getElementById('modalBackdrop');
   document.getElementById('modalClose').onclick=closeModal;
   modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
@@ -2591,125 +1704,6 @@ function goalNum(g,key){
     itSec.appendChild(addItem); c.appendChild(itSec);
   }
 
-  
-function renderGoalMatrixSection(c,p,pid){
-    const sec=document.createElement('div');
-    sec.className='modal-section goal-matrix-section';
-    sec.innerHTML='<h4>Goal Matrix</h4><div class="hint">최초값 → 현재값 → 목표값을 관리합니다. 현재값을 업데이트하면 날짜별 히스토리가 남습니다.</div>';
-
-    const list=document.createElement('div');
-    list.className='goal-matrix-list';
-
-    if(!p.goalMetrics.length){
-      list.innerHTML='<div class="empty">No Goal Metrics</div>';
-    }
-
-    p.goalMetrics.forEach(g=>{
-      const card=document.createElement('div');
-      card.className='goal-matrix-card';
-      const calc=goalCalc(g);
-      card.innerHTML=
-        '<div class="gmc-head"><input class="gmc-label" placeholder="Metric" value="'+escape(g.label||'')+'"><button class="btn small ghost">삭제</button></div>'+
-        '<div class="goal-grid4">'+
-          '<div class="field"><label>Start</label><input class="gmc-start" placeholder="63cm" value="'+escape(g.start||'')+'"></div>'+
-          '<div class="field"><label>Current</label><input class="gmc-current" placeholder="58cm" value="'+escape(g.current||'')+'"></div>'+
-          '<div class="field"><label>Target</label><input class="gmc-target" placeholder="53cm" value="'+escape(g.target||'')+'"></div>'+
-          '<div class="field"><label>Unit</label><input class="gmc-unit" placeholder="cm" value="'+escape(g.unit||'')+'"></div>'+
-        '</div>'+
-        '<div class="goal-journey">'+
-          '<div class="gj-row"><span>Start</span><b>'+escape(fmtGoalNum(calc.start,calc.unit))+'</b><i></i><span>Now</span><b>'+escape(fmtGoalNum(calc.current,calc.unit))+'</b><i></i><span>Target</span><b>'+escape(fmtGoalNum(calc.target,calc.unit))+'</b></div>'+
-          '<div class="progress"><span style="width:'+calc.pct+'%"></span></div>'+
-          '<div class="goal-left">'+escape(goalMovedText(g))+' · '+escape(goalRemainingText(g))+' · '+calc.pct+'%</div>'+
-        '</div>'+
-        '<div class="goal-update-row"><input type="date" class="gmc-date" value="'+todayStr()+'"><input class="gmc-new" placeholder="오늘 값 입력"><button class="btn small today">Update</button></div>'+
-        '<div class="goal-history"></div>';
-
-      card.querySelector('.gmc-label').oninput=e=>{ g.label=e.target.value; save(); renderAllLinkedNoModal(); };
-      card.querySelector('.gmc-start').oninput=e=>{ g.start=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      card.querySelector('.gmc-current').oninput=e=>{ g.current=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      card.querySelector('.gmc-target').oninput=e=>{ g.target=e.target.value; if(!g.unit)g.unit=parseGoalValue(e.target.value).unit; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      card.querySelector('.gmc-unit').oninput=e=>{ g.unit=e.target.value; save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      card.querySelector('.gmc-head button').onclick=()=>{ p.goalMetrics=p.goalMetrics.filter(x=>String(x.id)!==String(g.id)); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      card.querySelector('.goal-update-row button').onclick=()=>{
-        const val=card.querySelector('.gmc-new').value.trim();
-        const date=card.querySelector('.gmc-date').value||todayStr();
-        if(!val) return;
-        if(!g.unit) g.unit=parseGoalValue(val).unit;
-        updateGoalMetric(g,val,date,'Update');
-        card.querySelector('.gmc-new').value='';
-        save(); renderProjectModal(pid); renderAllLinkedNoModal();
-      };
-
-      const hist=card.querySelector('.goal-history');
-      const h=(g.history||[]).slice(0,6);
-      if(!h.length){ hist.innerHTML='<div class="hint" style="margin:8px 0 0">No history yet</div>'; }
-      else {
-        hist.innerHTML='<div class="goal-history-title">History</div>'+h.map(x=>'<div class="goal-history-row"><span>'+escape(x.date||'')+'</span><b>'+escape(String(x.value||''))+'</b></div>').join('');
-      }
-
-      list.appendChild(card);
-    });
-
-    sec.appendChild(list);
-    const add=document.createElement('button');
-    add.className='btn small ghost';
-    add.textContent='+ Goal Metric';
-    add.onclick=()=>{ p.goalMetrics.push(normalizeGoalMetric({label:'',start:'',current:'',target:'',unit:'',history:[]})); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-    sec.appendChild(add);
-    c.appendChild(sec);
-  }
-
-  function makeGoalTodayMetricCard(p,g){
-    const card=document.createElement('div');
-    card.className='today-goal-card';
-    const calc=goalCalc(g);
-    card.innerHTML=
-      '<div class="tgc-head"><div><b>'+escape(g.label||'Metric')+'</b><span>'+escape(goalRemainingText(g))+'</span></div><em>'+calc.pct+'%</em></div>'+
-      '<div class="goal-journey compact">'+
-        '<div class="gj-row"><span>Start</span><b>'+escape(fmtGoalNum(calc.start,calc.unit))+'</b><i></i><span>Now</span><b>'+escape(fmtGoalNum(calc.current,calc.unit))+'</b><i></i><span>Target</span><b>'+escape(fmtGoalNum(calc.target,calc.unit))+'</b></div>'+
-        '<div class="progress"><span style="width:'+calc.pct+'%"></span></div>'+
-        '<div class="goal-left">'+escape(goalMovedText(g))+' · '+escape(goalRemainingText(g))+'</div>'+
-      '</div>'+
-      '<div class="goal-update-row today"><input type="date" value="'+todayStr()+'"><input placeholder="오늘 값"><button class="btn small today">Update</button></div>';
-    card.querySelector('button').onclick=()=>{
-      const inputs=card.querySelectorAll('input');
-      const date=inputs[0].value||todayStr();
-      const val=inputs[1].value.trim();
-      if(!val) return;
-      if(!g.unit) g.unit=parseGoalValue(val).unit;
-      updateGoalMetric(g,val,date,'Today update');
-      save();
-      renderAllLinked();
-    };
-    return card;
-  }
-
-  function renderGoalTodayProject(el,p){
-    const wrap=document.createElement('div');
-    wrap.className='today-goal-wrap';
-    const ms=p.goalMetrics||[];
-    if(!ms.length){
-      wrap.innerHTML='<div class="hint" style="margin:0">Goal Metric이 없습니다. 상세에서 Start / Current / Target을 설정하세요.</div>';
-    } else {
-      const copy=document.createElement('div');
-      copy.className='motivation-copy';
-      const avg=projectProgress(p).pct;
-      const remain=ms.map(goalRemainingText).filter(Boolean).slice(0,2).join(' · ');
-      copy.innerHTML='<b>오늘은 숫자를 하나라도 전진시키는 날.</b><span>'+escape(remain || ('Progress '+avg+'%'))+'</span>';
-      wrap.appendChild(copy);
-      ms.slice(0,4).forEach(g=>wrap.appendChild(makeGoalTodayMetricCard(p,g)));
-      if(ms.length>4){
-        const more=document.createElement('div');
-        more.className='hint';
-        more.style.margin='8px 0 0';
-        more.textContent='+'+(ms.length-4)+' metrics more';
-        wrap.appendChild(more);
-      }
-    }
-    el.appendChild(wrap);
-  }
-
-  
   function renderProjectModal(pid){
     const p=state.projects.find(x=>String(x.id)===String(pid));
     if(!p) return;
@@ -2737,19 +1731,15 @@ function renderGoalMatrixSection(c,p,pid){
 
     /* Project kind toggle */
     const kindSec=document.createElement('div'); kindSec.className='modal-section';
-    kindSec.innerHTML='<h4>Project Type · 유형</h4><div class="hint">Freeform은 할 일형, Pipeline은 단계 통과형, Goal Matrix는 수치 목표형입니다.</div>';
+    kindSec.innerHTML='<h4>Project Type · 유형</h4><div class="hint">자유형: 액션을 자유롭게. 단계형: 항목(곡 등)마다 공통 단계를 점선 지표로 진행.</div>';
     const kindRow=document.createElement('div'); kindRow.className='kind-toggle';
-    kindRow.innerHTML='<button class="kind-btn'+(p.kind==='free'?' on':'')+'" data-kind="free">자유형 (Freeform)</button><button class="kind-btn'+(p.kind==='pipeline'?' on':'')+'" data-kind="pipeline">단계형 (Pipeline)</button><button class="kind-btn'+(p.kind==='goal'?' on':'')+'" data-kind="goal">Goal Matrix</button>';
+    kindRow.innerHTML='<button class="kind-btn'+(p.kind==='free'?' on':'')+'" data-kind="free">자유형</button><button class="kind-btn'+(p.kind==='pipeline'?' on':'')+'" data-kind="pipeline">단계형</button><button class="kind-btn'+(p.kind==='metric'?' on':'')+'" data-kind="metric">골 매트릭스</button>';
     kindRow.querySelectorAll('.kind-btn').forEach(b=>b.onclick=()=>{
       const nk=b.dataset.kind;
       if(nk===p.kind) return;
       if(nk==='pipeline' && !p.stages.length){
         // seed default stages for first-time pipeline
         p.stages=['악보 스터디','초견','구간 연습','템포 맞추기','암보'].map(n=>({id:uid(),name:n}));
-      }
-      if(nk==='goal' && !p.goalMetrics.length){
-        p.goalMetrics=(p.goals&&p.goals.length?p.goals.map(g=>normalizeGoalMetric({label:g.label,current:g.current,start:g.current,target:g.target})):[]);
-        if(!p.goalMetrics.length) p.goalMetrics.push(normalizeGoalMetric({label:'',start:'',current:'',target:'',unit:''}));
       }
       p.kind=nk; save(); renderProjectModal(pid); renderAllLinkedNoModal();
     });
@@ -2758,13 +1748,52 @@ function renderGoalMatrixSection(c,p,pid){
     base.querySelector('#pmDue').oninput=e=>{ p.dueDate=e.target.value; save(); renderAllLinkedNoModal(); };
     base.querySelector('#pmMemo').oninput=e=>{ p.memo=e.target.value; save(); };
 
-    if(p.kind==='goal'){
-      renderGoalMatrixSection(c,p,pid);
-    } else {
-      const goals=document.createElement('div'); goals.className='modal-section';
-      goals.innerHTML='<h4>Goal Metrics</h4><div class="hint">보조 목표값이나 완료 기준을 관리합니다.</div>';
-      const glist=document.createElement('div');
-      p.goals.forEach(g=>{
+    const goals=document.createElement('div'); goals.className='modal-section';
+    const isMetric = p.kind==='metric';
+    goals.innerHTML='<h4>Goal Metrics'+(isMetric?' · 목표 지표':'')+'</h4><div class="hint">'+(isMetric?'최초값 → 현재값 → 목표값. 현재값을 갱신하면 날짜별 기록이 남고 "얼마 남았는지" 보여줍니다.':'허리 53cm, 체중 52kg처럼 같은 실행을 공유하는 목표값.')+'</div>';
+    const glist=document.createElement('div');
+    if(isMetric && !p.goals.length) glist.innerHTML='<div class="empty">지표 없음. 아래에서 추가하세요.</div>';
+    p.goals.forEach(g=>{
+      if(isMetric){
+        const card=document.createElement('div'); card.className='metric-card';
+        const dir=metricDirection(g);
+        const head=document.createElement('div'); head.className='metric-head';
+        head.innerHTML='<input class="m-label" placeholder="지표명 (예: 허리)" value="'+escape(g.label)+'"><input class="m-unit" placeholder="단위" value="'+escape(g.unit||'')+'"><button class="btn small ghost m-del">✕</button>';
+        head.querySelector('.m-label').oninput=e=>{g.label=e.target.value;save();renderAllLinkedNoModal();};
+        head.querySelector('.m-unit').oninput=e=>{g.unit=e.target.value;save();renderAllLinkedNoModal();};
+        head.querySelector('.m-del').onclick=()=>{p.goals=p.goals.filter(x=>x.id!==g.id);save();renderProjectModal(pid);renderAllLinkedNoModal();};
+        card.appendChild(head);
+
+        const vals=document.createElement('div'); vals.className='metric-vals';
+        vals.innerHTML='<label>최초<input type="number" class="m-start" value="'+escape(g.start)+'"></label>'
+          +'<label>현재<input type="number" class="m-cur" value="'+escape(g.current)+'"></label>'
+          +'<label>목표<input type="number" class="m-tgt" value="'+escape(g.target)+'"></label>';
+        vals.querySelector('.m-start').oninput=e=>{g.start=e.target.value;save();renderProjectModal(pid);renderAllLinkedNoModal();};
+        vals.querySelector('.m-cur').onchange=e=>{ g.current=e.target.value; if(e.target.value!=='') pushMetricHistory(g, metricNum(e.target.value)); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+        vals.querySelector('.m-tgt').oninput=e=>{g.target=e.target.value;save();renderProjectModal(pid);renderAllLinkedNoModal();};
+        card.appendChild(vals);
+
+        // remaining + progress bar
+        const pct=metricPct(g);
+        const prog=document.createElement('div'); prog.className='metric-prog';
+        prog.innerHTML='<div class="metric-bar"><span style="width:'+pct+'%"></span></div><div class="metric-remain">'+(metricRemainText(g)||'값을 입력하세요')+'</div>';
+        card.appendChild(prog);
+
+        // history (sparkline + dated rows)
+        if(g.history && g.history.length){
+          const hist=document.createElement('div'); hist.className='metric-hist';
+          hist.appendChild(makeSparkline(g));
+          const rows=document.createElement('div'); rows.className='metric-hist-rows';
+          [...g.history].slice(-6).reverse().forEach(h=>{
+            const r=document.createElement('div'); r.className='metric-hist-row';
+            r.innerHTML='<span>'+h.date.slice(5).replace('-','.')+'</span><span>'+h.value+(g.unit||'')+'</span>';
+            rows.appendChild(r);
+          });
+          hist.appendChild(rows);
+          card.appendChild(hist);
+        }
+        glist.appendChild(card);
+      } else {
         const row=document.createElement('div'); row.className='goal-row';
         row.innerHTML='<input placeholder="지표명" value="'+escape(g.label)+'"><input placeholder="현재" value="'+escape(g.current)+'"><input placeholder="목표" value="'+escape(g.target)+'"><button class="btn small ghost">삭제</button>';
         const ins=row.querySelectorAll('input');
@@ -2773,12 +1802,12 @@ function renderGoalMatrixSection(c,p,pid){
         ins[2].oninput=e=>{g.target=e.target.value;save();renderAllLinkedNoModal();};
         row.querySelector('button').onclick=()=>{p.goals=p.goals.filter(x=>x.id!==g.id);save();renderProjectModal(pid);renderAllLinkedNoModal();};
         glist.appendChild(row);
-      });
-      goals.appendChild(glist);
-      const addGoal=document.createElement('button'); addGoal.className='btn small ghost'; addGoal.textContent='+ Metric';
-      addGoal.onclick=()=>{ p.goals.push({id:uid(),label:'',current:'',target:''}); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      goals.appendChild(addGoal); c.appendChild(goals);
-    }
+      }
+    });
+    goals.appendChild(glist);
+    const addGoal=document.createElement('button'); addGoal.className='btn small ghost'; addGoal.textContent='+ Metric';
+    addGoal.onclick=()=>{ p.goals.push({id:uid(),label:'',unit:'',start:'',current:'',target:'',history:[]}); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+    goals.appendChild(addGoal); c.appendChild(goals);
 
     /* Linked Routines — feature 1 */
     const linkSec=document.createElement('div'); linkSec.className='modal-section';
@@ -2815,7 +1844,7 @@ function renderGoalMatrixSection(c,p,pid){
     }
     c.appendChild(linkSec);
 
-    if(p.kind==='free'){
+    if(p.kind!=='pipeline'){
       const subs=document.createElement('div'); subs.className='modal-section';
       subs.innerHTML='<h4>Actions</h4>';
       const slist=document.createElement('div');
@@ -2861,7 +1890,7 @@ function renderGoalMatrixSection(c,p,pid){
       addLine.innerHTML='<input id="newSubText" placeholder="Add Action"><button class="btn small ghost">추가</button>';
       addLine.querySelector('button').onclick=()=>{ const text=addLine.querySelector('input').value.trim(); if(!text)return; addProjectSub(p,text,'project_modal'); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
       subs.appendChild(addLine); c.appendChild(subs);
-    } else if(p.kind==='pipeline'){
+    } else {
       renderPipelineSection(c,p,pid);
     }
 
@@ -2893,7 +1922,7 @@ function renderGoalMatrixSection(c,p,pid){
     actions.querySelector('#projectDelete').onclick=()=>{ if(confirm('Delete this Project?')){ clearSlotsReferencingProject(p.id); state.projects=state.projects.filter(x=>x.id!==p.id); save(); closeModal(); renderAllLinked(); } };
   }
 
-  function renderAllLinkedNoModal(){ renderValuePillars(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
+  function renderAllLinkedNoModal(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
 
   /* Shared operations */
   function habitDoneOn(h,date=todayStr()){ return h.log.includes(date); }
@@ -3132,7 +2161,7 @@ function renderGoalMatrixSection(c,p,pid){
         empty:false, actionable:true, done:!!sub.done,
         badge:sub.done?'✓ Project Done':'Project',
         title:sub.title||'Actions',
-        detail:pillarOf(p.pillar).emo+' '+(p.title||'Project')+' · '+(p.kind==='goal'?'Goal Matrix':p.kind==='pipeline'?'Pipeline':'Project')+' 데이터와 연결'
+        detail:pillarOf(p.pillar).emo+' '+(p.title||'Project')+' · Project 데이터와 연결'
       };
     }
 
@@ -3444,7 +2473,7 @@ function renderGoalMatrixSection(c,p,pid){
       const meta=document.createElement('div');
       meta.className='hint';
       meta.style.margin='0 0 8px';
-      meta.textContent=p.kind==='goal' ? goalBadgeLabel(p) : ((pg.total?pg.done+'/'+pg.total+' 완료':'No Actions')+(p.goals.length?' · Goal Metrics '+p.goals.length+'개':''));
+      meta.textContent=(pg.total?pg.done+'/'+pg.total+' 완료':'No Actions')+(p.goals.length?' · Goal Metrics '+p.goals.length+'개':'');
       el.appendChild(meta);
 
       /* linked routine mini-display */
@@ -3455,17 +2484,25 @@ function renderGoalMatrixSection(c,p,pid){
         if(lr.children.length) el.appendChild(lr);
       }
 
-      if(p.kind==='goal'){
-        renderGoalTodayProject(el,p);
+      if(p.kind==='metric'){
+        const list=document.createElement('div'); list.className='today-metric-list';
+        if(!p.goals.length) list.innerHTML='<div class="hint" style="margin:0">지표 없음. 상세에서 추가하세요.</div>';
+        p.goals.forEach(g=>{
+          const pct=metricPct(g);
+          const mc=document.createElement('div'); mc.className='today-metric-card';
+          mc.innerHTML='<div class="tmc-head"><span class="tmc-name">'+escape(g.label||'지표')+'</span><span class="tmc-remain">'+escape(metricRemainText(g)||'값 입력')+'</span></div>'
+            +'<div class="metric-bar"><span style="width:'+pct+'%"></span></div>'
+            +'<div class="tmc-update">현재값 <input type="number" class="tmc-input" value="'+escape(g.current)+'"> '+(g.unit||'')+' <button class="btn small today tmc-save">기록</button></div>';
+          const inp=mc.querySelector('.tmc-input');
+          mc.querySelector('.tmc-save').onclick=()=>{ if(inp.value==='')return; g.current=inp.value; pushMetricHistory(g, metricNum(inp.value)); save(); renderAllLinked(); };
+          list.appendChild(mc);
+        });
+        el.appendChild(list);
         box.appendChild(el);
         return;
       }
 
       if(p.kind==='pipeline'){
-        const list=document.createElement('div'); list.className='today-pipe-list';
-        const focusItems=p.items.filter(it=>it.todayFocus || it.date===todayStr());
-        const showItems=focusItems.length?focusItems:p.items.filter(it=>itemDoneCount(p,it)<p.stages.length).slice(0,3);
-        if(!showItems.length){ list.innerHTML='<div class="hint" style="margin:0">오늘 표시할 항목 없음. 상세에서 곡 옆 “Add Today”를 누르세요.</div>'; }
         showItems.forEach(it=>{
           const ni=itemStageIndex(p,it);
           const curStage = it.todayStageId ? (p.stages.find(s=>String(s.id)===String(it.todayStageId))||p.stages[ni]) : p.stages[ni];
@@ -3742,7 +2779,7 @@ function renderGoalMatrixSection(c,p,pid){
     return String(label||'').replace(/\s*\(.+?\)\s*/g,'');
   }
 
-  function makeMultiMetricChart(existing,canvasId,group,metrics){
+  function makeMultiMetricChart(existing,canvasId,group,metrics){ if(!hasChart())return existing;
     const ctx=document.getElementById(canvasId);
     if(!ctx) return existing;
     if(existing) existing.destroy();
@@ -3780,8 +2817,8 @@ function renderGoalMatrixSection(c,p,pid){
     });
   }
 
-  function renderCheckinChart(){ checkinChart=makeMultiMetricChart(checkinChart,'checkinChart','checkin',checkinMetrics()); }
-  function renderCheckoutChart(){ checkoutChart=makeMultiMetricChart(checkoutChart,'checkoutChart','checkout',checkoutMetrics()); }
+  function renderCheckinChart(){ if(!hasChart())return; checkinChart=makeMultiMetricChart(checkinChart,'checkinChart','checkin',checkinMetrics()); }
+  function renderCheckoutChart(){ if(!hasChart())return; checkoutChart=makeMultiMetricChart(checkoutChart,'checkoutChart','checkout',checkoutMetrics()); }
 
   document.getElementById('saveToday').onclick=()=>{
     syncAllSlotMemos();
@@ -3825,7 +2862,7 @@ function renderWeekMetrics(){
 
   /* Habits */
   function renderHabits(){
-    const box=document.getElementById('habitList'); if(!box) return; box.innerHTML='';
+    const box=document.getElementById('habitList'); box.innerHTML='';
     if(!state.habits.length){ box.innerHTML='<div class="empty">No Routines</div>'; return; }
     const monday=mondayOf(new Date()), dates=weekDates(monday), t=todayStr();
     state.habits.forEach(h=>{
@@ -3844,7 +2881,7 @@ function renderWeekMetrics(){
       el.appendChild(week); box.appendChild(el);
     });
   }
-  if(document.getElementById('addHabit')) document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
+  document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
 
   /* Money */
   function latestRecord(){ if(!state.records.length)return null; return [...state.records].sort((a,b)=>new Date(b.date)-new Date(a.date))[0]; }
@@ -3864,11 +2901,11 @@ function renderWeekMetrics(){
   document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:+document.getElementById('cHyundai').value||0,woori:+document.getElementById('cWoori').value||0,samsung:+document.getElementById('cSamsung').value||0,etc:+document.getElementById('cEtc').value||0,memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); };
   function renderAssetTable(){ const box=document.getElementById('assetTable'); if(!state.records.length){box.innerHTML='<div class="empty">자산 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>기준일</th><th>주식</th><th>연금</th><th>청약</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.records.map((r,i)=>'<tr><td>'+r.date+'</td><td>'+fmt(r.stock)+'</td><td>'+fmt(r.pension)+'</td><td>'+fmt(r.housing)+'</td><td><b>'+fmt(recordTotal(r))+'</b></td><td><span class="x" data-del-a="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-a]').forEach(x=>x.onclick=()=>{state.records.splice(+x.dataset.delA,1);save();refreshMoney();}); }
   function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+fmt(r.hyundai)+'</td><td>'+fmt(r.woori)+'</td><td>'+fmt(r.samsung)+'</td><td>'+fmt(r.etc)+'</td><td><b>'+fmt(r.total||0)+'</b></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
-  function renderAssetChart(){ const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
-  function renderCardChart(){ const rows=[...state.cardExpenses].sort((a,b)=>a.month.localeCompare(b.month)); const ctx=document.getElementById('cardChart'); if(cardChart)cardChart.destroy(); cardChart=new Chart(ctx,{type:'bar',data:{labels:rows.map(r=>r.month),datasets:[{label:'월 카드값',data:rows.map(r=>r.total||0)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  function renderAssetChart(){ if(!hasChart())return; const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  function renderCardChart(){ if(!hasChart())return; const rows=[...state.cardExpenses].sort((a,b)=>a.month.localeCompare(b.month)); const ctx=document.getElementById('cardChart'); if(cardChart)cardChart.destroy(); cardChart=new Chart(ctx,{type:'bar',data:{labels:rows.map(r=>r.month),datasets:[{label:'월 카드값',data:rows.map(r=>r.total||0)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   ['sRate','sMonthly','sHousingM','sLump'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; renderFinanceStats(); renderSim(); }));
   function simulate(){ const base=latestRecord(); if(!base)return null; const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const d=new Date(base.date+'T00:00:00'); d.setDate(1); const rows=[{label:base.date.slice(0,7),stock,pension,housing,total:stock+pension+housing}]; let reach=null; while(d<goalDate){ d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach}; }
-  function renderSim(){ const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.';return;} document.getElementById('simBasis').textContent='계산 기준: 주식 수익률은 유동원랩/주식에만 적용 · 목돈은 매년 1월 초 선입금 · 연금 고정 · 청약 월 불입'; const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  function renderSim(){ if(!hasChart())return; const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.';return;} document.getElementById('simBasis').textContent='계산 기준: 주식 수익률은 유동원랩/주식에만 적용 · 목돈은 매년 1월 초 선입금 · 연금 고정 · 청약 월 불입'; const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   function refreshMoney(){ renderFinanceStats(); renderAssetTable(); renderCardTable(); renderAssetChart(); renderCardChart(); renderSim(); }
 
   /* Records and backup */
@@ -3889,7 +2926,7 @@ function renderWeekMetrics(){
   document.getElementById('exportBtn').onclick=exportBackup; document.getElementById('exportBtnTop').onclick=exportBackup; document.getElementById('importBtn').onclick=importBackup; document.getElementById('importBtnTop').onclick=importBackup; document.getElementById('resetBtn').onclick=resetAll; document.getElementById('resetBtnTop').onclick=resetAll;
 
   /* Render orchestration */
-  function renderAllLinked(){ renderValuePillars(); renderToday(); renderTodayLogs(); renderWeekMetrics(); }
+  function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
   function rerenderAll(){ document.getElementById('v-identity').value=state.identity||''; document.getElementById('v-daily').value=state.daily||''; autoSize(document.getElementById('v-identity')); autoSize(document.getElementById('v-daily')); renderGrat(); renderQuotes(); renderAllLinked(); refreshMoney(); renderBackupStatus(); }
   function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; }
 
@@ -3906,15 +2943,5 @@ function renderWeekMetrics(){
   })();
 })();
 </script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var key=(location.hash||'#tab-today').replace('#tab-','');
-  if(['today','life','money','records'].indexOf(key)>=0 && window.switchMainTab){
-    window.switchMainTab(key);
-  }
-});
-</script>
-
 </body>
 </html>
