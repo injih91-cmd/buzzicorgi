@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>나의 인생 Project 2026 — 디디 Life OS v16.3</title>
+<title>나의 인생 Project 2026 — 디디 Life OS v16.4</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -13,36 +13,24 @@
 (function(){
   window.switchMainTab=function(tabKey){
     var target=document.getElementById('tab-'+tabKey);
-    if(!target) return false;
-    var tabs=document.querySelectorAll('.tab[data-tab]');
-    for(var i=0;i<tabs.length;i++){
-      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab')===tabKey);
-    }
-    var panels=document.querySelectorAll('.panel');
-    for(var j=0;j<panels.length;j++){
-      panels[j].classList.remove('active');
-      panels[j].style.display='none';
-    }
-    target.classList.add('active');
-    target.style.display='block';
-    if(location.hash !== '#tab-'+tabKey){
-      history.replaceState(null,'','#tab-'+tabKey);
-    }
+    if(!target) return true;
+    document.querySelectorAll('.tab[data-tab]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-tab')===tabKey);
+    });
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.classList.toggle('active', p.id==='tab-'+tabKey);
+    });
     if(tabKey==='money' && typeof window.refreshMoney==='function'){
       setTimeout(window.refreshMoney,40);
     }
-    return false;
+    return true;
   };
-  window.addEventListener('hashchange', function(){
+  function syncFromHash(){
     var key=(location.hash||'#tab-today').replace('#tab-','');
     if(['today','life','money','records'].indexOf(key)>=0) window.switchMainTab(key);
-  });
-  document.addEventListener('DOMContentLoaded',function(){
-    var active=document.querySelector('.panel.active');
-    document.querySelectorAll('.panel').forEach(function(p){
-      p.style.display=p.classList.contains('active')?'block':'none';
-    });
-  });
+  }
+  window.addEventListener('hashchange', syncFromHash);
+  document.addEventListener('DOMContentLoaded', syncFromHash);
 })();
 </script>
 
@@ -1446,60 +1434,51 @@ textarea{min-height:88px}
 }
 
 
-/* v16.1 main-tab hard fix */
-.panel{display:none}
-.panel.active{display:block}
-.tabs,.tabrow,.tab{
+
+
+
+
+/* v16.4 stable anchor tabs: no JS required */
+.tab{
+  text-decoration:none !important;
+  text-align:center;
   pointer-events:auto !important;
   touch-action:manipulation;
-}
-.tab{
   -webkit-tap-highlight-color:rgba(31,56,100,.12);
   user-select:none;
 }
 
+/* default: Today */
+.panel{display:none}
+#tab-today{display:block}
+#tab-today:target,
+#tab-life:target,
+#tab-money:target,
+#tab-records:target{display:block}
 
-/* v16.3 pure CSS hash tab fallback: anchors + :has() */
-.tab{
-  text-decoration:none !important;
-  text-align:center;
+/* hide Today when any other tab is targeted */
+body:has(#tab-life:target) #tab-today,
+body:has(#tab-money:target) #tab-today,
+body:has(#tab-records:target) #tab-today{display:none}
+
+/* tab active visual fallback */
+body:has(#tab-life:target) .tab,
+body:has(#tab-money:target) .tab,
+body:has(#tab-records:target) .tab{
+  background:#fff !important;
+  color:var(--muted) !important;
+  border-color:var(--line) !important;
+  box-shadow:none !important;
 }
-@supports selector(body:has(#tab-life:target)){
-  .panel{
-    display:none !important;
-  }
-  #tab-today{
-    display:block !important;
-  }
-  body:has(#tab-life:target) #tab-today,
-  body:has(#tab-money:target) #tab-today,
-  body:has(#tab-records:target) #tab-today{
-    display:none !important;
-  }
-  body:has(#tab-today:target) #tab-today,
-  body:has(#tab-life:target) #tab-life,
-  body:has(#tab-money:target) #tab-money,
-  body:has(#tab-records:target) #tab-records{
-    display:block !important;
-  }
-
-  body:has(#tab-life:target) .tab,
-  body:has(#tab-money:target) .tab,
-  body:has(#tab-records:target) .tab{
-    background:#fff !important;
-    color:var(--muted) !important;
-    border-color:var(--line) !important;
-    box-shadow:none !important;
-  }
-  body:has(#tab-today:target) .tab[data-tab="today"],
-  body:has(#tab-life:target) .tab[data-tab="life"],
-  body:has(#tab-money:target) .tab[data-tab="money"],
-  body:has(#tab-records:target) .tab[data-tab="records"]{
-    background:var(--navy) !important;
-    color:#fff !important;
-    border-color:var(--navy) !important;
-    box-shadow:0 8px 22px rgba(31,56,100,.18) !important;
-  }
+body:not(:has(#tab-life:target)):not(:has(#tab-money:target)):not(:has(#tab-records:target)) .tab[data-tab="today"],
+body:has(#tab-today:target) .tab[data-tab="today"],
+body:has(#tab-life:target) .tab[data-tab="life"],
+body:has(#tab-money:target) .tab[data-tab="money"],
+body:has(#tab-records:target) .tab[data-tab="records"]{
+  background:var(--navy) !important;
+  color:#fff !important;
+  border-color:var(--navy) !important;
+  box-shadow:0 8px 22px rgba(31,56,100,.18) !important;
 }
 
 </style>
@@ -1542,10 +1521,10 @@ textarea{min-height:88px}
 
   <nav class="tabs">
     <div class="tabrow">
-      <a class="tab active" data-tab="today" href="#tab-today" onclick="return switchMainTab('today')">Today<small>오늘</small></a>
-      <a class="tab" data-tab="life" href="#tab-life" onclick="return switchMainTab('life')">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></a>
-      <a class="tab" data-tab="money" href="#tab-money" onclick="return switchMainTab('money')">Money<small>자산</small></a>
-      <a class="tab" data-tab="records" href="#tab-records" onclick="return switchMainTab('records')">Logs<small>하루 기록</small></a>
+      <a class="tab active" data-tab="today" href="#tab-today">Today<small>오늘</small></a>
+      <a class="tab" data-tab="life" href="#tab-life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></a>
+      <a class="tab" data-tab="money" href="#tab-money">Money<small>자산</small></a>
+      <a class="tab" data-tab="records" href="#tab-records">Logs<small>하루 기록</small></a>
     </div>
   </nav>
 
@@ -2068,14 +2047,7 @@ textarea{min-height:88px}
   document.getElementById('quoteAdd').onclick=()=>{ state.quotes.push({text:'',src:''}); save(); renderQuotes(); };
 
   /* Tabs */
-  function renderTabs(){
-    document.querySelectorAll('.tab[data-tab]').forEach(btn=>{
-      btn.onclick=(e)=>{
-        e.preventDefault();
-        activateLifeTab(btn.dataset.tab);
-      };
-    });
-  }
+  function renderTabs(){ /* v16.4: main tabs are pure anchors; no JS interception */ }
 
   function activateLifeTab(tabKey){
     const target=document.getElementById('tab-'+tabKey);
@@ -3934,54 +3906,6 @@ function renderWeekMetrics(){
   })();
 })();
 </script>
-
-<script>
-(function(){
-  function findTabNode(node){
-    while(node && node!==document){
-      if(node.nodeType===1 && node.matches && node.matches('.tab[data-tab]')) return node;
-      node=node.parentNode;
-    }
-    return null;
-  }
-  function activateLifeTabSafe(tabKey){
-    if(window.switchMainTab) return window.switchMainTab(tabKey);
-    var target=document.getElementById('tab-'+tabKey);
-    if(!target) return false;
-    document.querySelectorAll('.tab[data-tab]').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-tab')===tabKey);
-    });
-    document.querySelectorAll('.panel').forEach(function(p){
-      p.classList.remove('active');
-      p.style.display='none';
-    });
-    target.classList.add('active');
-    target.style.display='block';
-    return false;
-  }
-  window.activateLifeTabSafe=activateLifeTabSafe;
-  document.addEventListener('click', function(e){
-    var btn=findTabNode(e.target);
-    if(!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    activateLifeTabSafe(btn.getAttribute('data-tab'));
-  }, true);
-})();
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.tab[data-tab]').forEach(function(btn){
-    btn.onclick = function(e){
-      if(e){ e.preventDefault(); e.stopPropagation(); }
-      return window.switchMainTab(btn.getAttribute('data-tab'));
-    };
-  });
-});
-</script>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
