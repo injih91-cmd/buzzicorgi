@@ -6654,10 +6654,12 @@ function renderWeekMetrics(){
       return col;
     };
 
-    // Today Focus always shows all three columns; zone filter only affects routine board.
+    // Zone filter only hides columns from view — focus data (f.zone) is never changed,
+    // so nothing is lost when the time-based filter flips or the user toggles.
+    const zf=(typeof getZoneFilter==='function')?getZoneFilter():'all';
     const cols=[];
-    cols.push(makeCol('work','Work Flow','업무중',workItems));
-    cols.push(makeCol('after','After Work','퇴근후',afterItems));
+    if(zf==='all' || zf==='work') cols.push(makeCol('work','Work Flow','업무중',workItems));
+    if(zf==='all' || zf==='after') cols.push(makeCol('after','After Work','퇴근후',afterItems));
     cols.push(makeCol('done','Done','',doneItems));
     kanban.classList.add('cols-'+cols.length);
     kanban.append(...cols);
@@ -6914,7 +6916,7 @@ function renderWeekMetrics(){
 
     const visibleIdeas = ui.filterTag ? state.ideas.filter(idea => (idea.tags||[]).includes(ui.filterTag)) : state.ideas.slice();
     const makeChip=(idea)=>{
-      const chip=document.createElement('div'); chip.className='idea-chip';
+      const chip=document.createElement('div'); chip.className='idea-chip'; chip.setAttribute('data-dragid',String(idea.id));
       const tags=(idea.tags||[]).slice(0,2);
       chip.innerHTML='<span class="idea-chip-main">'+escape(idea.title||'Untitled')+'</span>'+
         tags.map(t=>'<span class="idea-chip-tag">'+escape(t)+'</span>').join('')+
@@ -6944,6 +6946,14 @@ function renderWeekMetrics(){
       const chips=document.createElement('div'); chips.className='idea-chipwrap';
       visibleIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
       board.appendChild(chips);
+      if(!ui.filterTag){
+        bindPlainDragSort(chips, '.idea-chip', (ids)=>{
+          const byId=new Map(state.ideas.map(x=>[String(x.id),x]));
+          const next=ids.map(id=>byId.get(String(id))).filter(Boolean);
+          state.ideas.forEach(x=>{ if(!ids.includes(String(x.id))) next.push(x); });
+          state.ideas=next; save(); renderTodayFlow();
+        });
+      }
     }
     box.appendChild(board);
 
