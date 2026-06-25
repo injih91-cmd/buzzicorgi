@@ -2092,6 +2092,46 @@ input:focus,textarea:focus,select:focus{
   .quick-habits.routine-board{grid-template-columns:1fr !important;}
 }
 
+/* v20 routine principles */
+.quick-habit.routine-line{position:relative;}
+.routine-name{position:relative;}
+.routine-prin-btn{
+  border:none;background:none;cursor:pointer;
+  font-size:11px;color:var(--muted,#9a93a3);
+  padding:0 2px;margin-left:3px;line-height:1;vertical-align:baseline;
+}
+.routine-prin-btn:hover{color:var(--ok,#1d7a5a);}
+.routine-prin-pop{
+  display:none;position:fixed;z-index:9999;
+  min-width:180px;max-width:280px;
+  background:#fff;border:1px solid var(--line,#e3dfd4);
+  border-radius:10px;padding:9px 11px;
+  box-shadow:0 8px 26px rgba(0,0,0,.18);
+  white-space:normal;text-align:left;cursor:default;
+}
+.routine-prin-pop.show{display:block;}
+.routine-prin-pop .rpp-head{
+  font-size:10px;font-weight:700;letter-spacing:.04em;
+  color:var(--muted,#9a93a3);text-transform:uppercase;margin-bottom:5px;
+}
+.routine-prin-pop .rpp-body{
+  font-size:12.5px;line-height:1.55;color:var(--ink,#2c2632);font-weight:400;
+}
+.habit-wrap{margin-bottom:8px;}
+.habit-wrap .habit.compact-habit{margin-bottom:0;}
+.habit-principles{
+  display:block;width:100%;box-sizing:border-box;
+  margin-top:5px;padding:7px 10px;resize:none;overflow:hidden;
+  border:1px dashed var(--line,#e3dfd4);border-radius:8px;
+  background:var(--soft,#faf8f3);
+  font:inherit;font-size:12px;line-height:1.5;color:var(--ink,#2c2632);
+}
+.habit-principles:focus{
+  outline:none;border-style:solid;border-color:var(--ok,#1d7a5a);
+  background:#fff;
+}
+.habit-principles::placeholder{color:var(--muted,#b3aebb);}
+
 </style>
 
 <style id="routineBoardV19WidthFix">
@@ -2717,6 +2757,7 @@ input:focus,textarea:focus,select:focus{
     h.freq=h.freq==='weekly'?'weekly':'daily';
     h.target=typeof h.target==='number'?h.target:(h.freq==='daily'?7:3);
     h.log=Array.isArray(h.log)?[...new Set(h.log.filter(Boolean))]:[];
+    h.principles=typeof h.principles==='string'?h.principles:'';
     if(typeof h.pillarOrder!=='number') h.pillarOrder=9999;
     if(typeof h.todayOrder!=='number') h.todayOrder=9999;
     return h;
@@ -6274,6 +6315,11 @@ function renderWeekMetrics(){
   }
 
   function renderQuickHabits(){
+    if(!window.__prinOutsideBound){
+      window.__prinOutsideBound=true;
+      document.addEventListener('click',()=>document.querySelectorAll('.routine-prin-pop.show').forEach(p=>p.classList.remove('show')));
+    }
+    document.querySelectorAll('body > .routine-prin-pop').forEach(p=>p.remove());
     const box=document.getElementById('quickHabits');
     if(!box) return;
     box.innerHTML='';
@@ -6305,12 +6351,32 @@ function renderWeekMetrics(){
       b.title=done?'완료됨':'체크';
       b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
       div.appendChild(b);
+      const hasPrin=!!(h.principles&&h.principles.trim());
       div.insertAdjacentHTML('beforeend',
         '<span class="routine-pillar">'+escape((pi.emo||'')+' '+(pi.name||''))+'</span>'+ 
-        '<span class="routine-name">'+escape(h.title||'Routine')+'</span>'+ 
+        '<span class="routine-name">'+escape(h.title||'Routine')+(hasPrin?'<button class="routine-prin-btn" type="button" aria-label="원칙 보기">ⓘ</button>':'')+'</span>'+ 
         '<span class="routine-freq">'+freqStr+'</span>'+ 
         '<span class="habit-spark">'+habitSparkline(h)+'</span>'
       );
+      if(hasPrin){
+        const nameSpan=div.querySelector('.routine-name');
+        const btn=div.querySelector('.routine-prin-btn');
+        const pop=document.createElement('div');
+        pop.className='routine-prin-pop';
+        pop.innerHTML='<div class="rpp-head">원칙</div><div class="rpp-body">'+escape(h.principles.trim()).replace(/\n/g,'<br>')+'</div>';
+        document.body.appendChild(pop);
+        const place=()=>{
+          const r=(btn||nameSpan).getBoundingClientRect();
+          pop.style.left=Math.max(8,Math.min(r.left, window.innerWidth-288))+'px';
+          pop.style.top=(r.bottom+6)+'px';
+        };
+        const show=()=>{ document.querySelectorAll('.routine-prin-pop.show').forEach(p=>{if(p!==pop)p.classList.remove('show');}); place(); pop.classList.add('show'); };
+        const hide=()=>pop.classList.remove('show');
+        nameSpan.addEventListener('mouseenter',show);
+        div.addEventListener('mouseleave',hide);
+        btn.addEventListener('click',e=>{ e.stopPropagation(); if(pop.classList.contains('show'))hide(); else show(); });
+        pop.addEventListener('click',e=>e.stopPropagation());
+      }
       div.addEventListener('dragstart',e=>{
         if(e.target.closest('button,input,select,textarea,a,label')){ e.preventDefault(); return; }
         e.dataTransfer.setData('text/plain',String(h.id));
@@ -6351,6 +6417,8 @@ function renderWeekMetrics(){
     if(!state.habits.length){ box.innerHTML='<div class="empty">No Routines</div>'; return; }
     const monday=mondayOf(new Date()), dates=weekDates(monday), t=todayStr();
     state.habits.forEach(h=>{
+      const wrap=document.createElement('div');
+      wrap.className='habit-wrap';
       const el=document.createElement('div');
       el.className='habit compact-habit';
       const nameInput=document.createElement('input');
@@ -6384,7 +6452,18 @@ function renderWeekMetrics(){
       del.title='삭제';
       del.onclick=()=>{ if(confirm('삭제할까요?')){ clearSlotsReferencingHabit(h.id); state.habits=state.habits.filter(x=>x.id!==h.id); save(); renderAllLinked(); } };
       el.append(nameInput,pillarSel,freqSel,week,del);
-      box.appendChild(el);
+
+      const prin=document.createElement('textarea');
+      prin.className='habit-principles';
+      prin.value=h.principles||'';
+      prin.placeholder='이 루틴의 원칙 (예: 이틀 연속 음주 금지 / 소주 1병 컷 …) — 줄바꿈으로 구분';
+      prin.rows=1;
+      const autosize=()=>{ prin.style.height='auto'; prin.style.height=Math.min(prin.scrollHeight,160)+'px'; };
+      prin.oninput=()=>{ h.principles=prin.value; autosize(); save(); renderQuickHabits(); };
+      setTimeout(autosize,0);
+
+      wrap.append(el,prin);
+      box.appendChild(wrap);
     });
   }
 
