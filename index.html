@@ -258,6 +258,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--navy);box-shadow:0 0 
 .fin-stat{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px}
 .fin-stat .label{font-size:12px;color:var(--muted);font-weight:700}
 .fin-stat .val{font-size:22px;color:var(--navy);font-weight:900;letter-spacing:-.05em}
+.unit-hint{font-size:10px;color:var(--muted);font-weight:500;margin-left:3px}
 .bar{height:12px;background:var(--soft);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
 .bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:999px}
 .formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -420,6 +421,18 @@ td.memo{text-align:left;color:var(--muted)}
 .date-current .dn-rel{font-size:11px;color:var(--muted,#6b7280)}
 .date-today-btn{border:1px solid var(--gold,#b8924a);background:#fff;color:var(--gold,#b8924a);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .date-today-btn:hover{background:var(--gold,#b8924a);color:#fff}
+
+/* Yesterday's note shown atop Today's 3 */
+.yesterday-note{display:flex;flex-direction:column;gap:3px;background:linear-gradient(135deg,#fbf6ea,#f7f5ef);border:1px solid var(--gold-soft,#e9cfa0);border-radius:12px;padding:11px 14px;margin:4px 0 14px}
+.yesterday-note .yn-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold,#b8924a);font-weight:700}
+.yesterday-note .yn-text{font-size:14px;color:var(--navy,#1f3864);font-weight:600;font-family:Georgia,serif;font-style:italic}
+
+/* Drag & drop */
+.project-tile,.today-project{cursor:grab}
+.project-tile:active,.today-project:active{cursor:grabbing}
+.dragging{opacity:.5}
+.drag-placeholder{border:2px dashed var(--gold,#b8924a);border-radius:12px;background:rgba(184,146,74,.06);margin:0 0 2px}
+.tile-top{display:flex;align-items:center;gap:6px}
 .sub-row{display:grid;grid-template-columns:auto 1fr 120px auto auto;gap:7px;align-items:center;margin-bottom:7px}
 .sub-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
 .sub-row .focus-on{background:var(--today);color:#fff;border-color:var(--today)}
@@ -700,20 +713,39 @@ textarea{min-height:88px}
   font-weight:800;
 }
 .quick-habit{
-  align-items:flex-start !important;
+  align-items:center !important;
+  padding:9px 12px !important;
 }
 .quick-habit.pinned{
   border-color:rgba(216,90,48,.35);
   box-shadow:0 0 0 2px rgba(216,90,48,.05) inset;
 }
-.habit-info{
+.habit-main{
   flex:1;
   min-width:0;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+}
+.habit-name{
+  font-size:14px;
+  font-weight:700;
+  color:var(--navy,#1f3864);
+}
+.habit-freq{
+  font-size:11px;
+  color:var(--muted,#6b7280);
+  background:var(--soft,#f7f5ef);
+  border-radius:999px;
+  padding:1px 8px;
+  flex:0 0 auto;
 }
 .habit-spark{
   display:flex;
-  gap:4px;
-  margin:7px 0 9px;
+  gap:3px;
+  margin:0;
+  flex:0 0 auto;
 }
 .habit-dot{
   width:13px;
@@ -941,6 +973,7 @@ textarea{min-height:88px}
       <div class="card span-6">
         <h3>Today’s 3 <span class="ko-gloss">오늘의 3가지</span></h3>
         <div class="hint">오늘 가장 의식할 3가지를 고릅니다. Project를 선택하면 실행 Description가 해당 Project에 누적됩니다.</div>
+        <div id="yesterdayNote"></div>
         <div id="todaySlots"></div>
       </div>
 
@@ -958,7 +991,6 @@ textarea{min-height:88px}
         <div class="today-source-note">
           Routine 설정은 <b>Value Pillars</b>에서 관리하고, Today에서는 오늘 실행만 체크합니다.
         </div>
-        <div class="routine-history" id="routineHistory"></div>
       </div>
 
       <div class="card span-6">
@@ -987,7 +1019,7 @@ textarea{min-height:88px}
           <textarea id="checkoutHard" placeholder="예: 중요한 건 오전에 해야 한다."></textarea>
         </div>
         <div class="field">
-          <label>Tomorrow Helper</label>
+          <label>내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today’s 3 맨 위에 떠요</span></label>
           <textarea id="checkoutTomorrow" placeholder="예: 오전에 제일 중요한 것 하나만 먼저."></textarea>
         </div>
         <button class="btn today" id="saveToday">Save Daily Log</button>
@@ -1055,9 +1087,9 @@ textarea{min-height:88px}
         <div class="hint">만원 단위. 총자산 = 주식 + 연금 + 청약.</div>
         <div class="formgrid two">
           <div class="field"><label>기준일</label><input type="date" id="aDate"></div>
-          <div class="field"><label>유동원랩/주식</label><input type="number" id="aStock" placeholder="25000"></div>
-          <div class="field"><label>연금</label><input type="number" id="aPension" placeholder="5500"></div>
-          <div class="field"><label>청약</label><input type="number" id="aHousing" placeholder="700"></div>
+          <div class="field"><label>유동원랩/주식 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="aStock" placeholder="25,000"></div>
+          <div class="field"><label>연금 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="aPension" placeholder="5,500"></div>
+          <div class="field"><label>청약 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="aHousing" placeholder="700"></div>
         </div>
         <div class="field"><label>Description</label><input id="aMemo" placeholder="예: 월급 입금 후 업데이트"></div>
         <button class="btn" id="saveAsset">자산 기록 저장</button>
@@ -1069,10 +1101,10 @@ textarea{min-height:88px}
         <div class="hint">월별 카드사 청구액 기록.</div>
         <div class="formgrid two">
           <div class="field"><label>해당 월</label><input type="month" id="cMonth"></div>
-          <div class="field"><label>현대</label><input type="number" id="cHyundai" placeholder="0"></div>
-          <div class="field"><label>우리</label><input type="number" id="cWoori" placeholder="0"></div>
-          <div class="field"><label>삼성</label><input type="number" id="cSamsung" placeholder="0"></div>
-          <div class="field"><label>기타</label><input type="number" id="cEtc" placeholder="0"></div>
+          <div class="field"><label>현대 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="cHyundai" placeholder="0"></div>
+          <div class="field"><label>우리 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="cWoori" placeholder="0"></div>
+          <div class="field"><label>삼성 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="cSamsung" placeholder="0"></div>
+          <div class="field"><label>기타 <span class="unit-hint">만원</span></label><input type="text" inputmode="numeric" class="num-comma" id="cEtc" placeholder="0"></div>
         </div>
         <div class="field"><label>Description</label><input id="cMemo" placeholder="예: 할부/여행/악기 관련"></div>
         <button class="btn" id="saveCard">카드값 저장</button>
@@ -1220,6 +1252,46 @@ textarea{min-height:88px}
   function localYmd(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
   function todayStr(){ return localYmd(new Date()); }
   function viewDateStr(){ return state.viewDate||todayStr(); }
+
+  // --- Ordering + drag-and-drop helpers ---
+  function sortByField(list, field){ return [...list].sort((a,b)=>(typeof a[field]==='number'?a[field]:9999)-(typeof b[field]==='number'?b[field]:9999)); }
+  function enableDragSort(container, itemSelector, handleSelector, onReorder){
+    if(!container || container._dragBound) return;
+    container._dragBound=true;
+    let dragEl=null, placeholder=null, armed=null, startY=0, dragging=false;
+    const THRESH=6;
+    function rowsArr(){ return Array.from(container.querySelectorAll(itemSelector)); }
+    function makePlaceholder(h){ const p=document.createElement('div'); p.className='drag-placeholder'; p.style.height=h+'px'; return p; }
+    function afterElement(y){
+      const els=rowsArr().filter(e=>e!==dragEl);
+      let closest=null, closestOff=-Infinity;
+      els.forEach(e=>{ const box=e.getBoundingClientRect(); const off=y-box.top-box.height/2; if(off<0 && off>closestOff){ closestOff=off; closest=e; } });
+      return closest;
+    }
+    function beginDrag(){ dragging=true; dragEl=armed; dragEl.classList.add('dragging'); placeholder=makePlaceholder(dragEl.getBoundingClientRect().height); dragEl.parentNode.insertBefore(placeholder, dragEl.nextSibling); }
+    function move(clientY){ if(!dragging) return; const after=afterElement(clientY); if(after==null) container.appendChild(placeholder); else container.insertBefore(placeholder, after); }
+    function end(){
+      if(dragging && dragEl){ placeholder.parentNode.insertBefore(dragEl, placeholder); placeholder.remove(); dragEl.classList.remove('dragging'); const ids=rowsArr().map(e=>e.getAttribute('data-dragid')); dragEl=null; placeholder=null; dragging=false; armed=null; window._justDragged=Date.now(); onReorder(ids); return true; }
+      dragEl=null; placeholder=null; dragging=false; armed=null; return false;
+    }
+    container.addEventListener('mousedown', e=>{
+      if(e.target.closest('button,input,textarea,select,a')) return;
+      const el=e.target.closest(itemSelector); if(!el||!container.contains(el)) return;
+      armed=el; startY=e.clientY; let moved=false;
+      const mm=ev=>{ if(!dragging && Math.abs(ev.clientY-startY)>THRESH){ beginDrag(); moved=true; } if(dragging){ move(ev.clientY); ev.preventDefault(); } };
+      const mu=ev=>{ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu,true); const wasDrag=end(); if(wasDrag){ ev.stopPropagation(); ev.preventDefault(); } };
+      document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu,true);
+    });
+    container.addEventListener('touchstart', e=>{
+      if(e.target.closest('button,input,textarea,select,a')) return;
+      const el=e.target.closest(itemSelector); if(!el||!container.contains(el)) return;
+      armed=el; startY=e.touches[0].clientY;
+      const tm=ev=>{ const y=ev.touches[0].clientY; if(!dragging && Math.abs(y-startY)>THRESH) beginDrag(); if(dragging){ move(y); ev.preventDefault(); } };
+      const te=()=>{ document.removeEventListener('touchmove',tm); document.removeEventListener('touchend',te); end(); };
+      document.addEventListener('touchmove',tm,{passive:false}); document.addEventListener('touchend',te);
+    }, {passive:true});
+  }
+
   function ymd(d){ return localYmd(new Date(d)); }
   function mondayOf(date){ const d=new Date(date); d.setHours(0,0,0,0); const wd=(d.getDay()+6)%7; d.setDate(d.getDate()-wd); return d; }
   function weekDates(monday){ return Array.from({length:7},(_,i)=>{const d=new Date(monday); d.setDate(d.getDate()+i); return d;}); }
@@ -1238,6 +1310,8 @@ textarea{min-height:88px}
     p.dueDate=p.dueDate||p.due||'';
     p.memo=p.memo||'';
     p.todayFocus=!!p.todayFocus;
+    if(typeof p.pillarOrder!=='number') p.pillarOrder=9999;
+    if(typeof p.todayOrder!=='number') p.todayOrder=9999;
     if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
     p.linkedHabits=p.linkedHabits.map(String);
     // project kind: 'free' (default), 'pipeline', or 'metric'
@@ -1295,6 +1369,8 @@ textarea{min-height:88px}
     h.freq=h.freq==='weekly'?'weekly':'daily';
     h.target=typeof h.target==='number'?h.target:(h.freq==='daily'?7:3);
     h.log=Array.isArray(h.log)?[...new Set(h.log.filter(Boolean))]:[];
+    if(typeof h.pillarOrder!=='number') h.pillarOrder=9999;
+    if(typeof h.todayOrder!=='number') h.todayOrder=9999;
     return h;
   }
 
@@ -1465,7 +1541,7 @@ textarea{min-height:88px}
   }
 
   /* Project stats */
-  function projectsByPillar(key){ return state.projects.filter(p=>p.pillar===key); }
+  function projectsByPillar(key){ return sortByField(state.projects.filter(p=>p.pillar===key),'pillarOrder'); }
   function activeProjectsByPillar(key){ return projectsByPillar(key).filter(p=>p.status!=='done'); }
   function makeSparkline(g){
     const wrap=document.createElement('div'); wrap.className='spark';
@@ -1629,11 +1705,17 @@ textarea{min-height:88px}
       if(!st.ps.length) body.innerHTML='<div class="empty">Project None</div>';
       st.ps.forEach(pr=>body.appendChild(makeProjectTile(pr)));
       group.appendChild(body); box.appendChild(group);
+      // drag to reorder within this pillar
+      enableDragSort(body, '.project-tile', null, (ids)=>{
+        ids.forEach((id,i)=>{ const pr=state.projects.find(x=>String(x.id)===String(id)); if(pr) pr.pillarOrder=i; });
+        save(); renderCategoryBoard(); renderGroupBoard();
+      });
     });
   }
 
   function makeProjectTile(p){
-    const tile=document.createElement('div'); tile.className='project-tile '+statusClass(p.status); tile.onclick=()=>openProjectModal(p.id);
+    const tile=document.createElement('div'); tile.className='project-tile '+statusClass(p.status); tile.setAttribute('data-dragid',String(p.id));
+    tile.onclick=(e)=>{ if(window._justDragged && Date.now()-window._justDragged<300)return; openProjectModal(p.id); };
     const pg=projectProgress(p);
     const metaText = p.kind==='pipeline'
       ? (p.items.length? p.items.length+'개 항목 · '+p.stages.length+'단계' : '항목 없음')
@@ -1814,9 +1896,10 @@ textarea{min-height:88px}
     base.querySelector('#pmDue').oninput=e=>{ p.dueDate=e.target.value; save(); renderAllLinkedNoModal(); };
     base.querySelector('#pmMemo').oninput=e=>{ p.memo=e.target.value; save(); };
 
+    if(p.kind==='metric'){
     const goals=document.createElement('div'); goals.className='modal-section';
-    const isMetric = p.kind==='metric';
-    goals.innerHTML='<h4>Goal Metrics'+(isMetric?' · 목표 지표':'')+'</h4><div class="hint">'+(isMetric?'최초값 → 현재값 → 목표값. 현재값을 갱신하면 날짜별 기록이 남고 "얼마 남았는지" 보여줍니다.':'허리 53cm, 체중 52kg처럼 같은 실행을 공유하는 목표값.')+'</div>';
+    const isMetric = true;
+    goals.innerHTML='<h4>Goal Metrics · 목표 지표</h4><div class="hint">최초값 → 현재값 → 목표값. 현재값을 갱신하면 날짜별 기록이 남고 "얼마 남았는지" 보여줍니다.</div>';
     const glist=document.createElement('div');
     if(isMetric && !p.goals.length) glist.innerHTML='<div class="empty">지표 없음. 아래에서 추가하세요.</div>';
     p.goals.forEach(g=>{
@@ -1875,6 +1958,7 @@ textarea{min-height:88px}
     const addGoal=document.createElement('button'); addGoal.className='btn small ghost'; addGoal.textContent='+ Metric';
     addGoal.onclick=()=>{ p.goals.push({id:uid(),label:'',unit:'',start:'',current:'',target:'',history:[]}); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
     goals.appendChild(addGoal); c.appendChild(goals);
+    } /* end metric-only Goal Metrics */
 
     /* Linked Routines — feature 1 */
     const linkSec=document.createElement('div'); linkSec.className='modal-section';
@@ -2108,9 +2192,22 @@ textarea{min-height:88px}
     if(todayBtn&&!todayBtn._bound){ todayBtn._bound=true; todayBtn.onclick=()=>goToday(); }
   }
 
+  function renderYesterdayNote(){
+    const box=document.getElementById('yesterdayNote'); if(!box) return;
+    // find the previous day that has a checkout.tomorrow note, relative to viewed date
+    const vd=state.viewDate||todayStr();
+    const d=new Date(vd+'T00:00:00'); d.setDate(d.getDate()-1);
+    const prev=ymd(d);
+    const prevDraft=state.dayLogs && state.dayLogs[prev];
+    const msg=prevDraft && prevDraft.checkout && prevDraft.checkout.tomorrow ? prevDraft.checkout.tomorrow.trim() : '';
+    if(!msg){ box.innerHTML=''; return; }
+    box.innerHTML='<div class="yesterday-note"><span class="yn-label">어제 나에게서 온 한 줄</span><span class="yn-text">'+escape(msg)+'</span></div>';
+  }
+
   /* Today */
   function renderToday(){
     renderDateNav();
+    renderYesterdayNote();
     const viewed=new Date((state.viewDate||todayStr())+'T00:00:00');
     document.getElementById('todayDate').textContent=viewed.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
@@ -2440,7 +2537,7 @@ textarea{min-height:88px}
 
   function renderQuickHabits(){
     const box=document.getElementById('quickHabits'); box.innerHTML='';
-    if(!state.habits.length){ box.innerHTML='<div class="empty">아직 Routine이 없습니다. Value Pillars 탭에서 Routine을 먼저 만들어주세요.</div>'; renderRoutineHistory(); return; }
+    if(!state.habits.length){ box.innerHTML='<div class="empty">아직 Routine이 없습니다. Value Pillars 탭에서 Routine을 먼저 만들어주세요.</div>'; return; }
 
     const pinned=todaySlotHabitIds();
 
@@ -2463,11 +2560,12 @@ textarea{min-height:88px}
         const div=document.createElement('div'); 
         div.className='quick-habit '+(pinned.has(String(h.id))?'pinned':'');
         const pinnedTag=pinned.has(String(h.id)) ? '<span class="tag">Today’s 3</span>' : '';
+        const freqStr=(h.freq==='daily'?'매일':'주 '+h.target+'회');
         div.innerHTML=
-          '<div class="habit-info">'+
-            '<div class="name">'+escape(h.title||'Routine')+' '+pinnedTag+'</div>'+
-            '<div class="hint" style="margin:0">'+(h.freq==='daily'?'매일':'주 '+h.target+'회')+'</div>'+
-            '<div class="habit-spark">'+habitSparkline(h)+'</div>'+
+          '<div class="habit-main">'+
+            '<span class="habit-name">'+escape(h.title||'Routine')+'</span>'+
+            '<span class="habit-freq">'+freqStr+'</span>'+pinnedTag+
+            '<span class="habit-spark">'+habitSparkline(h)+'</span>'+
           '</div>';
         const b=document.createElement('button'); 
         b.className='toggle '+(habitDoneOn(h,viewDateStr())?'on':''); 
@@ -2479,19 +2577,6 @@ textarea{min-height:88px}
 
       box.appendChild(group);
     });
-
-    renderRoutineHistory();
-  }
-
-  function renderRoutineHistory(){
-    const box=document.getElementById('routineHistory');
-    if(!box) return;
-    if(!state.habits.length){ box.innerHTML=''; return; }
-    const dates=last7Dates();
-    const rows=state.habits.map(h=>{
-      return '<div class="routine-history-row"><span>'+escape(h.title||'Routine')+'</span><div>'+dates.map(d=>'<i class="'+((h.log||[]).includes(d)?'on':'')+'"></i>').join('')+'</div></div>';
-    }).join('');
-    box.innerHTML='<div class="routine-history-title">7-day Routine Tracker</div>'+rows;
   }
 
   function getMiscProject(){
@@ -2555,8 +2640,8 @@ textarea{min-height:88px}
       if(p.source==='today_misc' || p.title==='Misc / Quick Capture') return; // already shown above
       const pi=pillarOf(p.pillar);
       const reason=getFocusReason(p);
-      const el=document.createElement('div'); el.className='today-project';
-      el.innerHTML='<div class="today-project-head"><div><div class="today-project-title">'+pi.emo+' '+escape(p.title||'(제목 None)')+'</div><div class="focus-reason">'+reason+'</div></div><button class="btn small ghost">상세</button></div>';
+      const el=document.createElement('div'); el.className='today-project'; el.setAttribute('data-dragid',String(p.id));
+      el.innerHTML='<div class="today-project-head"><div style="flex:1"><div class="today-project-title">'+pi.emo+' '+escape(p.title||'(제목 None)')+'</div><div class="focus-reason">'+reason+'</div></div><button class="btn small ghost">상세</button></div>';
       el.querySelector('button').onclick=()=>openProjectModal(p.id);
 
       const pg=projectProgress(p);
@@ -2637,6 +2722,12 @@ textarea{min-height:88px}
       add.querySelector('button').onclick=()=>{ const text=add.querySelector('input').value.trim(); if(!text)return; addProjectSub(p,text,'today_project_focus'); save(); renderAllLinked(); };
       el.appendChild(add); box.appendChild(el);
     });
+
+    // drag to reorder today's projects (Today-specific order)
+    enableDragSort(box, '.today-project', null, (ids)=>{
+      ids.forEach((id,i)=>{ const pr=state.projects.find(x=>String(x.id)===String(id)); if(pr) pr.todayOrder=i; });
+      save(); renderTodayProjects();
+    });
   }
 
   function suggestForToday(){
@@ -2660,7 +2751,7 @@ textarea{min-height:88px}
       if(ds.kind==='tomorrow' && state.showTomorrow) return true;
       return false;
     };
-    return state.projects.filter(p=>{
+    const matched=state.projects.filter(p=>{
       if(p.status==='done') return false;
       const isMiscToday=p.source==='today_misc' || p.title==='Misc / Quick Capture';
       if(linkedProjectIds.has(String(p.id))) return true;
@@ -2668,7 +2759,8 @@ textarea{min-height:88px}
       if(isMiscToday) return false;
       if(p.kind==='pipeline') return p.items.some(it=>it.todayFocus || dueQualifies(it.date));
       return p.subs.some(s=>s.todayFocus || s.createdDate===todayStr() || dueQualifies(s.dueDate) || (s.children||[]).some(ch=>dueQualifies(ch.dueDate)));
-    }).slice(0,12);
+    });
+    return sortByField(matched,'todayOrder').slice(0,12);
   }
 
   function getTodayFocusSubs(p){
@@ -2831,7 +2923,6 @@ textarea{min-height:88px}
   }
   function renderBiorhythmCharts(){
     renderCheckinChart();
-    renderRoutineHistory();
     renderCheckoutChart();
   }
   function last7Dates(){
@@ -2841,8 +2932,10 @@ textarea{min-height:88px}
   }
   function logByDate(date){ return state.todayLogs.find(l=>l.date===date); }
   function draftForDate(date){
-    if(date!==todayStr()) return null;
-    return state.todayDraft;
+    // every day's check-in/out now lives in state.dayLogs keyed by date
+    if(state.dayLogs && state.dayLogs[date]) return state.dayLogs[date];
+    if(date===viewDateStr()) return state.todayDraft;
+    return null;
   }
   function checkinScoreForDate(date){
     const draft=draftForDate(date);
@@ -2991,8 +3084,36 @@ function renderWeekMetrics(){
     document.getElementById('proj2031').textContent=sim?fmt(sim.last.total):'—';
     document.getElementById('reach').textContent=sim&&sim.reach?sim.reach.label:'미도달';
   }
-  document.getElementById('saveAsset').onclick=()=>{ const r={date:document.getElementById('aDate').value||todayStr(),stock:+document.getElementById('aStock').value||0,pension:+document.getElementById('aPension').value||0,housing:+document.getElementById('aHousing').value||0,memo:document.getElementById('aMemo').value||''}; const idx=state.records.findIndex(x=>x.date===r.date); if(idx>=0)state.records[idx]=r; else state.records.push(r); state.records.sort((a,b)=>new Date(b.date)-new Date(a.date)); save(); refreshMoney(); };
-  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:+document.getElementById('cHyundai').value||0,woori:+document.getElementById('cWoori').value||0,samsung:+document.getElementById('cSamsung').value||0,etc:+document.getElementById('cEtc').value||0,memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); };
+  function numFromInput(id){ const el=document.getElementById(id); return el ? (+String(el.value).replace(/[^0-9.-]/g,'')||0) : 0; }
+  function bindCommaInputs(){
+    document.querySelectorAll('.num-comma').forEach(el=>{
+      if(el._commaBound) return; el._commaBound=true;
+      el.addEventListener('input',()=>{ const raw=String(el.value).replace(/[^0-9]/g,''); el.value = raw ? Number(raw).toLocaleString() : ''; });
+    });
+  }
+  bindCommaInputs();
+  document.getElementById('saveAsset').onclick=()=>{ const r={date:document.getElementById('aDate').value||todayStr(),stock:numFromInput('aStock'),pension:numFromInput('aPension'),housing:numFromInput('aHousing'),memo:document.getElementById('aMemo').value||''}; const idx=state.records.findIndex(x=>x.date===r.date); if(idx>=0)state.records[idx]=r; else state.records.push(r); state.records.sort((a,b)=>new Date(b.date)-new Date(a.date)); save(); refreshMoney(); loadAssetDate(); };
+  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
+
+  function loadCardMonth(){
+    const m=document.getElementById('cMonth').value;
+    const rec=state.cardExpenses.find(x=>x.month===m);
+    const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
+    set('cHyundai', rec&&rec.hyundai); set('cWoori', rec&&rec.woori); set('cSamsung', rec&&rec.samsung); set('cEtc', rec&&rec.etc);
+    document.getElementById('cMemo').value = rec ? (rec.memo||'') : '';
+    const btn=document.getElementById('saveCard'); if(btn) btn.textContent = rec ? '이 달 값 수정' : '카드값 저장';
+  }
+  document.getElementById('cMonth').addEventListener('change', loadCardMonth);
+
+  function loadAssetDate(){
+    const d=document.getElementById('aDate').value;
+    const rec=state.records.find(x=>x.date===d);
+    const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
+    set('aStock', rec&&rec.stock); set('aPension', rec&&rec.pension); set('aHousing', rec&&rec.housing);
+    document.getElementById('aMemo').value = rec ? (rec.memo||'') : '';
+    const btn=document.getElementById('saveAsset'); if(btn) btn.textContent = rec ? '이 날짜 값 수정' : '자산 기록 저장';
+  }
+  document.getElementById('aDate').addEventListener('change', loadAssetDate);
   function renderAssetTable(){ const box=document.getElementById('assetTable'); if(!state.records.length){box.innerHTML='<div class="empty">자산 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>기준일</th><th>주식</th><th>연금</th><th>청약</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.records.map((r,i)=>'<tr><td>'+r.date+'</td><td>'+fmt(r.stock)+'</td><td>'+fmt(r.pension)+'</td><td>'+fmt(r.housing)+'</td><td><b>'+fmt(recordTotal(r))+'</b></td><td><span class="x" data-del-a="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-a]').forEach(x=>x.onclick=()=>{state.records.splice(+x.dataset.delA,1);save();refreshMoney();}); }
   function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+fmt(r.hyundai)+'</td><td>'+fmt(r.woori)+'</td><td>'+fmt(r.samsung)+'</td><td>'+fmt(r.etc)+'</td><td><b>'+fmt(r.total||0)+'</b></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
   function renderAssetChart(){ if(!hasChart())return; const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
@@ -3022,7 +3143,7 @@ function renderWeekMetrics(){
   /* Render orchestration */
   function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
   function rerenderAll(){ document.getElementById('v-identity').value=state.identity||''; document.getElementById('v-daily').value=state.daily||''; autoSize(document.getElementById('v-identity')); autoSize(document.getElementById('v-daily')); renderGrat(); renderQuotes(); renderAllLinked(); refreshMoney(); renderBackupStatus(); }
-  function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; }
+  function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; loadAssetDate(); loadCardMonth(); }
 
   load(); initDates(); bindArea('v-identity','identity'); bindArea('v-daily','daily'); renderTabs(); rerenderAll();
 
