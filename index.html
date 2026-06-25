@@ -1407,16 +1407,35 @@ input:focus,textarea:focus,select:focus{
 }
 
 
-/* FINAL PATCH: thin sticky rolling quote header */
+/* v18 card history + simulator */
+.sim-headline{border:1px solid rgba(58,174,122,.35);background:linear-gradient(135deg,rgba(58,174,122,.12),rgba(255,255,255,.86));border-radius:16px;padding:14px 16px;margin:8px 0 10px;color:var(--navy);font-weight:950;font-size:18px;line-height:1.35;letter-spacing:-.03em}
+.sim-headline .sim-big{font-size:24px;font-weight:1000;color:#128458;margin-right:6px}
+.sim-headline .sim-sub{display:block;margin-top:4px;font-size:12px;font-weight:750;color:#667066;letter-spacing:-.01em}
+.sim-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 10px}
+.sim-plan-row{display:grid;grid-template-columns:1fr 86px 42px;gap:6px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:13px;padding:8px 9px}
+.sim-plan-row label{font-size:11px;font-weight:900;color:var(--muted);line-height:1.25}
+.sim-plan-row input{height:34px !important;text-align:right;font-weight:900;color:var(--navy);padding:6px 8px !important;border-radius:9px !important}
+.sim-plan-row input:disabled{background:var(--soft);color:var(--navy);opacity:1}
+.sim-plan-row.muted{opacity:.72}
+.sim-lock{height:34px;border:1px solid var(--line);border-radius:9px;background:var(--soft);font-size:14px;cursor:pointer}
+.sim-lock.unlocked{background:#fff;border-color:#3AAE7A;box-shadow:0 0 0 2px rgba(58,174,122,.12)}
+.sim-rate-row{border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px 12px;margin:8px 0 12px}
+.card-table-memo{max-width:280px;white-space:normal;color:#4f5a52;line-height:1.45;text-align:left!important}
+.card-table-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-start}
+.card-table-tag{font-size:10px;font-weight:900;color:var(--navy);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:2px 7px}
+@media(max-width:930px){.sim-controls{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.sim-controls{grid-template-columns:1fr}.sim-plan-row{grid-template-columns:1fr 90px 42px}.sim-headline{font-size:15px}.sim-headline .sim-big{font-size:20px}}
+
+
+/* FINAL QA: sticky thin quote header */
 .toolbar{
   position:sticky !important;
   top:0 !important;
   z-index:60 !important;
   background:rgba(244,242,236,.90) !important;
   backdrop-filter:blur(10px) !important;
-  padding:8px 0 6px !important;
-  margin-bottom:10px !important;
-  border-bottom:1px solid rgba(221,218,210,.85) !important;
+  padding:9px 0 7px !important;
+  border-bottom:1px solid rgba(221,218,210,.88) !important;
   transition:padding .18s ease, box-shadow .18s ease, background .18s ease !important;
 }
 .toolbar.shrink{
@@ -1427,30 +1446,28 @@ input:focus,textarea:focus,select:focus{
   flex:1 !important;
   min-width:0 !important;
   overflow:hidden !important;
-  background:rgba(255,255,255,.70) !important;
+  background:rgba(255,255,255,.72) !important;
   border:1px solid rgba(217,213,203,.95) !important;
   border-radius:999px !important;
   padding:5px 13px !important;
-  min-height:30px !important;
   display:flex !important;
   align-items:center !important;
+  min-height:32px !important;
 }
 .quote-ticker #tickerText{
-  font-size:15px !important;
-  font-weight:400 !important;
+  font-family:Georgia,serif !important;
   font-style:italic !important;
+  font-weight:400 !important;
+  font-size:15px !important;
   line-height:1.2 !important;
-  color:var(--navy) !important;
   letter-spacing:-0.005em !important;
+  color:var(--navy) !important;
 }
 .toolbar.shrink .quote-ticker{min-height:26px !important;padding:3px 11px !important;}
 .toolbar.shrink .quote-ticker #tickerText{font-size:13px !important;}
-.tabs{top:44px !important;}
-.toolbar.shrink + .vision + .tabs,
-.toolbar.shrink ~ .tabs{top:34px !important;}
-@media(max-width:700px){
-  .quote-ticker #tickerText{font-size:13px !important;}
-  .toolbar.shrink .quote-ticker #tickerText{font-size:12px !important;}
+@media(max-width:930px){
+  .quote-ticker #tickerText{font-size:14px !important;}
+  .toolbar.shrink .quote-ticker #tickerText{font-size:12.5px !important;}
 }
 
 </style>
@@ -2228,24 +2245,42 @@ input:focus,textarea:focus,select:focus{
           <div class="field"><label>기타 <span class="unit-hint">원</span></label><input type="text" inputmode="numeric" class="num-comma" id="cEtc" placeholder="0"></div>
         </div>
         <div class="field"><label>Description</label><input id="cMemo" placeholder="예: 할부/여행/악기 관련"></div>
+        <div class="field"><label>소비 태그</label><input id="cTags" placeholder="예: 여행, 골프, 할부"></div>
         <button class="btn" id="saveCard">카드값 저장</button>
         <div id="cardSpendSummary" class="card-spend-summary"></div>
         <div class="chartbox"><canvas id="cardChart"></canvas></div>
       </div>
 
       <div class="card span-12">
-        <h3>Simulation</h3>
-        <div class="hint" id="simBasis">최근 자산 기록부터 목표일까지 계산합니다.</div>
-        <div class="slider-row">
+        <h3>Project 44 Simulator</h3>
+        <div class="sim-headline" id="simHeadline">Asset 최신 기록을 먼저 저장하면 10억 도달 예상이 표시됩니다.</div>
+        <div class="hint" id="simBasis">시뮬레이션은 Asset의 최신 자산 기록을 출발점으로 계산합니다.</div>
+        <div class="sim-controls">
+          <div class="sim-plan-row">
+            <label>월 추가입금 → 주식</label>
+            <input type="number" id="sMonthly" value="300">
+            <button class="sim-lock" data-sim-lock="monthly" type="button">🔒</button>
+          </div>
+          <div class="sim-plan-row">
+            <label>청약 월 불입</label>
+            <input type="number" id="sHousingM" value="10">
+            <button class="sim-lock" data-sim-lock="housingM" type="button">🔒</button>
+          </div>
+          <div class="sim-plan-row">
+            <label>연초 목돈 → 주식</label>
+            <input type="number" id="sLump" value="800">
+            <button class="sim-lock" data-sim-lock="lump" type="button">🔒</button>
+          </div>
+          <div class="sim-plan-row muted">
+            <label>연금 가정</label>
+            <input value="최신 Asset 금액 고정" disabled>
+            <span></span>
+          </div>
+        </div>
+        <div class="slider-row sim-rate-row">
           <label>주식 연 수익률</label>
           <input type="range" id="sRate" min="0" max="60" value="20" step="1">
           <span class="out" id="rateOut">20%</span>
-        </div>
-        <div class="formgrid">
-          <div class="field"><label>월 순저축 → 주식</label><input type="number" id="sMonthly" value="300"></div>
-          <div class="field"><label>청약 월 불입</label><input type="number" id="sHousingM" value="10"></div>
-          <div class="field"><label>목돈 연초 유입 → 주식</label><input type="number" id="sLump" value="800"></div>
-          <div class="field"><label>연금 가정</label><input value="현재금액 고정" disabled></div>
         </div>
         <div class="chartbox" style="height:320px"><canvas id="simChart"></canvas></div>
       </div>
@@ -2335,7 +2370,7 @@ input:focus,textarea:focus,select:focus{
     return {
       identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
       habits:[], projects:[], records:[], cardExpenses:[],
-      todayDraft:newTodayDraft(), todayLogs:[]
+      todayDraft:newTodayDraft(), todayLogs:[], simSettings: defaultSimSettings()
     };
   }
   function newTodayDraft(forDate){
@@ -2419,6 +2454,54 @@ input:focus,textarea:focus,select:focus{
   function weekDates(monday){ return Array.from({length:7},(_,i)=>{const d=new Date(monday); d.setDate(d.getDate()+i); return d;}); }
   function pillarOf(k){ return ALL_PILLARS.find(p=>p.key===k)||ETC_PILLAR; }
   function fmt(v){ v=Math.round(+v||0); const e=Math.floor(v/10000), m=v%10000; return e? e+'억'+(m? ' '+m.toLocaleString()+'만':'') : v.toLocaleString()+'만'; }
+
+  function defaultSimSettings(){ return { monthly:{value:300,locked:true}, housingM:{value:10,locked:true}, lump:{value:800,locked:true} }; }
+  function ensureSimSettings(){
+    if(!state.simSettings || typeof state.simSettings!=='object') state.simSettings=defaultSimSettings();
+    const def=defaultSimSettings();
+    Object.keys(def).forEach(k=>{
+      if(!state.simSettings[k] || typeof state.simSettings[k]!=='object') state.simSettings[k]={...def[k]};
+      if(typeof state.simSettings[k].value!=='number') state.simSettings[k].value=def[k].value;
+      if(typeof state.simSettings[k].locked!=='boolean') state.simSettings[k].locked=true;
+    });
+  }
+  function simInputId(k){ return k==='monthly'?'sMonthly':(k==='housingM'?'sHousingM':'sLump'); }
+  function syncSimControls(){
+    ensureSimSettings();
+    Object.keys(state.simSettings).forEach(k=>{
+      const input=document.getElementById(simInputId(k));
+      const btn=document.querySelector('[data-sim-lock="'+k+'"]');
+      if(!input||!btn) return;
+      input.value=state.simSettings[k].value;
+      input.disabled=!!state.simSettings[k].locked;
+      btn.textContent=state.simSettings[k].locked?'🔒':'🔓';
+      btn.classList.toggle('unlocked', !state.simSettings[k].locked);
+      btn.title=state.simSettings[k].locked?'잠금 해제':'현재 값을 기본 계획으로 잠금';
+    });
+  }
+  function bindSimControls(){
+    ensureSimSettings(); syncSimControls();
+    document.querySelectorAll('[data-sim-lock]').forEach(btn=>{
+      if(btn._bound) return; btn._bound=true;
+      btn.onclick=()=>{
+        const k=btn.dataset.simLock, input=document.getElementById(simInputId(k)); if(!input) return;
+        if(state.simSettings[k].locked){ state.simSettings[k].locked=false; }
+        else { state.simSettings[k].value=+input.value||0; state.simSettings[k].locked=true; }
+        save(); syncSimControls(); renderFinanceStats(); renderSim();
+      };
+    });
+    ['monthly','housingM','lump'].forEach(k=>{
+      const input=document.getElementById(simInputId(k)); if(!input||input._simInputBound) return; input._simInputBound=true;
+      input.addEventListener('input',()=>{ if(!state.simSettings[k].locked){ state.simSettings[k].value=+input.value||0; save(); renderFinanceStats(); renderSim(); } });
+    });
+    const r=document.getElementById('sRate');
+    if(r && !r._simRateBound){ r._simRateBound=true; r.addEventListener('input',()=>{ const out=document.getElementById('rateOut'); if(out) out.textContent=r.value+'%'; renderFinanceStats(); renderSim(); }); }
+  }
+  function cardFmt(v){ v=Math.round(+v||0); return v.toLocaleString()+'원'; }
+  function monthDiff(a,b){ return (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()); }
+  function ymLabelToDate(label){ const [y,m]=String(label).split('.').map(Number); return new Date(y||1970,(m||1)-1,1); }
+  function periodText(months){ if(months<0) months=0; const y=Math.floor(months/12), m=months%12; return (y?y+'년 ':'')+(m?m+'개월':(!y?'0개월':'')); }
+
   function escape(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;"); }
   function setSync(cls,txt){ const el=document.getElementById('syncStatus'); if(!el)return; el.className='sync-status '+cls; el.textContent=txt; }
 
@@ -2505,6 +2588,7 @@ input:focus,textarea:focus,select:focus{
     if(!Array.isArray(state.quotes)) state.quotes=[];
     if(!Array.isArray(state.records)) state.records=[];
     if(!Array.isArray(state.cardExpenses)) state.cardExpenses=[];
+    ensureSimSettings();
     if(!Array.isArray(state.habits)) state.habits=[];
     if(!Array.isArray(state.projects)) state.projects=[];
     if(!Array.isArray(state.todayLogs)) state.todayLogs=[];
@@ -4215,7 +4299,7 @@ function renderWeekMetrics(){
   }
   bindCommaInputs();
   document.getElementById('saveAsset').onclick=()=>{ const r={date:document.getElementById('aDate').value||todayStr(),stock:numFromInput('aStock'),pension:numFromInput('aPension'),housing:numFromInput('aHousing'),memo:document.getElementById('aMemo').value||''}; const idx=state.records.findIndex(x=>x.date===r.date); if(idx>=0)state.records[idx]=r; else state.records.push(r); state.records.sort((a,b)=>new Date(b.date)-new Date(a.date)); save(); refreshMoney(); loadAssetDate(); };
-  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
+  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||'',tags:(document.getElementById('cTags')?document.getElementById('cTags').value:'').split(',').map(t=>t.trim()).filter(Boolean)}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
 
   function loadCardMonth(){
     const m=document.getElementById('cMonth').value;
@@ -4223,6 +4307,7 @@ function renderWeekMetrics(){
     const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
     set('cHyundai', rec&&rec.hyundai); set('cWoori', rec&&rec.woori); set('cSamsung', rec&&rec.samsung); set('cEtc', rec&&rec.etc);
     document.getElementById('cMemo').value = rec ? (rec.memo||'') : '';
+    if(document.getElementById('cTags')) document.getElementById('cTags').value = rec ? ((rec.tags||[]).join(', ')) : '';
     const btn=document.getElementById('saveCard'); if(btn) btn.textContent = rec ? '이 달 값 수정' : '카드값 저장';
   }
   document.getElementById('cMonth').addEventListener('change', loadCardMonth);
@@ -4261,12 +4346,12 @@ function renderWeekMetrics(){
       box.appendChild(wrap);
     }
   }
-  function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+cardFmt(r.hyundai)+'</td><td>'+cardFmt(r.woori)+'</td><td>'+cardFmt(r.samsung)+'</td><td>'+cardFmt(r.etc)+'</td><td><b>'+cardFmt(r.total||0)+'</b></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
+  function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>메모</th><th>태그</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+cardFmt(r.hyundai)+'</td><td>'+cardFmt(r.woori)+'</td><td>'+cardFmt(r.samsung)+'</td><td>'+cardFmt(r.etc)+'</td><td><b>'+cardFmt(r.total||0)+'</b></td><td class="card-table-memo">'+escape(r.memo||'')+'</td><td><div class="card-table-tags">'+(r.tags||[]).map(t=>'<span class="card-table-tag">'+escape(t)+'</span>').join('')+'</div></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
   function renderAssetChart(){ if(!hasChart())return; const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   function renderCardChart(){ if(!hasChart())return; const rows=[...state.cardExpenses].sort((a,b)=>a.month.localeCompare(b.month)); const ctx=document.getElementById('cardChart'); if(cardChart)cardChart.destroy(); if(!rows.length)return; const totalLabelPlugin={id:'totalLabelPlugin',afterDatasetsDraw(chart){ const {ctx, scales:{x,y}}=chart; ctx.save(); ctx.fillStyle='#385548'; ctx.font='700 11px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'; ctx.textAlign='center'; rows.forEach((r,i)=>{ const total=r.total||0; const xPos=x.getPixelForValue(i); const yPos=y.getPixelForValue(total)-8; ctx.fillText(cardFmt(total), xPos, yPos); }); ctx.restore(); }}; cardChart=new Chart(ctx,{type:'bar',data:{labels:rows.map(r=>r.month),datasets:[{label:'현대',data:rows.map(r=>r.hyundai||0),backgroundColor:'#6C8A76',borderRadius:6,stack:'spend'},{label:'우리',data:rows.map(r=>r.woori||0),backgroundColor:'#9CB6A5',borderRadius:6,stack:'spend'},{label:'삼성',data:rows.map(r=>r.samsung||0),backgroundColor:'#3AAE7A',borderRadius:6,stack:'spend'},{label:'기타',data:rows.map(r=>r.etc||0),backgroundColor:'#D8E6DA',borderRadius:6,stack:'spend'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,boxHeight:12,usePointStyle:true,pointStyle:'rectRounded'}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>cardFmt(v)}}}},plugins:[totalLabelPlugin]}); }
-  ['sRate','sMonthly','sHousingM','sLump'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; renderFinanceStats(); renderSim(); }));
-  function simulate(){ const base=latestRecord(); if(!base)return null; const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const d=new Date(base.date+'T00:00:00'); d.setDate(1); const rows=[{label:base.date.slice(0,7),stock,pension,housing,total:stock+pension+housing}]; let reach=null; while(d<goalDate){ d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach}; }
-  function renderSim(){ if(!hasChart())return; const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.';return;} document.getElementById('simBasis').textContent='계산 기준: 주식 수익률은 유동원랩/주식에만 적용 · 목돈은 매년 1월 초 선입금 · 연금 고정 · 청약 월 불입'; const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  bindSimControls();
+  function simulate(){ const base=latestRecord(); if(!base)return null; ensureSimSettings(); const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const start=new Date(base.date+'T00:00:00'); start.setDate(1); const d=new Date(start); const rows=[{label:base.date.slice(0,7).replace('-','.'),date:new Date(d),stock,pension,housing,total:stock+pension+housing}]; let reach=(stock+pension+housing)>=TARGET?rows[0]:null; let guard=0; while(guard<300 && (d<goalDate || !reach)){ guard++; d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),date:new Date(d),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach,base,start,monthly,housingM,lump,annual}; }
+  function renderSim(){ if(!hasChart())return; bindSimControls(); const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); const headline=document.getElementById('simHeadline'); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.'; if(headline) headline.textContent='Asset 최신 기록을 먼저 저장하면 10억 도달 예상이 표시됩니다.'; return;} const baseTotal=recordTotal(sim.base), remain=Math.max(0,TARGET-baseTotal); document.getElementById('simBasis').textContent='최신 Asset 기준: '+escape(sim.base.date)+' · 현재 '+fmt(baseTotal)+' · 10억까지 '+fmt(remain)+' 남음 · 수익률은 유동원랩/주식에만 적용'; if(headline){ if(sim.reach){ const months=monthDiff(sim.start, sim.reach.date); const goalDelta=monthDiff(goalDate, sim.reach.date); const status=goalDelta<0?'목표일보다 '+periodText(Math.abs(goalDelta))+' 빠름':(goalDelta>0?'목표일보다 '+periodText(goalDelta)+' 늦음':'목표일과 동일'); headline.innerHTML='현재 가정 기준 <span class="sim-big">10억까지 '+periodText(months)+'</span><span class="sim-sub">예상 도달: '+escape(sim.reach.label)+' · '+status+'</span>'; } else { headline.innerHTML='현재 가정 기준 <span class="sim-big">10억 미도달</span><span class="sim-sub">수익률 또는 납입 계획을 조정해보세요.</span>'; } } const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||(sim.reach&&r.label===sim.reach.label)||r.date<=goalDate&&i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   function refreshMoney(){ renderFinanceStats(); renderAssetTable(); renderCardTable(); renderAssetChart(); renderCardSpendSummary(); renderCardChart(); renderSim(); }
 
   /* Records and backup */
@@ -4306,7 +4391,7 @@ function renderWeekMetrics(){
     return {
       identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
       habits:[], projects:[], ideas:[], records:[], cardExpenses:[],
-      todayDraft:newTodayDraft(), todayLogs:[]
+      todayDraft:newTodayDraft(), todayLogs:[], simSettings: defaultSimSettings()
     };
   }
 
@@ -5180,7 +5265,7 @@ function renderWeekMetrics(){
   }
   bindCommaInputs();
   document.getElementById('saveAsset').onclick=()=>{ const r={date:document.getElementById('aDate').value||todayStr(),stock:numFromInput('aStock'),pension:numFromInput('aPension'),housing:numFromInput('aHousing'),memo:document.getElementById('aMemo').value||''}; const idx=state.records.findIndex(x=>x.date===r.date); if(idx>=0)state.records[idx]=r; else state.records.push(r); state.records.sort((a,b)=>new Date(b.date)-new Date(a.date)); save(); refreshMoney(); loadAssetDate(); };
-  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
+  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||'',tags:(document.getElementById('cTags')?document.getElementById('cTags').value:'').split(',').map(t=>t.trim()).filter(Boolean)}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
 
   function loadCardMonth(){
     const m=document.getElementById('cMonth').value;
@@ -5188,6 +5273,7 @@ function renderWeekMetrics(){
     const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
     set('cHyundai', rec&&rec.hyundai); set('cWoori', rec&&rec.woori); set('cSamsung', rec&&rec.samsung); set('cEtc', rec&&rec.etc);
     document.getElementById('cMemo').value = rec ? (rec.memo||'') : '';
+    if(document.getElementById('cTags')) document.getElementById('cTags').value = rec ? ((rec.tags||[]).join(', ')) : '';
     const btn=document.getElementById('saveCard'); if(btn) btn.textContent = rec ? '이 달 값 수정' : '카드값 저장';
   }
   document.getElementById('cMonth').addEventListener('change', loadCardMonth);
@@ -5202,12 +5288,12 @@ function renderWeekMetrics(){
   }
   document.getElementById('aDate').addEventListener('change', loadAssetDate);
   function renderAssetTable(){ const box=document.getElementById('assetTable'); if(!state.records.length){box.innerHTML='<div class="empty">자산 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>기준일</th><th>주식</th><th>연금</th><th>청약</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.records.map((r,i)=>'<tr><td>'+r.date+'</td><td>'+fmt(r.stock)+'</td><td>'+fmt(r.pension)+'</td><td>'+fmt(r.housing)+'</td><td><b>'+fmt(recordTotal(r))+'</b></td><td><span class="x" data-del-a="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-a]').forEach(x=>x.onclick=()=>{state.records.splice(+x.dataset.delA,1);save();refreshMoney();}); }
-  function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+cardFmt(r.hyundai)+'</td><td>'+cardFmt(r.woori)+'</td><td>'+cardFmt(r.samsung)+'</td><td>'+cardFmt(r.etc)+'</td><td><b>'+cardFmt(r.total||0)+'</b></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
+  function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>메모</th><th>태그</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+cardFmt(r.hyundai)+'</td><td>'+cardFmt(r.woori)+'</td><td>'+cardFmt(r.samsung)+'</td><td>'+cardFmt(r.etc)+'</td><td><b>'+cardFmt(r.total||0)+'</b></td><td class="card-table-memo">'+escape(r.memo||'')+'</td><td><div class="card-table-tags">'+(r.tags||[]).map(t=>'<span class="card-table-tag">'+escape(t)+'</span>').join('')+'</div></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
   function renderAssetChart(){ if(!hasChart())return; const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   function renderCardChart(){ if(!hasChart())return; const rows=[...state.cardExpenses].sort((a,b)=>a.month.localeCompare(b.month)); const ctx=document.getElementById('cardChart'); if(cardChart)cardChart.destroy(); if(!rows.length)return; const totalLabelPlugin={id:'totalLabelPlugin',afterDatasetsDraw(chart){ const {ctx, scales:{x,y}}=chart; ctx.save(); ctx.fillStyle='#385548'; ctx.font='700 11px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif'; ctx.textAlign='center'; rows.forEach((r,i)=>{ const total=r.total||0; const xPos=x.getPixelForValue(i); const yPos=y.getPixelForValue(total)-8; ctx.fillText(cardFmt(total), xPos, yPos); }); ctx.restore(); }}; cardChart=new Chart(ctx,{type:'bar',data:{labels:rows.map(r=>r.month),datasets:[{label:'현대',data:rows.map(r=>r.hyundai||0),backgroundColor:'#6C8A76',borderRadius:6,stack:'spend'},{label:'우리',data:rows.map(r=>r.woori||0),backgroundColor:'#9CB6A5',borderRadius:6,stack:'spend'},{label:'삼성',data:rows.map(r=>r.samsung||0),backgroundColor:'#3AAE7A',borderRadius:6,stack:'spend'},{label:'기타',data:rows.map(r=>r.etc||0),backgroundColor:'#D8E6DA',borderRadius:6,stack:'spend'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,boxHeight:12,usePointStyle:true,pointStyle:'rectRounded'}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>cardFmt(v)}}}},plugins:[totalLabelPlugin]}); }
-  ['sRate','sMonthly','sHousingM','sLump'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; renderFinanceStats(); renderSim(); }));
-  function simulate(){ const base=latestRecord(); if(!base)return null; const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const d=new Date(base.date+'T00:00:00'); d.setDate(1); const rows=[{label:base.date.slice(0,7),stock,pension,housing,total:stock+pension+housing}]; let reach=null; while(d<goalDate){ d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach}; }
-  function renderSim(){ if(!hasChart())return; const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.';return;} document.getElementById('simBasis').textContent='계산 기준: 주식 수익률은 유동원랩/주식에만 적용 · 목돈은 매년 1월 초 선입금 · 연금 고정 · 청약 월 불입'; const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  bindSimControls();
+  function simulate(){ const base=latestRecord(); if(!base)return null; ensureSimSettings(); const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const start=new Date(base.date+'T00:00:00'); start.setDate(1); const d=new Date(start); const rows=[{label:base.date.slice(0,7).replace('-','.'),date:new Date(d),stock,pension,housing,total:stock+pension+housing}]; let reach=(stock+pension+housing)>=TARGET?rows[0]:null; let guard=0; while(guard<300 && (d<goalDate || !reach)){ guard++; d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),date:new Date(d),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach,base,start,monthly,housingM,lump,annual}; }
+  function renderSim(){ if(!hasChart())return; bindSimControls(); const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); const headline=document.getElementById('simHeadline'); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.'; if(headline) headline.textContent='Asset 최신 기록을 먼저 저장하면 10억 도달 예상이 표시됩니다.'; return;} const baseTotal=recordTotal(sim.base), remain=Math.max(0,TARGET-baseTotal); document.getElementById('simBasis').textContent='최신 Asset 기준: '+escape(sim.base.date)+' · 현재 '+fmt(baseTotal)+' · 10억까지 '+fmt(remain)+' 남음 · 수익률은 유동원랩/주식에만 적용'; if(headline){ if(sim.reach){ const months=monthDiff(sim.start, sim.reach.date); const goalDelta=monthDiff(goalDate, sim.reach.date); const status=goalDelta<0?'목표일보다 '+periodText(Math.abs(goalDelta))+' 빠름':(goalDelta>0?'목표일보다 '+periodText(goalDelta)+' 늦음':'목표일과 동일'); headline.innerHTML='현재 가정 기준 <span class="sim-big">10억까지 '+periodText(months)+'</span><span class="sim-sub">예상 도달: '+escape(sim.reach.label)+' · '+status+'</span>'; } else { headline.innerHTML='현재 가정 기준 <span class="sim-big">10억 미도달</span><span class="sim-sub">수익률 또는 납입 계획을 조정해보세요.</span>'; } } const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||(sim.reach&&r.label===sim.reach.label)||r.date<=goalDate&&i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
   function refreshMoney(){ renderFinanceStats(); renderAssetTable(); renderCardTable(); renderAssetChart(); renderCardSpendSummary(); renderCardChart(); renderSim(); }
 
   /* Records and backup */
@@ -5247,7 +5333,7 @@ function renderWeekMetrics(){
     return {
       identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
       habits:[], projects:[], ideas:[], records:[], cardExpenses:[],
-      todayDraft:newTodayDraft(), todayLogs:[]
+      todayDraft:newTodayDraft(), todayLogs:[], simSettings: defaultSimSettings()
     };
   }
 
@@ -6094,6 +6180,11 @@ function renderWeekMetrics(){
 
   load(); initDates(); bindArea('v-identity','identity'); bindArea('v-daily','daily'); renderTabs(); rerenderAll();
 
+  const toolbarEl=document.querySelector('.toolbar');
+  const syncToolbarState=()=>{ if(toolbarEl) toolbarEl.classList.toggle('shrink', window.scrollY>28); };
+  window.addEventListener('scroll', syncToolbarState, {passive:true});
+  syncToolbarState();
+
   function cloudPullTimed(ms){
     return Promise.race([
       cloudPull(),
@@ -6119,12 +6210,6 @@ function renderWeekMetrics(){
     if(cloud===null){ await cloudPush(); setSync('ok','Synced'); }
     else{ state=cloud; migrate(); localStorage.setItem(KEY,JSON.stringify(state)); rerenderAll(); setSync('ok','Synced'); }
   }
-
-  const toolbarElFinal=document.querySelector('.toolbar');
-  const syncToolbarFinal=()=>{ if(toolbarElFinal) toolbarElFinal.classList.toggle('shrink', window.scrollY>28); };
-  window.addEventListener('scroll', syncToolbarFinal, {passive:true});
-  syncToolbarFinal();
-
   initCloud();
 })();
 </script>
