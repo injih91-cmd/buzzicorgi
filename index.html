@@ -950,7 +950,7 @@ body{
   line-height:1.55 !important;
 }
 .wrap{max-width:1080px !important}
-.toolbar{margin-bottom:8px !important;gap:8px !important}
+.toolbar{margin-bottom:0 !important;gap:8px !important}
 .quote-ticker #tickerText{font-size:15px !important;font-weight:400 !important}
 .toolbar-actions{gap:9px !important}
 .sync-status,.reset{font-size:11px !important}
@@ -1662,6 +1662,10 @@ h3,.card>h3{
 
 /* slim modern tabs */
 .tabs{
+  position:-webkit-sticky !important;
+  position:sticky !important;
+  top:var(--toolbar-h, 52px) !important;
+  z-index:30 !important;
   background:rgba(245,243,236,.82) !important;
   backdrop-filter:blur(18px) saturate(1.2) !important;
   border-bottom:1px solid rgba(38,53,46,.10) !important;
@@ -2132,6 +2136,86 @@ input:focus,textarea:focus,select:focus{
 }
 .habit-principles::placeholder{color:var(--muted,#b3aebb);}
 
+/* v20 activity log */
+.act-tools{display:flex;gap:8px;align-items:center;margin:10px 0 6px;}
+.act-tools #actSearch{
+  flex:1;min-width:0;padding:7px 11px;border:1px solid var(--line,#e3dfd4);
+  border-radius:8px;font:inherit;font-size:12.5px;background:var(--soft,#faf8f3);
+}
+.act-tools #actSearch:focus{outline:none;border-color:var(--ok,#1d7a5a);background:#fff;}
+.btn.ghost.sm{padding:6px 11px;font-size:11.5px;white-space:nowrap;}
+.act-list{max-height:480px;overflow-y:auto;margin-top:4px;}
+.act-day{
+  position:sticky;top:0;background:var(--card,#fff);z-index:1;
+  font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--muted,#9a93a3);padding:9px 0 5px;border-bottom:1px solid var(--line,#eee);margin-bottom:4px;
+}
+.act-row{
+  display:grid;grid-template-columns:42px 20px 1fr;gap:8px;align-items:start;
+  padding:5px 2px;font-size:13px;line-height:1.45;
+}
+.act-row:hover{background:var(--soft,#faf8f3);border-radius:6px;}
+.act-time{color:var(--muted,#9a93a3);font-size:11px;font-variant-numeric:tabular-nums;padding-top:1px;}
+.act-icon{text-align:center;}
+.act-text{color:var(--ink,#2c2632);word-break:break-word;}
+.act-more{text-align:center;color:var(--muted,#9a93a3);font-size:11.5px;padding:10px 0;}
+
+/* v20 project modal daily notes */
+.pm-history{margin-top:8px;}
+.pm-hist-row{
+  display:flex;align-items:baseline;gap:8px;
+  padding:6px 2px;border-bottom:1px solid var(--line,#f0ede5);
+}
+.pm-hist-row:last-child{border-bottom:none;}
+.pmh-date{
+  flex:0 0 auto;font-size:11px;font-weight:700;color:var(--muted,#9a93a3);
+  font-variant-numeric:tabular-nums;min-width:34px;
+}
+.pmh-text{flex:1;font-size:13px;line-height:1.5;color:var(--ink,#2c2632);word-break:break-word;}
+.pmh-action{color:var(--ok,#1d7a5a);font-weight:700;margin-right:2px;}
+.pmh-del{
+  flex:0 0 auto;border:none;background:none;cursor:pointer;
+  color:var(--muted,#c4bfb4);font-size:15px;line-height:1;padding:0 2px;
+}
+.pmh-del:hover{color:var(--danger,#a32d2d);}
+
+/* v21 three-column focus kanban + active-zone highlight */
+.focus-kanban.focus-kanban-3{
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1fr !important;
+  gap:8px !important;align-items:start !important;
+}
+@media(max-width:760px){
+  .focus-kanban.focus-kanban-3{grid-template-columns:1fr !important;}
+}
+.focus-col-head small{font-weight:600;color:var(--muted,#9a93a3);font-size:10px;}
+/* Active zone: sage green card with white text — applies to routine zones + focus columns */
+:root{--sage-active:#7d9a7a;}
+.routine-zone.zone-active,
+.focus-col.zone-active{
+  background:var(--sage-active) !important;
+  border-color:var(--sage-active) !important;
+}
+.routine-zone.zone-active .routine-zone-title,
+.routine-zone.zone-active .routine-zone-title small,
+.routine-zone.zone-active .routine-zone-count,
+.focus-col.zone-active .focus-col-head,
+.focus-col.zone-active .focus-col-head small,
+.focus-col.zone-active .focus-drop-hint{
+  color:#fff !important;
+}
+.routine-zone.zone-active .routine-zone-count,
+.focus-col.zone-active .focus-col-head span:last-child{
+  background:rgba(255,255,255,.22) !important;
+  border-color:rgba(255,255,255,.35) !important;
+  color:#fff !important;
+}
+/* cards inside active zone stay readable on the green */
+.routine-zone.zone-active .quick-habit.routine-line,
+.focus-col.zone-active .focus-line{
+  background:rgba(255,255,255,.94) !important;
+}
+
 </style>
 
 <style id="routineBoardV19WidthFix">
@@ -2482,6 +2566,15 @@ input:focus,textarea:focus,select:focus{
   <section class="panel" id="tab-records">
     <div class="grid">
       <div class="card span-8">
+        <h3>활동 <small style="font-weight:600;color:var(--muted)">Activity</small></h3>
+        <div class="hint">키인하는 거의 모든 변화가 시간순으로 자동 기록됩니다.</div>
+        <div class="act-tools">
+          <input type="text" id="actSearch" placeholder="검색 (루틴/프로젝트/메모…)" />
+          <button class="btn ghost sm" id="actClear" type="button">전체 지우기</button>
+        </div>
+        <div class="act-list" id="activityLog"></div>
+      </div>
+      <div class="card span-8">
         <h3>Daily Logs</h3>
         <div class="hint">Today에서 저장된 하루 단위 스냅샷입니다.</div>
         <div class="log-list" id="todayLogs"></div>
@@ -2494,6 +2587,10 @@ input:focus,textarea:focus,select:focus{
           <button class="btn ghost" id="exportBtn">Export</button>
           <button class="btn ghost" id="importBtn">Import</button>
           <button class="btn danger" id="resetBtn">Reset</button>
+        </div>
+        <div class="hint" style="margin-top:12px">AI에게 분석을 맡길 때 — 아래 파일을 받아 ChatGPT나 Claude에 업로드하면 됩니다.</div>
+        <div class="row">
+          <button class="btn" id="aiExportBtn" style="background:var(--ok,#1d7a5a);color:#fff;border:none">🧠 AI 분석용 내보내기</button>
         </div>
       </div>
     </div>
@@ -2552,7 +2649,7 @@ input:focus,textarea:focus,select:focus{
     ALL_PILLARS.forEach(p=>pillarMeta[p.key]={cap:p.cap});
     return {
       identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
-      habits:[], projects:[], records:[], cardExpenses:[],
+      habits:[], projects:[], records:[], cardExpenses:[], activity:[],
       todayDraft:newTodayDraft(), todayLogs:[], simSettings: defaultSimSettings()
     };
   }
@@ -2702,6 +2799,11 @@ input:focus,textarea:focus,select:focus{
     if(typeof p.todayOrder!=='number') p.todayOrder=9999;
     if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
     p.linkedHabits=p.linkedHabits.map(String);
+    if(!Array.isArray(p.notes)) p.notes=[];
+    p.notes=p.notes.filter(n=>n&&typeof n==='object').map(n=>({
+      id:n.id||uid(), date:n.date||todayStr(), text:typeof n.text==='string'?n.text:'',
+      action:typeof n.action==='string'?n.action:'', srcFocusId:n.srcFocusId||''
+    }));
     // project kind: 'free' (default), 'pipeline', or 'metric'
     p.kind = (p.kind==='pipeline'||p.kind==='metric') ? p.kind : 'free';
     if(!Array.isArray(p.stages)) p.stages=[];
@@ -2774,6 +2876,7 @@ input:focus,textarea:focus,select:focus{
     if(!Array.isArray(state.cardExpenses)) state.cardExpenses=[];
     ensureSimSettings();
     if(!Array.isArray(state.habits)) state.habits=[];
+    if(!Array.isArray(state.activity)) state.activity=[];
     if(!Array.isArray(state.projects)) state.projects=[];
     if(!Array.isArray(state.todayLogs)) state.todayLogs=[];
     if(typeof state.lastBackup!=='string') state.lastBackup=state.lastBackup||'';
@@ -2857,7 +2960,116 @@ input:focus,textarea:focus,select:focus{
 
 
   function load(){ try{ const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):fresh(); }catch(e){ state=fresh(); } migrate(); }
-  function save(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} cloudPushDebounced(); }
+
+  /* ---- Activity log engine (auto-diff on save) ---- */
+  const PILLAR_EMO_FOR_ACT=(key)=>{ const p=pillarOf(key); return p&&p.emo?p.emo:'•'; };
+  function actSnapshot(s){
+    // flatten only the fields we want to track changes on
+    const snap={ habits:{}, projects:{}, draft:{} };
+    (s.habits||[]).forEach(h=>{ snap.habits[h.id]={title:h.title||'', log:(h.log||[]).join(','), principles:h.principles||''}; });
+    (s.projects||[]).forEach(p=>{
+      const subs={}; (p.subs||[]).forEach(x=>{ subs[x.id]={t:x.title||'',d:!!x.done}; });
+      const items={}; (p.items||[]).forEach(x=>{ items[x.id]={n:x.name||''}; });
+      const notes={}; (p.notes||[]).forEach(n=>{ notes[n.id]={t:n.text||'',a:n.action||'',d:n.date||''}; });
+      snap.projects[p.id]={title:p.title||'',status:p.status||'active',memo:p.memo||'',subs,items,notes};
+    });
+    const d=s.todayDraft||{};
+    snap.draft={
+      date:d.date||'',
+      checkinNote:(d.checkin&&d.checkin.note)||'',
+      theme:(d.checkin&&d.checkin.theme)||'',
+      good:(d.checkout&&d.checkout.good)||'',
+      hard:(d.checkout&&d.checkout.hard)||'',
+      tomorrow:(d.checkout&&d.checkout.tomorrow)||''
+    };
+    return snap;
+  }
+  function pushAct(icon,text){
+    if(!Array.isArray(state.activity)) state.activity=[];
+    const now=new Date();
+    state.activity.unshift({ts:now.getTime(), date:ymd(now), icon, text});
+    if(state.activity.length>1000) state.activity.length=1000;
+  }
+  function diffActivity(prev,cur){
+    if(!prev) return;
+    // habits
+    Object.keys(cur.habits).forEach(id=>{
+      const a=prev.habits[id], b=cur.habits[id];
+      const nm=b.title||'Routine';
+      if(!a){ pushAct('➕','루틴 추가 · '+nm); return; }
+      if(a.title!==b.title && b.title) pushAct('✏️','루틴 이름 · '+(a.title||'(빈칸)')+' → '+b.title);
+      const pa=new Set((a.log||'').split(',').filter(Boolean)), pb=new Set((b.log||'').split(',').filter(Boolean));
+      pb.forEach(d=>{ if(!pa.has(d)) pushAct('✓','루틴 체크 · '+nm+(d!==cur.draft.date?' ('+d+')':'')); });
+      pa.forEach(d=>{ if(!pb.has(d)) pushAct('↩️','루틴 해제 · '+nm+(d!==cur.draft.date?' ('+d+')':'')); });
+      if(a.principles!==b.principles) pushAct('📐','원칙 수정 · '+nm);
+    });
+    Object.keys(prev.habits).forEach(id=>{ if(!cur.habits[id]) pushAct('🗑️','루틴 삭제 · '+(prev.habits[id].title||'Routine')); });
+    // projects
+    Object.keys(cur.projects).forEach(id=>{
+      const a=prev.projects[id], b=cur.projects[id];
+      const nm=b.title||'Project';
+      if(!a){ pushAct('🗂️','프로젝트 추가 · '+nm); return; }
+      if(a.title!==b.title && b.title) pushAct('✏️','프로젝트 이름 · '+(a.title||'(빈칸)')+' → '+b.title);
+      if(a.status!==b.status){ const lab={active:'진행',done:'완료',paused:'보류'}; pushAct(b.status==='done'?'🏁':'🔁','프로젝트 상태 · '+nm+' → '+(lab[b.status]||b.status)); }
+      if(a.memo!==b.memo && (b.memo||'').trim()) pushAct('📝','프로젝트 메모 · '+nm);
+      // subs
+      Object.keys(b.subs).forEach(sid=>{
+        const sa=a.subs[sid], sb=b.subs[sid];
+        if(!sa){ if(sb.t) pushAct('＋','액션 추가 · '+nm+' › '+sb.t); return; }
+        if(!sa.d && sb.d) pushAct('✓','액션 완료 · '+nm+' › '+(sb.t||'액션'));
+        if(sa.d && !sb.d) pushAct('↩️','액션 해제 · '+nm+' › '+(sb.t||'액션'));
+        if(sa.t!==sb.t && sb.t) pushAct('✏️','액션 수정 · '+nm+' › '+sb.t);
+      });
+      Object.keys(a.subs).forEach(sid=>{ if(!b.subs[sid]) pushAct('✕','액션 삭제 · '+nm+' › '+(a.subs[sid].t||'액션')); });
+      // project progress notes (Today Focus "오늘 어떻게?")
+      const an=a.notes||{}, bn=b.notes||{};
+      Object.keys(bn).forEach(nid=>{
+        const x=an[nid], y=bn[nid];
+        const pre=y.a?('['+y.a+'] '):'';
+        if(!x){ pushAct('🗒️','진행 기록 · '+nm+' › '+pre+y.t); return; }
+        if(x.t!==y.t) pushAct('🗒️','진행 기록 수정 · '+nm+' › '+pre+y.t);
+      });
+      Object.keys(an).forEach(nid=>{ if(!bn[nid]) pushAct('✕','진행 기록 삭제 · '+nm+' › '+(an[nid].t||'')); });
+    });
+    Object.keys(prev.projects).forEach(id=>{ if(!cur.projects[id]) pushAct('🗑️','프로젝트 삭제 · '+(prev.projects[id].title||'Project')); });
+    // daily draft notes
+    const pd=prev.draft, cd=cur.draft;
+    if(pd.theme!==cd.theme && (cd.theme||'').trim()) pushAct('🎯','오늘 테마 · '+cd.theme);
+    if(pd.checkinNote!==cd.checkinNote && (cd.checkinNote||'').trim()) pushAct('🌅','체크인 메모 작성');
+    if(pd.good!==cd.good && (cd.good||'').trim()) pushAct('🌙','회고(잘한 점) 작성');
+    if(pd.hard!==cd.hard && (cd.hard||'').trim()) pushAct('🌙','회고(아쉬운 점) 작성');
+    if(pd.tomorrow!==cd.tomorrow && (cd.tomorrow||'').trim()) pushAct('➡️','내일 다짐 작성');
+  }
+  let __actPrev=null;
+  let __actQuery='';
+  function renderActivityLog(){
+    const box=document.getElementById('activityLog');
+    if(!box) return;
+    const all=Array.isArray(state.activity)?state.activity:[];
+    const q=__actQuery.trim().toLowerCase();
+    const list=q?all.filter(a=>(a.text||'').toLowerCase().includes(q)):all;
+    if(!list.length){ box.innerHTML='<div class="empty">'+(q?'검색 결과 없음':'아직 활동 기록이 없습니다. 무언가 입력해보세요.')+'</div>'; return; }
+    let html='', curDate='';
+    const fmtDay=(d)=>{ const t=todayStr(); if(d===t) return '오늘'; const y=new Date(); y.setDate(y.getDate()-1); if(d===ymd(y)) return '어제'; return d; };
+    list.slice(0,400).forEach(a=>{
+      if(a.date!==curDate){ curDate=a.date; html+='<div class="act-day">'+escape(fmtDay(a.date))+'</div>'; }
+      const tm=new Date(a.ts);
+      const hh=String(tm.getHours()).padStart(2,'0'), mm=String(tm.getMinutes()).padStart(2,'0');
+      html+='<div class="act-row"><span class="act-time">'+hh+':'+mm+'</span><span class="act-icon">'+escape(a.icon||'•')+'</span><span class="act-text">'+escape(a.text||'')+'</span></div>';
+    });
+    if(list.length>400) html+='<div class="act-more">+ '+(list.length-400)+'개 더 (검색으로 좁혀보세요)</div>';
+    box.innerHTML=html;
+  }
+  function save(){
+    try{
+      const cur=actSnapshot(state);
+      diffActivity(__actPrev, cur);
+      __actPrev=cur;
+    }catch(e){}
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    cloudPushDebounced();
+    try{ renderActivityLog(); }catch(e){}
+  }
   function cloudPushDebounced(){ if(!cloudReady)return; setSync('saving','Saving…'); clearTimeout(pushTimer); pushTimer=setTimeout(cloudPush,700); }
   let lastSyncError='';
   async function cloudPush(){
@@ -4579,7 +4791,7 @@ function renderWeekMetrics(){
     };
   }
 
-  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false}; }
+  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:(typeof activeZone==='function'?activeZone():'after')}; }
 
   function newTodayDraft(forDate){
     return {
@@ -4681,7 +4893,8 @@ function renderWeekMetrics(){
       projectId:f.projectId?String(f.projectId):'',
       subId:f.subId?String(f.subId):'',
       note:typeof f.note==='string'?f.note:'',
-      done:!!f.done
+      done:!!f.done,
+      zone:(f.zone==='work'||f.zone==='after')?f.zone:'after'
     }));
     return draft;
   }
@@ -5483,6 +5696,95 @@ function renderWeekMetrics(){
   /* Records and backup */
   function renderTodayLogs(){ const box=document.getElementById('todayLogs'); if(!state.todayLogs.length){box.innerHTML='<div class="empty">아직 Today 기록 None</div>';return;} box.innerHTML=state.todayLogs.map(l=>{ const slots=(l.slots||[]).map(s=>s.label+': '+s.text+(s.memo?' · Description: '+s.memo:'')).join(' / '), habits=(l.completedHabits||[]).join(', ')||'None', projects=(l.completedProjectActions||[]).join(', ')||'None'; return '<div class="record"><div class="record-top"><span>'+escape(l.display||l.date)+'</span><span>'+l.score+'%</span></div><b>'+escape(l.judge||'')+'</b><p class="hint" style="margin:5px 0 0">'+escape(l.review||'회고 None')+'</p><p class="hint" style="margin:3px 0 0">Today’s 3: '+escape(slots||'None')+'</p><p class="hint" style="margin:3px 0 0">Done Routine: '+escape(habits)+'</p><p class="hint" style="margin:3px 0 0">Done Project: '+escape(projects)+'</p></div>'; }).join(''); }
   function exportBackup(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='didi-life-os-backup-'+todayStr()+'.json'; a.click(); URL.revokeObjectURL(a.href); state.lastBackup=todayStr(); save(); renderBackupStatus(); }
+
+  function buildAIExport(){
+    const L={mood:'기분',energy:'에너지',sleep:'수면',anxiety:'불안',bodyFatigue:'신체피로',focus:'집중',
+             satisfaction:'만족',accomplishment:'성취',calm:'평온',selfCare:'자기돌봄',fatigue:'피로'};
+    const lines=[];
+    const W=(s)=>lines.push(s);
+    const today=todayStr();
+    W('# Life OS 분석용 내보내기');
+    W('생성일: '+today);
+    W('');
+    W('아래는 개인 대시보드에서 추출한 데이터입니다. 일상 패턴, 가치축별 시간 배분, 루틴 이행률, 기분/컨디션 추이, 회고에서 반복되는 주제 등을 분석해 주세요.');
+    W('');
+
+    // Pillars
+    W('## 가치 축 (Value Pillars)');
+    (typeof PRIMARY_PILLARS!=='undefined'?PRIMARY_PILLARS:[]).forEach(p=>{ W('- '+(p.emo||'')+' '+(p.name||'')+(p.cap?(' — '+p.cap):'')); });
+    W('');
+
+    // Routines + completion
+    W('## 루틴 (Routines)');
+    (state.habits||[]).forEach(h=>{
+      const pi=pillarOf(h.pillar);
+      const total=(h.log||[]).length;
+      const freq=h.freq==='daily'?'매일':('주 '+h.target+'회');
+      W('- ['+(pi&&pi.name||'')+'] '+(h.title||'')+' ('+freq+', 누적 체크 '+total+'일)'+(h.principles?(' / 원칙: '+h.principles.replace(/\n/g,'; ')):''));
+    });
+    W('');
+
+    // Projects + progress notes
+    W('## 프로젝트 (Projects)');
+    const stLab={active:'진행중',done:'완료',paused:'보류'};
+    (state.projects||[]).forEach(p=>{
+      const pi=pillarOf(p.pillar);
+      const subs=p.subs||[]; const doneN=subs.filter(s=>s.done).length;
+      W('### '+(p.title||'(제목없음)')+' ['+(pi&&pi.name||'')+' / '+(stLab[p.status]||p.status)+']');
+      if(p.purpose) W('- 목적: '+p.purpose);
+      if(p.memo) W('- 메모: '+p.memo);
+      if(subs.length) W('- 액션: '+doneN+'/'+subs.length+' 완료'+ ' — '+subs.map(s=>(s.done?'✓':'·')+(s.title||'')).join(', '));
+      const notes=(p.notes||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+      if(notes.length){
+        W('- 진행 기록:');
+        notes.forEach(n=>W('  - '+(n.date||'')+': '+(n.action?('['+n.action+'] '):'')+(n.text||'')));
+      }
+      W('');
+    });
+
+    // Daily logs: checkin/checkout/reviews
+    W('## 일별 기록 (Daily Logs)');
+    const logs=state.dayLogs||{};
+    Object.keys(logs).sort().forEach(date=>{
+      const d=logs[date]; if(!d) return;
+      const ci=d.checkin||{}, co=d.checkout||{};
+      const parts=[];
+      if(ci.theme) parts.push('테마='+ci.theme);
+      if(ci.bodyState) parts.push('컨디션='+ci.bodyState);
+      const ciScales=['mood','energy','sleep','anxiety','bodyFatigue','focus'].filter(k=>+ci[k]>0).map(k=>L[k]+':'+ci[k]);
+      const coScales=['satisfaction','accomplishment','calm','selfCare','fatigue'].filter(k=>+co[k]>0).map(k=>L[k]+':'+co[k]);
+      const hasAny = parts.length||ciScales.length||coScales.length||ci.note||co.good||co.hard||co.tomorrow||(d.focuses||[]).some(f=>f.note);
+      if(!hasAny) return;
+      W('### '+date);
+      if(parts.length) W('- '+parts.join(', '));
+      if(ciScales.length) W('- 아침 컨디션: '+ciScales.join(', '));
+      if(ci.note) W('- 체크인 메모: '+ci.note);
+      (d.focuses||[]).forEach(f=>{ if((f.note||'').trim()){ const p=getProject(f.projectId); W('- 포커스: '+(p?p.title:'(프로젝트)')+' — '+f.note.trim()); } });
+      if(coScales.length) W('- 저녁 상태: '+coScales.join(', '));
+      if(co.good) W('- 잘한 점: '+co.good);
+      if(co.hard) W('- 아쉬운 점: '+co.hard);
+      if(co.tomorrow) W('- 내일 다짐: '+co.tomorrow);
+      W('');
+    });
+
+    // Activity log
+    W('## 활동 로그 (Activity)');
+    const acts=(state.activity||[]).slice().sort((a,b)=>a.ts-b.ts);
+    acts.forEach(a=>{
+      const t=new Date(a.ts);
+      const stamp=a.date+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+      W('- '+stamp+' '+(a.text||''));
+    });
+    W('');
+
+    return lines.join('\n');
+  }
+  function exportAIAnalysis(){
+    const md=buildAIExport();
+    const blob=new Blob([md],{type:'text/markdown'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='didi-life-os-analysis-'+todayStr()+'.md'; a.click(); URL.revokeObjectURL(a.href);
+  }
   function daysSince(dateStr){ if(!dateStr) return null; const a=new Date(dateStr+'T00:00:00'); const b=new Date(); b.setHours(0,0,0,0); return Math.round((b-a)/864e5); }
   function renderBackupStatus(){
     const el=document.getElementById('backupStatus'); if(!el) return;
@@ -5496,6 +5798,7 @@ function renderWeekMetrics(){
   document.getElementById('importFile').onchange=e=>{ const f=e.target.files[0]; if(!f)return; const rd=new FileReader(); rd.onload=()=>{ try{state=JSON.parse(rd.result);migrate();save();rerenderAll();alert('Import complete');}catch(err){alert('파일을 읽지 못했어.');} }; rd.readAsText(f); };
   function resetAll(){ if(!resetArmed){ resetArmed=true; ['resetBtn','resetBtnTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='정말 초기화?';}); setTimeout(()=>{resetArmed=false; const a=document.getElementById('resetBtn'); if(a)a.textContent='Reset'; const b=document.getElementById('resetBtnTop'); if(b)b.textContent='Reset';},2500); return;} localStorage.removeItem(KEY); state=fresh(); save(); rerenderAll(); }
   document.getElementById('exportBtn').onclick=exportBackup; document.getElementById('exportBtnTop').onclick=exportBackup; document.getElementById('importBtn').onclick=importBackup; document.getElementById('importBtnTop').onclick=importBackup; document.getElementById('resetBtn').onclick=resetAll; document.getElementById('resetBtnTop').onclick=resetAll;
+  { const ai=document.getElementById('aiExportBtn'); if(ai) ai.onclick=exportAIAnalysis; }
 
   /* Render orchestration */
   function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
@@ -5521,7 +5824,25 @@ function renderWeekMetrics(){
     };
   }
 
-  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false}; }
+  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:(typeof activeZone==='function'?activeZone():'after')}; }
+
+  // Persist a focus's "오늘 어떻게?" note into its project's permanent notes log.
+  // Keyed by srcFocusId so editing the same focus updates its entry; deleting the
+  // focus later does NOT remove the project note (history is preserved).
+  function syncFocusNote(f){
+    if(!f) return;
+    const p=getProject(f.projectId);
+    if(!p) return;
+    if(!Array.isArray(p.notes)) p.notes=[];
+    const text=(f.note||'').trim();
+    const sub=(p.subs||[]).find(s=>String(s.id)===String(f.subId));
+    const action=sub?(sub.title||''):'';
+    const date=(state.todayDraft&&state.todayDraft.date)||todayStr();
+    const idx=p.notes.findIndex(n=>String(n.srcFocusId)===String(f.id));
+    if(!text){ if(idx>=0) p.notes.splice(idx,1); return; }
+    if(idx>=0){ p.notes[idx].text=text; p.notes[idx].action=action; p.notes[idx].date=p.notes[idx].date||date; }
+    else p.notes.push({id:uid(), date, text, action, srcFocusId:String(f.id)});
+  }
 
   function newTodayDraft(forDate){
     return {
@@ -5623,7 +5944,8 @@ function renderWeekMetrics(){
       projectId:f.projectId?String(f.projectId):'',
       subId:f.subId?String(f.subId):'',
       note:typeof f.note==='string'?f.note:'',
-      done:!!f.done
+      done:!!f.done,
+      zone:(f.zone==='work'||f.zone==='after')?f.zone:'after'
     }));
     return draft;
   }
@@ -5806,6 +6128,43 @@ function renderWeekMetrics(){
     sec.appendChild(add);
     c.appendChild(sec);
 
+    // ---- Progress log: persistent project notes (survive focus deletion) ----
+    // Backfill any legacy focus notes from dayLogs that aren't yet in p.notes.
+    if(!Array.isArray(p.notes)) p.notes=[];
+    (function backfill(){
+      const logs=state.dayLogs||{};
+      Object.keys(logs).forEach(date=>{
+        const fs=(logs[date]&&logs[date].focuses)||[];
+        fs.forEach(f=>{
+          if(String(f.projectId)!==String(pid)) return;
+          const text=(f.note||'').trim(); if(!text) return;
+          if(p.notes.some(n=>String(n.srcFocusId)===String(f.id))) return;
+          const sub=(p.subs||[]).find(s=>String(s.id)===String(f.subId));
+          p.notes.push({id:uid(), date, text, action:sub?(sub.title||''):'', srcFocusId:String(f.id)});
+        });
+      });
+    })();
+
+    const hist=document.createElement('div'); hist.className='modal-section';
+    const histEntries=p.notes.slice().sort((a,b)=> (b.date||'').localeCompare(a.date||'') || (b.id-a.id));
+    hist.innerHTML='<h4>진행 기록 <small style="font-weight:600;color:var(--muted)">Daily Notes</small></h4><div class="hint">Today Focus의 \u201c오늘 어떻게?\u201d 메모가 날짜별로 모입니다. 프로젝트를 Today에서 지워도 기록은 남습니다.</div>';
+    const hlist=document.createElement('div'); hlist.className='pm-history';
+    if(!histEntries.length){ hlist.innerHTML='<div class="empty">아직 진행 기록 없음. Today Focus에서 이 프로젝트를 잡고 메모를 남겨보세요.</div>'; }
+    else {
+      const fmtHDay=(d)=>{ const t=todayStr(); if(d===t)return '오늘'; const y=new Date(); y.setDate(y.getDate()-1); if(d===ymd(y))return '어제'; const dt=new Date(d+'T00:00:00'); return (dt.getMonth()+1)+'/'+dt.getDate(); };
+      histEntries.forEach(n=>{
+        const row=document.createElement('div'); row.className='pm-hist-row';
+        row.innerHTML='<span class="pmh-date">'+escape(fmtHDay(n.date))+'</span>'+
+          '<span class="pmh-text">'+(n.action?'<b class="pmh-action">'+escape(n.action)+'</b> ':'')+escape(n.text)+'</span>';
+        const x=document.createElement('button'); x.className='pmh-del'; x.textContent='×'; x.title='이 기록 삭제';
+        x.onclick=()=>{ p.notes=p.notes.filter(z=>z.id!==n.id); save(); renderProjectModal(pid); };
+        row.appendChild(x);
+        hlist.appendChild(row);
+      });
+    }
+    hist.appendChild(hlist);
+    c.appendChild(hist);
+
     const delSec=document.createElement('div'); delSec.className='modal-section';
     delSec.innerHTML='<button class="btn danger">삭제</button>';
     delSec.querySelector('button').onclick=()=>{ if(confirm('이 Project를 삭제할까요?')){ clearSlotsReferencingProject(pid); state.projects=state.projects.filter(x=>String(x.id)!==String(pid)); closeModal(); save(); renderAllLinkedNoModal(); } };
@@ -5955,17 +6314,23 @@ function renderWeekMetrics(){
     box.innerHTML='';
 
     const kanban=document.createElement('div');
-    kanban.className='focus-kanban';
-    const ongoing=state.todayDraft.focuses.filter(f=>!f.done);
-    const done=state.todayDraft.focuses.filter(f=>!!f.done);
+    kanban.className='focus-kanban focus-kanban-3';
+    const focuses=state.todayDraft.focuses;
+    const workItems=focuses.filter(f=>!f.done && (f.zone||'after')==='work');
+    const afterItems=focuses.filter(f=>!f.done && (f.zone||'after')!=='work');
+    const doneItems=focuses.filter(f=>!!f.done);
+    const az=activeZone();
 
-    const makeCol=(status,title,items)=>{
-      const col=document.createElement('div'); col.className='focus-col '+(status==='done'?'done-col':'ongoing-col'); col.dataset.status=status;
-      col.innerHTML='<div class="focus-col-head"><span>'+title+'</span><span>'+items.length+'</span></div>';
-      const list=document.createElement('div'); list.className='focus-col-list'; list.dataset.status=status;
+    const makeCol=(key,title,sub,items)=>{
+      const active=(key==='work'||key==='after') && key===az;
+      const col=document.createElement('div');
+      col.className='focus-col focus-col-'+key+(active?' zone-active':'');
+      col.dataset.zone=key;
+      col.innerHTML='<div class="focus-col-head"><span>'+title+(sub?' <small>'+sub+'</small>':'')+'</span><span>'+items.length+'</span></div>';
+      const list=document.createElement('div'); list.className='focus-col-list'; list.dataset.zone=key;
       if(!items.length){
         const empty=document.createElement('div'); empty.className='focus-drop-hint';
-        empty.textContent=status==='done'?'끝낸 Focus를 여기로.':'오늘 챙길 Action을 아래에서 추가.';
+        empty.textContent=key==='done'?'끝낸 Focus를 여기로.':'여기로 드래그하거나 아래에서 추가.';
         list.appendChild(empty);
       }
       items.forEach(f=>list.appendChild(makeFocusCard(f)));
@@ -5973,7 +6338,11 @@ function renderWeekMetrics(){
       return col;
     };
 
-    kanban.append(makeCol('ongoing','On-going',ongoing), makeCol('done','Done',done));
+    kanban.append(
+      makeCol('work','Work Flow','업무중',workItems),
+      makeCol('after','After Work','퇴근후',afterItems),
+      makeCol('done','Done','',doneItems)
+    );
     box.appendChild(kanban);
     bindFocusKanbanDrag(kanban);
 
@@ -5983,6 +6352,7 @@ function renderWeekMetrics(){
       if(!draft.projectId && !draft.subId && !draft.note.trim()) return;
       draft.done=false;
       state.todayDraft.focuses.push(draft);
+      syncFocusNote(draft);
       save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
     }, true);
     box.appendChild(add);
@@ -6018,7 +6388,7 @@ function renderWeekMetrics(){
     };
 
     const editor=document.createElement('div'); editor.className='focus-edit'; editor.style.display='none'; editor.draggable=false;
-    buildFocusEditor(editor,f,()=>{ save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow(); }, false);
+    buildFocusEditor(editor,f,()=>{ syncFocusNote(f); save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow(); }, false);
     edit.onclick=(e)=>{
       e.stopPropagation();
       if(editor.parentNode){ editor.style.display=editor.style.display==='none'?'grid':'none'; return; }
@@ -6074,10 +6444,13 @@ function renderWeekMetrics(){
     const byId=new Map((state.todayDraft.focuses||[]).map(f=>[String(f.id),f]));
     const next=[];
     root.querySelectorAll('.focus-col-list').forEach(list=>{
-      const isDone=list.dataset.status==='done';
+      const zone=list.dataset.zone; // 'work' | 'after' | 'done'
       list.querySelectorAll('.focus-line').forEach(card=>{
         const f=byId.get(String(card.getAttribute('data-dragid')));
-        if(f){ f.done=isDone; next.push(f); }
+        if(!f) return;
+        if(zone==='done'){ f.done=true; }
+        else { f.done=false; f.zone=zone; }
+        next.push(f);
       });
     });
     state.todayDraft.focuses=next;
@@ -6290,6 +6663,17 @@ function renderWeekMetrics(){
       if(!state.habits.some(h=>String(h.id)===String(id))) delete state.todayRoutineZones[id];
     });
   }
+  // Which zone is "active" right now, in Korea time.
+  // Weekday: before 17:00 → work, 17:00~next 08:00 → after. Weekend: always after.
+  function activeZone(){
+    const now=new Date();
+    // shift to KST regardless of device timezone
+    const kst=new Date(now.getTime() + (now.getTimezoneOffset()*60000) + (9*3600000));
+    const day=kst.getDay(); // 0 Sun ... 6 Sat
+    const hr=kst.getHours();
+    if(day===0 || day===6) return 'after';
+    return (hr<17) ? 'work' : 'after';
+  }
   function routineZoneOf(h){ ensureTodayRoutineZones(); return state.todayRoutineZones[String(h.id)] || 'after'; }
   function setRoutineZone(id, zone){
     ensureTodayRoutineZones();
@@ -6386,10 +6770,11 @@ function renderWeekMetrics(){
       div.addEventListener('dragend',()=>div.classList.remove('dragging-routine'));
       return div;
     };
+    const az=activeZone();
     zones.forEach(z=>{
       const items=sorted.filter(h=>routineZoneOf(h)===z.key);
       const col=document.createElement('div');
-      col.className='routine-zone';
+      col.className='routine-zone'+(z.key===az?' zone-active':'');
       col.setAttribute('data-zone',z.key);
       col.innerHTML='<div class="routine-zone-head"><div class="routine-zone-title">'+z.title+'<small>'+z.sub+'</small></div><span class="routine-zone-count">'+items.length+'</span></div><div class="routine-zone-list"></div>';
       const list=col.querySelector('.routine-zone-list');
@@ -6473,11 +6858,36 @@ function renderWeekMetrics(){
 
 
   load(); initDates(); bindArea('v-identity','identity'); bindArea('v-daily','daily'); renderTabs(); rerenderAll();
+  try{ __actPrev=actSnapshot(state); }catch(e){}
+  (function bindActivityUI(){
+    const s=document.getElementById('actSearch');
+    if(s) s.addEventListener('input',()=>{ __actQuery=s.value||''; renderActivityLog(); });
+    const c=document.getElementById('actClear');
+    if(c) c.addEventListener('click',()=>{ if(confirm('활동 기록을 전부 지울까요? (Daily Logs는 유지됩니다)')){ state.activity=[]; save(); renderActivityLog(); } });
+    try{ renderActivityLog(); }catch(e){}
+  })();
 
   const toolbarEl=document.querySelector('.toolbar');
-  const syncToolbarState=()=>{ if(toolbarEl) toolbarEl.classList.toggle('shrink', window.scrollY>28); };
+  const syncToolbarH=()=>{ if(toolbarEl){ const h=Math.round(toolbarEl.getBoundingClientRect().height); document.documentElement.style.setProperty('--toolbar-h', h+'px'); } };
+  const syncToolbarState=()=>{ if(toolbarEl) toolbarEl.classList.toggle('shrink', window.scrollY>28); syncToolbarH(); };
   window.addEventListener('scroll', syncToolbarState, {passive:true});
+  window.addEventListener('resize', syncToolbarH, {passive:true});
   syncToolbarState();
+  syncToolbarH();
+  setTimeout(syncToolbarH, 300);
+
+  // Auto-refresh active-zone highlight when the clock crosses a boundary (e.g. 5pm).
+  let __lastActiveZone=(typeof activeZone==='function')?activeZone():'after';
+  setInterval(()=>{
+    try{
+      const z=activeZone();
+      if(z!==__lastActiveZone){
+        __lastActiveZone=z;
+        if(typeof renderQuickHabits==='function') renderQuickHabits();
+        if(typeof renderTodayFocus==='function') renderTodayFocus();
+      }
+    }catch(e){}
+  }, 60000);
 
   function cloudPullTimed(ms){
     return Promise.race([
@@ -6502,7 +6912,7 @@ function renderWeekMetrics(){
     }
     cloudReady=true;
     if(cloud===null){ await cloudPush(); setSync('ok','Synced'); }
-    else{ state=cloud; migrate(); localStorage.setItem(KEY,JSON.stringify(state)); rerenderAll(); setSync('ok','Synced'); }
+    else{ state=cloud; migrate(); localStorage.setItem(KEY,JSON.stringify(state)); try{__actPrev=actSnapshot(state);}catch(e){} rerenderAll(); setSync('ok','Synced'); }
   }
   initCloud();
 })();
