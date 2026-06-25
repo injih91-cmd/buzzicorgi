@@ -11,8 +11,8 @@
 :root{
   --navy:#1F3864; --navy-soft:#2E4D80; --gold:#B8924A; --gold-soft:#D4AF6A;
   --bg:#F4F2EC; --card:#FFFFFF; --ink:#1A2030; --muted:#6B7280;
-  --line:#E3DFD4; --ok:#1D7A5A; --warn:#4F7D62; --danger:#A32D2D; --soft:#F7F5EF;
-  --today:#00A66A; --shadow:0 16px 42px rgba(31,56,100,.08);
+  --line:#E3DFD4; --ok:#3B6D5A; --warn:#4F7D62; --danger:#A32D2D; --soft:#F7F5EF;
+  --today:#3B6D5A; --shadow:0 16px 42px rgba(31,56,100,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Malgun Gothic','맑은 고딕',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding:24px 16px 90px}
@@ -73,7 +73,7 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 .tab small{display:block;font-weight:500;font-size:10px;opacity:.7;margin-top:2px}
 .ko-gloss{font-size:12px;font-weight:500;color:var(--muted,#6b7280);margin-left:6px}
 .backup-status{font-size:12px;margin:6px 0 10px;padding:8px 10px;border-radius:8px;line-height:1.4}
-.backup-status.ok{color:#1d7a5a;background:rgba(29,122,90,.08)}
+.backup-status.ok{color:#3B6D5A;background:rgba(29,122,90,.08)}
 .backup-status.warn{color:#4F7D62;background:rgba(180,83,9,.08)}
 .tab.active{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 8px 22px rgba(31,56,100,.18)}
 .panel{display:none}.panel.active{display:block}
@@ -154,7 +154,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--navy);box-shadow:0 0 
 .suggest-chip span{font-size:11px;font-weight:400;color:var(--muted,#6b7280)}
 .today-linked-routines{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
 .today-linked-routines .lr-mini{font-size:11px;background:var(--soft,#f7f5ef);border:1px solid var(--line,#e3dfd4);border-radius:999px;padding:2px 9px;color:var(--muted,#6b7280)}
-.today-linked-routines .lr-mini.ok{color:#1d7a5a;border-color:#1d7a5a}
+.today-linked-routines .lr-mini.ok{color:#3B6D5A;border-color:#3B6D5A}
 .today-project-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px}
 .today-project-title{font-weight:900;color:var(--navy);line-height:1.35}
 .sub-list{display:grid;gap:7px;margin:9px 0}
@@ -296,7 +296,7 @@ td.memo{text-align:left;color:var(--muted)}
 .linked-routine-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;background:var(--soft,#f7f5ef);border:1px solid var(--line,#e3dfd4);border-radius:9px;margin-bottom:7px}
 .linked-routine-row .lr-name{flex:1;min-width:120px;font-weight:600;font-size:13px}
 .linked-routine-row .lr-stat{font-size:12px;color:var(--muted,#6b7280);background:#fff;border:1px solid var(--line,#e3dfd4);border-radius:999px;padding:2px 9px}
-.linked-routine-row .lr-stat.ok{color:#1d7a5a;border-color:#1d7a5a}
+.linked-routine-row .lr-stat.ok{color:#3B6D5A;border-color:#3B6D5A}
 .linked-routine-row .lr-stat.streak{color:#d85a30}
 
 /* Project kind toggle */
@@ -344,7 +344,7 @@ td.memo{text-align:left;color:var(--muted)}
 .action-block{margin-bottom:10px}
 .child-list{margin:4px 0 0 26px;padding-left:10px;border-left:2px solid var(--line,#e3dfd4);display:grid;gap:5px}
 .child-row{display:grid;grid-template-columns:auto 1fr 120px auto;gap:6px;align-items:center}
-.child-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--ok,#1d7a5a)}
+.child-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--ok,#3B6D5A)}
 .child-row input[type=text]{border:0;border-bottom:1px solid var(--line);background:transparent;font-size:12px;padding:2px}
 .child-row input[type=date]{border:1px solid var(--line);border-radius:6px;font-size:11px;padding:3px 5px;background:#fff}
 .add-child-btn{justify-self:start;font-size:11px;margin-top:2px}
@@ -1209,8 +1209,8 @@ th,td{padding:6px 7px !important;font-size:11px !important}
   color:#fff !important;
 }
 .focus-line.done{
-  background:linear-gradient(135deg,#1D7A5A,#25966F) !important;
-  border-color:#1D7A5A !important;
+  background:linear-gradient(135deg,#3B6D5A,#25966F) !important;
+  border-color:#3B6D5A !important;
   color:#fff !important;
   opacity:1 !important;
   box-shadow:0 10px 22px rgba(29,122,90,.18) !important;
@@ -1236,11 +1236,11 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 
 /* v15.1 Sage Emerald correction: keep previous sage look, remove orange, remove gratitude input pockets */
 :root{
-  --today:#00A66A;
-  --signal:#00A66A;
+  --today:#3B6D5A;
+  --signal:#3B6D5A;
   --signal-soft:#E7FFF2;
-  --ok:#00A66A;
-  --done:#00A66A;
+  --ok:#3B6D5A;
+  --done:#3B6D5A;
   --done-deep:#007D52;
   --done-soft:#E7FFF2;
   --warn:#6E826B;
@@ -1274,17 +1274,17 @@ html,body{
 }
 /* emerald replaces every former orange emphasis */
 .btn.today,.btn.small.today,.chip.active,.scale-btn.on{
-  background:linear-gradient(135deg,#00A66A,#0FC77F) !important;
-  border-color:#00A66A !important;
+  background:linear-gradient(135deg,#3B6D5A,#4d8770) !important;
+  border-color:#3B6D5A !important;
   color:#fff !important;
   box-shadow:0 7px 16px rgba(0,166,106,.20) !important;
 }
 input:focus,textarea:focus,select:focus{
-  border-color:#00A66A !important;
+  border-color:#3B6D5A !important;
   box-shadow:0 0 0 3px rgba(0,166,106,.14) !important;
 }
-.tab.active::after{background:#00A66A !important;}
-.project-purpose{border-left-color:#00A66A !important;}
+.tab.active::after{background:#3B6D5A !important;}
+.project-purpose{border-left-color:#3B6D5A !important;}
 ::selection{background:rgba(0,166,106,.22) !important;}
 
 
@@ -1542,8 +1542,8 @@ input:focus,textarea:focus,select:focus{
   color:#fff !important;
 }
 .focus-line.done{
-  background:linear-gradient(135deg,#1D7A5A,#25966F) !important;
-  border-color:#1D7A5A !important;
+  background:linear-gradient(135deg,#3B6D5A,#25966F) !important;
+  border-color:#3B6D5A !important;
   color:#fff !important;
   opacity:1 !important;
   box-shadow:0 10px 22px rgba(29,122,90,.18) !important;
@@ -1578,15 +1578,15 @@ input:focus,textarea:focus,select:focus{
   --ink:#1F241F;
   --muted:#727A72;
   --line:#DED8CB;
-  --ok:#00A66A;
+  --ok:#3B6D5A;
   --warn:#7D9A7A;
   --danger:#D94A42;
   --soft:#F1EFE6;
-  --today:#00A66A;
+  --today:#3B6D5A;
   --shadow:0 8px 22px rgba(38,53,46,.075);
-  --signal:#00A66A;
+  --signal:#3B6D5A;
   --signal-soft:#FFF0E9;
-  --done:#00A66A;
+  --done:#3B6D5A;
   --done-deep:#007D52;
   --done-soft:#E7FFF2;
   --focus:#26352E;
@@ -1719,7 +1719,7 @@ input:focus,textarea:focus,select:focus{
 }
 .btn:hover{background:#34483E !important;border-color:#34483E !important;}
 .btn.today,.btn.small.today{
-  background:linear-gradient(135deg,var(--signal),#0FC77F) !important;
+  background:linear-gradient(135deg,var(--signal),#4d8770) !important;
   border-color:var(--signal) !important;
   color:#fff !important;
   box-shadow:0 7px 16px rgba(0,166,106,.20) !important;
@@ -1749,7 +1749,7 @@ input:focus,textarea:focus,select:focus{
   font-weight:800 !important;
 }
 .chip.active{
-  background:linear-gradient(135deg,var(--signal),#0FC77F) !important;
+  background:linear-gradient(135deg,var(--signal),#4d8770) !important;
   border-color:var(--signal) !important;
   color:#fff !important;
   box-shadow:0 7px 16px rgba(0,166,106,.20) !important;
@@ -1764,7 +1764,7 @@ input:focus,textarea:focus,select:focus{
   color:#657064 !important;
 }
 .scale-btn.on{
-  background:linear-gradient(135deg,var(--signal),#0FC77F) !important;
+  background:linear-gradient(135deg,var(--signal),#4d8770) !important;
   border-color:var(--signal) !important;
   color:#fff !important;
   box-shadow:0 8px 18px rgba(0,166,106,.22) !important;
@@ -1858,8 +1858,8 @@ input:focus,textarea:focus,select:focus{
   border-color:var(--done) !important;
 }
 .focus-line.done{
-  background:linear-gradient(135deg,#00A66A,#00C47E) !important;
-  border:2px solid #00A66A !important;
+  background:linear-gradient(135deg,#3B6D5A,#4d8770) !important;
+  border:2px solid #3B6D5A !important;
   color:#fff !important;
   box-shadow:0 12px 24px rgba(0,166,106,.26), inset 0 1px 0 rgba(255,255,255,.22) !important;
 }
@@ -1947,11 +1947,11 @@ th{background:#F4F1E9 !important;color:#667066 !important;}
 
 /* v15.1 Sage Emerald correction: keep previous sage look, remove orange, remove gratitude input pockets */
 :root{
-  --today:#00A66A;
-  --signal:#00A66A;
+  --today:#3B6D5A;
+  --signal:#3B6D5A;
   --signal-soft:#E7FFF2;
-  --ok:#00A66A;
-  --done:#00A66A;
+  --ok:#3B6D5A;
+  --done:#3B6D5A;
   --done-deep:#007D52;
   --done-soft:#E7FFF2;
   --warn:#6E826B;
@@ -1985,17 +1985,17 @@ html,body{
 }
 /* emerald replaces every former orange emphasis */
 .btn.today,.btn.small.today,.chip.active,.scale-btn.on{
-  background:linear-gradient(135deg,#00A66A,#0FC77F) !important;
-  border-color:#00A66A !important;
+  background:linear-gradient(135deg,#3B6D5A,#4d8770) !important;
+  border-color:#3B6D5A !important;
   color:#fff !important;
   box-shadow:0 7px 16px rgba(0,166,106,.20) !important;
 }
 input:focus,textarea:focus,select:focus{
-  border-color:#00A66A !important;
+  border-color:#3B6D5A !important;
   box-shadow:0 0 0 3px rgba(0,166,106,.14) !important;
 }
-.tab.active::after{background:#00A66A !important;}
-.project-purpose{border-left-color:#00A66A !important;}
+.tab.active::after{background:#3B6D5A !important;}
+.project-purpose{border-left-color:#3B6D5A !important;}
 ::selection{background:rgba(0,166,106,.22) !important;}
 
 </style>
@@ -2104,7 +2104,7 @@ input:focus,textarea:focus,select:focus{
   font-size:11px;color:var(--muted,#9a93a3);
   padding:0 2px;margin-left:3px;line-height:1;vertical-align:baseline;
 }
-.routine-prin-btn:hover{color:var(--ok,#1d7a5a);}
+.routine-prin-btn:hover{color:var(--ok,#3B6D5A);}
 .routine-prin-pop{
   display:none;position:fixed;z-index:9999;
   min-width:180px;max-width:280px;
@@ -2131,7 +2131,7 @@ input:focus,textarea:focus,select:focus{
   font:inherit;font-size:12px;line-height:1.5;color:var(--ink,#2c2632);
 }
 .habit-principles:focus{
-  outline:none;border-style:solid;border-color:var(--ok,#1d7a5a);
+  outline:none;border-style:solid;border-color:var(--ok,#3B6D5A);
   background:#fff;
 }
 .habit-principles::placeholder{color:var(--muted,#b3aebb);}
@@ -2142,7 +2142,7 @@ input:focus,textarea:focus,select:focus{
   flex:1;min-width:0;padding:7px 11px;border:1px solid var(--line,#e3dfd4);
   border-radius:8px;font:inherit;font-size:12.5px;background:var(--soft,#faf8f3);
 }
-.act-tools #actSearch:focus{outline:none;border-color:var(--ok,#1d7a5a);background:#fff;}
+.act-tools #actSearch:focus{outline:none;border-color:var(--ok,#3B6D5A);background:#fff;}
 .btn.ghost.sm{padding:6px 11px;font-size:11.5px;white-space:nowrap;}
 .act-list{max-height:480px;overflow-y:auto;margin-top:4px;}
 .act-day{
@@ -2172,7 +2172,7 @@ input:focus,textarea:focus,select:focus{
   font-variant-numeric:tabular-nums;min-width:34px;
 }
 .pmh-text{flex:1;font-size:13px;line-height:1.5;color:var(--ink,#2c2632);word-break:break-word;}
-.pmh-action{color:var(--ok,#1d7a5a);font-weight:700;margin-right:2px;}
+.pmh-action{color:var(--ok,#3B6D5A);font-weight:700;margin-right:2px;}
 .pmh-del{
   flex:0 0 auto;border:none;background:none;cursor:pointer;
   color:var(--muted,#c4bfb4);font-size:15px;line-height:1;padding:0 2px;
@@ -2190,7 +2190,7 @@ input:focus,textarea:focus,select:focus{
 }
 .focus-col-head small{font-weight:600;color:var(--muted,#9a93a3);font-size:10px;}
 /* Active zone: sage green card with white text — applies to routine zones + focus columns */
-:root{--sage-active:#7d9a7a;}
+:root{--sage-active:#788c5c;}
 .routine-zone.zone-active,
 .focus-col.zone-active{
   background:var(--sage-active) !important;
@@ -2214,6 +2214,34 @@ input:focus,textarea:focus,select:focus{
 .routine-zone.zone-active .quick-habit.routine-line,
 .focus-col.zone-active .focus-line{
   background:rgba(255,255,255,.94) !important;
+}
+
+/* v21 zone filter toggle */
+.zone-filter-bar{margin:2px 0 4px;display:flex;justify-content:center;}
+.zone-filter{
+  display:inline-flex;gap:5px;padding:5px;
+  background:#fff;border:1px solid var(--line,#e3dfd4);border-radius:999px;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.zone-filter button{
+  border:none;background:transparent;cursor:pointer;
+  font-size:12.5px;font-weight:700;color:var(--muted,#6b7280);
+  padding:6px 16px;border-radius:999px;white-space:nowrap;transition:all .15s;
+}
+.zone-filter button:hover{color:var(--ink,#2c2632);background:var(--soft,#f4f2ec);}
+.zone-filter button.on{
+  background:var(--sage-active,#788c5c);color:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.12);
+}
+.zone-filter button.on:hover{background:var(--sage-active,#788c5c);color:#fff;}
+/* single-zone routine board → 1 column */
+.quick-habits.routine-board.single-zone{grid-template-columns:1fr !important;}
+/* focus kanban column-count classes (override the fixed 3-col rule) */
+.focus-kanban.focus-kanban-3.cols-2{grid-template-columns:1fr 1fr !important;}
+.focus-kanban.focus-kanban-3.cols-1{grid-template-columns:1fr !important;}
+@media(max-width:760px){
+  .focus-kanban.focus-kanban-3.cols-1,
+  .focus-kanban.focus-kanban-3.cols-2{grid-template-columns:1fr !important;}
 }
 
 </style>
@@ -2372,6 +2400,14 @@ input:focus,textarea:focus,select:focus{
       </div>
 
       
+
+      <div class="zone-filter-bar span-12">
+        <div class="zone-filter" id="zoneFilter">
+          <button type="button" data-zf="all">All</button>
+          <button type="button" data-zf="work">Work Flow</button>
+          <button type="button" data-zf="after">After Hours</button>
+        </div>
+      </div>
 
       <div class="card span-6">
         <h3>Today’s Routines <span class="ko-gloss">오늘 루틴</span></h3>
@@ -2590,7 +2626,7 @@ input:focus,textarea:focus,select:focus{
         </div>
         <div class="hint" style="margin-top:12px">AI에게 분석을 맡길 때 — 아래 파일을 받아 ChatGPT나 Claude에 업로드하면 됩니다.</div>
         <div class="row">
-          <button class="btn" id="aiExportBtn" style="background:var(--ok,#1d7a5a);color:#fff;border:none">🧠 AI 분석용 내보내기</button>
+          <button class="btn" id="aiExportBtn" style="background:var(--ok,#3B6D5A);color:#fff;border:none">🧠 AI 분석용 내보내기</button>
         </div>
       </div>
     </div>
@@ -2649,7 +2685,7 @@ input:focus,textarea:focus,select:focus{
     ALL_PILLARS.forEach(p=>pillarMeta[p.key]={cap:p.cap});
     return {
       identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
-      habits:[], projects:[], records:[], cardExpenses:[], activity:[],
+      habits:[], projects:[], records:[], cardExpenses:[], activity:[], zoneFilter:'all', zoneFilterTouched:false,
       todayDraft:newTodayDraft(), todayLogs:[], simSettings: defaultSimSettings()
     };
   }
@@ -2877,6 +2913,8 @@ input:focus,textarea:focus,select:focus{
     ensureSimSettings();
     if(!Array.isArray(state.habits)) state.habits=[];
     if(!Array.isArray(state.activity)) state.activity=[];
+    if(typeof state.zoneFilter!=='string') state.zoneFilter='all';
+    if(typeof state.zoneFilterTouched!=='boolean') state.zoneFilterTouched=false;
     if(!Array.isArray(state.projects)) state.projects=[];
     if(!Array.isArray(state.todayLogs)) state.todayLogs=[];
     if(typeof state.lastBackup!=='string') state.lastBackup=state.lastBackup||'';
@@ -4574,7 +4612,7 @@ input:focus,textarea:focus,select:focus{
     if(existing) existing.destroy();
     const dates=last7Dates();
     const labels=dates.map(d=>d.slice(5).replace('-','.'));
-    const palette=['#1F3864','#00A66A','#1D7A5A','#B8924A'];
+    const palette=['#1F3864','#3B6D5A','#3B6D5A','#B8924A'];
     const datasets=metrics.map((m,i)=>({
       label:cleanMetricLabel(m.label),
       data:dates.map(d=>metricValueForDate(d,group,m.key)),
@@ -5541,7 +5579,7 @@ function renderWeekMetrics(){
     if(existing) existing.destroy();
     const dates=last7Dates();
     const labels=dates.map(d=>d.slice(5).replace('-','.'));
-    const palette=['#1F3864','#00A66A','#1D7A5A','#B8924A'];
+    const palette=['#1F3864','#3B6D5A','#3B6D5A','#B8924A'];
     const datasets=metrics.map((m,i)=>({
       label:cleanMetricLabel(m.label),
       data:dates.map(d=>metricValueForDate(d,group,m.key)),
@@ -6338,11 +6376,13 @@ function renderWeekMetrics(){
       return col;
     };
 
-    kanban.append(
-      makeCol('work','Work Flow','업무중',workItems),
-      makeCol('after','After Work','퇴근후',afterItems),
-      makeCol('done','Done','',doneItems)
-    );
+    const zfF=getZoneFilter();
+    const cols=[];
+    if(zfF==='all' || zfF==='work') cols.push(makeCol('work','Work Flow','업무중',workItems));
+    if(zfF==='all' || zfF==='after') cols.push(makeCol('after','After Work','퇴근후',afterItems));
+    cols.push(makeCol('done','Done','',doneItems));
+    kanban.classList.add('cols-'+cols.length);
+    kanban.append(...cols);
     box.appendChild(kanban);
     bindFocusKanbanDrag(kanban);
 
@@ -6675,6 +6715,30 @@ function renderWeekMetrics(){
     return (hr<17) ? 'work' : 'after';
   }
   function routineZoneOf(h){ ensureTodayRoutineZones(); return state.todayRoutineZones[String(h.id)] || 'after'; }
+
+  // Zone filter for Today (routines + focus). Persisted in state.
+  // Default (when user has never chosen): weekday 06:00–09:00 → All, else current active zone.
+  function defaultZoneFilter(){
+    const now=new Date();
+    const kst=new Date(now.getTime() + (now.getTimezoneOffset()*60000) + (9*3600000));
+    const day=kst.getDay(), hr=kst.getHours();
+    if(day>=1 && day<=5 && hr>=6 && hr<9) return 'all';
+    return activeZone();
+  }
+  function getZoneFilter(){
+    // user-chosen value wins permanently; otherwise follow the time-based default
+    if(state && state.zoneFilterTouched && state.zoneFilter) return state.zoneFilter;
+    return defaultZoneFilter();
+  }
+  function setZoneFilter(v){
+    state.zoneFilter=v; state.zoneFilterTouched=true;
+    save(); renderQuickHabits(); renderTodayFocus(); syncZoneFilterUI();
+  }
+  function syncZoneFilterUI(){
+    const root=document.getElementById('zoneFilter'); if(!root) return;
+    const cur=getZoneFilter();
+    root.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.zf===cur));
+  }
   function setRoutineZone(id, zone){
     ensureTodayRoutineZones();
     state.todayRoutineZones[String(id)]=(zone==='work')?'work':'after';
@@ -6708,6 +6772,7 @@ function renderWeekMetrics(){
     if(!box) return;
     box.innerHTML='';
     box.className='quick-habits routine-board';
+    try{ syncZoneFilterUI(); }catch(e){}
     if(!state.habits.length){ box.innerHTML='<div class="empty">Routine 없음</div>'; return; }
     ensureTodayRoutineOrder();
     ensureTodayRoutineZones();
@@ -6717,10 +6782,12 @@ function renderWeekMetrics(){
       if(pa) return pa;
       return (a.title||'').localeCompare(b.title||'');
     });
+    const zfR=getZoneFilter();
     const zones=[
       {key:'work',title:'Work Flow',sub:'업무중'},
       {key:'after',title:'After Hours',sub:'퇴근후'}
-    ];
+    ].filter(z=> zfR==='all' || z.key===zfR);
+    box.classList.toggle('single-zone', zones.length===1);
     const makeCard=(h)=>{
       const pi=pillarOf(h.pillar);
       const div=document.createElement('div');
@@ -6876,13 +6943,23 @@ function renderWeekMetrics(){
   syncToolbarH();
   setTimeout(syncToolbarH, 300);
 
+  (function bindZoneFilter(){
+    const root=document.getElementById('zoneFilter');
+    if(root){ root.querySelectorAll('button').forEach(b=>{ b.onclick=()=>setZoneFilter(b.dataset.zf); }); }
+    try{ syncZoneFilterUI(); }catch(e){}
+  })();
+
   // Auto-refresh active-zone highlight when the clock crosses a boundary (e.g. 5pm).
   let __lastActiveZone=(typeof activeZone==='function')?activeZone():'after';
   setInterval(()=>{
     try{
       const z=activeZone();
-      if(z!==__lastActiveZone){
-        __lastActiveZone=z;
+      const changed=(z!==__lastActiveZone);
+      if(changed) __lastActiveZone=z;
+      // if user has never chosen a filter, the default is time-based and may shift
+      const followingDefault=!(state && state.zoneFilterTouched);
+      if(changed || followingDefault){
+        if(typeof syncZoneFilterUI==='function') syncZoneFilterUI();
         if(typeof renderQuickHabits==='function') renderQuickHabits();
         if(typeof renderTodayFocus==='function') renderTodayFocus();
       }
