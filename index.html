@@ -79,8 +79,10 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 .panel{display:none}.panel.active{display:block}
 
 /* common */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.card>h3{font-size:17px;letter-spacing:-.01em;margin-bottom:3px;display:flex;align-items:baseline;flex-wrap:wrap;gap:7px}
+.card>h3+.hint{margin-bottom:14px}
 .span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
 h3{font-size:19px;letter-spacing:-.03em;margin-bottom:4px}
 .hint{font-size:12px;color:var(--muted);margin-bottom:14px}
@@ -406,6 +408,18 @@ td.memo{text-align:left;color:var(--muted)}
 .tmc-head .tmc-remain{font-size:12px;font-weight:700;color:var(--gold,#b8924a)}
 .tmc-update{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:7px}
 .tmc-update .tmc-input{width:80px;border:1px solid var(--line);border-radius:7px;padding:5px;font-size:13px;font-weight:700;text-align:center}
+
+/* Date navigator */
+.date-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 16px;flex-wrap:wrap}
+.date-arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--line,#e3dfd4);background:#fff;font-size:22px;line-height:1;color:var(--navy,#1f3864);cursor:pointer;font-family:inherit}
+.date-arrow:hover{background:var(--soft,#f7f5ef)}
+.date-current{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:150px;border:1px solid var(--line,#e3dfd4);background:#fff;border-radius:12px;padding:8px 18px;cursor:default;font-family:inherit}
+.date-current.is-today{border-color:var(--navy,#1f3864);background:var(--navy,#1f3864)}
+.date-current.is-today .dn-date,.date-current.is-today .dn-rel{color:#fff}
+.date-current .dn-date{font-size:16px;font-weight:800;color:var(--navy,#1f3864)}
+.date-current .dn-rel{font-size:11px;color:var(--muted,#6b7280)}
+.date-today-btn{border:1px solid var(--gold,#b8924a);background:#fff;color:var(--gold,#b8924a);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.date-today-btn:hover{background:var(--gold,#b8924a);color:#fff}
 .sub-row{display:grid;grid-template-columns:auto 1fr 120px auto auto;gap:7px;align-items:center;margin-bottom:7px}
 .sub-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
 .sub-row .focus-on{background:var(--today);color:#fff;border-color:var(--today)}
@@ -865,6 +879,12 @@ textarea{min-height:88px}
   </nav>
 
   <section class="panel active" id="tab-today">
+    <div class="date-nav">
+      <button class="date-arrow" id="dayPrev" aria-label="이전 날">‹</button>
+      <button class="date-current" id="dayLabel">오늘</button>
+      <button class="date-arrow" id="dayNext" aria-label="다음 날">›</button>
+      <button class="date-today-btn" id="dayToday">오늘로</button>
+    </div>
     <div class="today-flow" id="todayFlow">
       <div class="flow-step" id="flowCheckin"><b>1</b><span>Check-in</span></div>
       <div class="flow-line"></div>
@@ -875,7 +895,7 @@ textarea{min-height:88px}
       <div class="flow-step" id="flowCheckout"><b>4</b><span>Check-out</span></div>
     </div>
     <div class="grid">
-      <div class="card span-5">
+      <div class="card span-6">
         <h3>Today Check-in <span class="ko-gloss">오늘 컨디션</span></h3>
         <div class="hint" id="todayDate"></div>
         <div class="scorebox">
@@ -918,13 +938,13 @@ textarea{min-height:88px}
         <div class="mini-chart"><canvas id="checkinChart"></canvas></div>
       </div>
 
-      <div class="card span-7">
+      <div class="card span-6">
         <h3>Today’s 3 <span class="ko-gloss">오늘의 3가지</span></h3>
         <div class="hint">오늘 가장 의식할 3가지를 고릅니다. Project를 선택하면 실행 Description가 해당 Project에 누적됩니다.</div>
         <div id="todaySlots"></div>
       </div>
 
-      <div class="card span-5">
+      <div class="card span-6">
         <h3>Today’s Routines <span class="ko-gloss">오늘 루틴</span></h3>
         <div class="hint">Value Pillars에 설정된 모든 Routine을 오늘 기준으로 체크합니다.</div>
         <div class="scorebox compact">
@@ -941,7 +961,7 @@ textarea{min-height:88px}
         <div class="routine-history" id="routineHistory"></div>
       </div>
 
-      <div class="card span-7">
+      <div class="card span-6">
         <h3>Today’s Projects <span class="ko-gloss">오늘 작업대</span></h3>
         <div class="hint">오늘 진행할 Project Action을 확인하고, 필요한 실행 메모를 남깁니다.</div>
         <div class="today-project-list" id="todayProjects"></div>
@@ -1164,9 +1184,9 @@ textarea{min-height:88px}
       todayDraft:newTodayDraft(), todayLogs:[]
     };
   }
-  function newTodayDraft(){
+  function newTodayDraft(forDate){
     return {
-      date:todayStr(),
+      date:forDate||todayStr(),
       checkin:{
         theme:'',
         bodyState:'',
@@ -1196,8 +1216,11 @@ textarea{min-height:88px}
   }
   function emptySlot(){ return {kind:'direct', habitId:'', projectId:'', subId:'', text:'', memo:'', done:false}; }
   function uid(){ return Date.now()+Math.floor(Math.random()*10000); }
-  function todayStr(){ return new Date().toISOString().slice(0,10); }
-  function ymd(d){ return new Date(d).toISOString().slice(0,10); }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function localYmd(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  function todayStr(){ return localYmd(new Date()); }
+  function viewDateStr(){ return state.viewDate||todayStr(); }
+  function ymd(d){ return localYmd(new Date(d)); }
   function mondayOf(date){ const d=new Date(date); d.setHours(0,0,0,0); const wd=(d.getDay()+6)%7; d.setDate(d.getDate()-wd); return d; }
   function weekDates(monday){ return Array.from({length:7},(_,i)=>{const d=new Date(monday); d.setDate(d.getDate()+i); return d;}); }
   function pillarOf(k){ return ALL_PILLARS.find(p=>p.key===k)||ETC_PILLAR; }
@@ -1316,32 +1339,56 @@ textarea{min-height:88px}
       state._pillarsMigratedToProjects=true;
     }
 
-    if(!state.todayDraft || state.todayDraft.date!==todayStr()){
-      state.todayDraft=newTodayDraft();
-    } else {
-      if(!state.todayDraft.checkin) state.todayDraft.checkin={};
-      if(!state.todayDraft.checkout) state.todayDraft.checkout={};
-
-      const ci=state.todayDraft.checkin;
-      if(!('theme' in ci)) ci.theme=state.todayDraft.mode||'';
-      if(!('bodyState' in ci)) ci.bodyState=state.todayDraft.condition||'';
-      ['mood','energy','sleep','anxiety','bodyFatigue','focus'].forEach(k=>{ ci[k]=+ci[k]||0; });
-      if(typeof ci.note!=='string') ci.note='';
-
-      const co=state.todayDraft.checkout;
-      ['satisfaction','accomplishment','calm','selfCare','fatigue'].forEach(k=>{ co[k]=+co[k]||0; });
-      if(typeof co.good!=='string') co.good='';
-      if(typeof co.hard!=='string') co.hard='';
-      if(typeof co.tomorrow!=='string') co.tomorrow='';
-      if(!co.good && state.todayDraft.review) co.good=state.todayDraft.review;
-
-      if(!state.todayDraft.slots) state.todayDraft.slots={};
-      SLOT_DEF.forEach(s=>{ 
-        if(!state.todayDraft.slots[s.key]) state.todayDraft.slots[s.key]=emptySlot(); 
-        if(typeof state.todayDraft.slots[s.key].memo!=='string') state.todayDraft.slots[s.key].memo='';
-      });
+    // --- Day logs: date-keyed check-in/out + slots, with navigable date ---
+    if(!state.dayLogs || typeof state.dayLogs!=='object' || Array.isArray(state.dayLogs)) state.dayLogs={};
+    // migrate the old single todayDraft into dayLogs under its own date
+    if(state.todayDraft && state.todayDraft.date){
+      if(!state.dayLogs[state.todayDraft.date]) state.dayLogs[state.todayDraft.date]=state.todayDraft;
     }
+    // normalize every stored day
+    Object.keys(state.dayLogs).forEach(d=>{ state.dayLogs[d]=normalizeDraft(state.dayLogs[d], d); });
+    // viewDate defaults to today
+    if(!state.viewDate) state.viewDate=todayStr();
+    // ensure the viewed day exists and point todayDraft at it
+    loadDay(state.viewDate);
   }
+
+  function normalizeDraft(draft, forDate){
+    if(!draft || typeof draft!=='object') draft=newTodayDraft(forDate);
+    draft.date=forDate||draft.date||todayStr();
+    if(!draft.checkin) draft.checkin={};
+    if(!draft.checkout) draft.checkout={};
+    const ci=draft.checkin;
+    if(!('theme' in ci)) ci.theme=draft.mode||'';
+    if(!('bodyState' in ci)) ci.bodyState=draft.condition||'';
+    ['mood','energy','sleep','anxiety','bodyFatigue','focus'].forEach(k=>{ ci[k]=+ci[k]||0; });
+    if(typeof ci.note!=='string') ci.note='';
+    const co=draft.checkout;
+    ['satisfaction','accomplishment','calm','selfCare','fatigue'].forEach(k=>{ co[k]=+co[k]||0; });
+    ['good','hard','tomorrow'].forEach(k=>{ if(typeof co[k]!=='string') co[k]=''; });
+    if(!co.good && draft.review) co.good=draft.review;
+    if(!draft.slots) draft.slots={};
+    SLOT_DEF.forEach(s=>{
+      if(!draft.slots[s.key]) draft.slots[s.key]=emptySlot();
+      if(typeof draft.slots[s.key].memo!=='string') draft.slots[s.key].memo='';
+    });
+    return draft;
+  }
+
+  // Point state.todayDraft at the entry for `date`, creating a blank one if needed.
+  function loadDay(date){
+    if(!state.dayLogs) state.dayLogs={};
+    if(!state.dayLogs[date]) state.dayLogs[date]=newTodayDraft(date);
+    state.dayLogs[date]=normalizeDraft(state.dayLogs[date], date);
+    state.viewDate=date;
+    state.todayDraft=state.dayLogs[date]; // everything else reads todayDraft as before
+  }
+  function shiftDay(deltaDays){
+    const d=new Date(state.viewDate+'T00:00:00'); d.setDate(d.getDate()+deltaDays);
+    loadDay(ymd(d)); save(); renderAllLinked();
+  }
+  function goToday(){ loadDay(todayStr()); save(); renderAllLinked(); }
+
 
   function load(){ try{ const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):fresh(); }catch(e){ state=fresh(); } migrate(); }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} cloudPushDebounced(); }
@@ -2040,9 +2087,32 @@ textarea{min-height:88px}
     SLOT_DEF.forEach(def=>{ const slot=state.todayDraft.slots[def.key]; if(slot.kind==='habit'&&String(slot.habitId)===String(hid)) state.todayDraft.slots[def.key]=emptySlot(); });
   }
 
+  function renderDateNav(){
+    const lbl=document.getElementById('dayLabel'); if(!lbl) return;
+    const vd=state.viewDate||todayStr();
+    const d=new Date(vd+'T00:00:00');
+    const isToday=vd===todayStr();
+    const diff=Math.round((d-new Date(todayStr()+'T00:00:00'))/86400000);
+    let rel='';
+    if(diff===0) rel='오늘'; else if(diff===-1) rel='어제'; else if(diff===1) rel='내일';
+    else if(diff<0) rel=(-diff)+'일 전'; else rel=diff+'일 후';
+    const wk=['일','월','화','수','목','금','토'][d.getDay()];
+    lbl.innerHTML='<span class="dn-date">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+wk+')</span><span class="dn-rel">'+rel+'</span>';
+    lbl.classList.toggle('is-today',isToday);
+    const todayBtn=document.getElementById('dayToday');
+    if(todayBtn) todayBtn.style.display=isToday?'none':'';
+    // bind once
+    const prev=document.getElementById('dayPrev'), next=document.getElementById('dayNext');
+    if(prev&&!prev._bound){ prev._bound=true; prev.onclick=()=>shiftDay(-1); }
+    if(next&&!next._bound){ next._bound=true; next.onclick=()=>shiftDay(1); }
+    if(todayBtn&&!todayBtn._bound){ todayBtn._bound=true; todayBtn.onclick=()=>goToday(); }
+  }
+
   /* Today */
   function renderToday(){
-    document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    renderDateNav();
+    const viewed=new Date((state.viewDate||todayStr())+'T00:00:00');
+    document.getElementById('todayDate').textContent=viewed.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
     const ci=state.todayDraft.checkin;
     const co=state.todayDraft.checkout;
@@ -2342,7 +2412,7 @@ textarea{min-height:88px}
   }
   function slotStatus(slot){
     if(slot.kind==='habit'){
-      const h=getHabit(slot.habitId); const done=h?habitDoneOn(h):false;
+      const h=getHabit(slot.habitId); const done=h?habitDoneOn(h,viewDateStr()):false;
       return {done,label:done?'✓ Routine Done':'Routine 연결',text:h?'연결됨: <b>'+escape(h.title)+'</b>':'Select a Routine.'};
     }
     if(slot.kind==='project'||(slot.kind==='direct'&&slot.projectId&&slot.subId)){
@@ -2400,9 +2470,9 @@ textarea{min-height:88px}
             '<div class="habit-spark">'+habitSparkline(h)+'</div>'+
           '</div>';
         const b=document.createElement('button'); 
-        b.className='toggle '+(habitDoneOn(h)?'on':''); 
-        b.textContent=habitDoneOn(h)?'완료':'체크';
-        b.onclick=()=>{ setHabitDone(h,todayStr(),!habitDoneOn(h)); save(); renderAllLinked(); };
+        b.className='toggle '+(habitDoneOn(h,viewDateStr())?'on':''); 
+        b.textContent=habitDoneOn(h,viewDateStr())?'완료':'체크';
+        b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
         div.appendChild(b);
         group.appendChild(div);
       });
