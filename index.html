@@ -1996,6 +1996,149 @@ input:focus,textarea:focus,select:focus{
 
 </style>
 
+
+<style id="routineBoardV19Style">
+
+/* v19 Routine board: Work Flow / After Hours */
+.quick-habits.routine-board{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+}
+.routine-zone{
+  min-height:74px;
+  background:#F8F6F0;
+  border:1.5px dashed rgba(38,53,46,.18);
+  border-radius:14px;
+  padding:8px;
+  transition:border-color .14s ease, background .14s ease, box-shadow .14s ease;
+}
+.routine-zone.drag-over{
+  background:#EEF6EF !important;
+  border-color:rgba(0,166,106,.55) !important;
+  box-shadow:0 8px 18px rgba(0,166,106,.12) !important;
+}
+.routine-zone-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin:0 0 7px;
+  padding:0 2px;
+}
+.routine-zone-title{
+  font-size:12px;
+  font-weight:950;
+  color:#26352E;
+  letter-spacing:-.02em;
+}
+.routine-zone-title small{
+  margin-left:4px;
+  font-size:10px;
+  font-weight:800;
+  color:#7B847C;
+}
+.routine-zone-count{
+  min-width:22px;
+  height:20px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border:1px solid rgba(38,53,46,.12);
+  color:#3F584C;
+  font-size:10px;
+  font-weight:900;
+}
+.routine-zone-list{
+  display:grid;
+  gap:5px;
+}
+.quick-habit.routine-line{
+  cursor:grab;
+  user-select:none;
+}
+.quick-habit.routine-line:active{
+  cursor:grabbing;
+}
+.quick-habit.routine-line.dragging-routine{
+  opacity:.45;
+  transform:scale(.99);
+}
+.quick-habit.routine-line.done{
+  background:linear-gradient(135deg, rgba(0,166,106,.13), rgba(255,255,255,.95)) !important;
+  border-color:rgba(0,166,106,.35) !important;
+  box-shadow:0 5px 14px rgba(0,166,106,.12) !important;
+}
+.quick-habit.routine-line.done .routine-name{
+  text-decoration:line-through;
+  text-decoration-thickness:2px;
+  text-decoration-color:rgba(0,166,106,.65);
+  color:#769083 !important;
+}
+.quick-habit.routine-line.done .routine-pillar,
+.quick-habit.routine-line.done .routine-freq,
+.quick-habit.routine-line.done .habit-spark{
+  opacity:.62;
+}
+.routine-empty-note{
+  font-size:11px;
+  color:#98A097;
+  padding:10px 4px;
+  text-align:center;
+}
+@media(max-width:760px){
+  .quick-habits.routine-board{grid-template-columns:1fr !important;}
+}
+
+</style>
+
+<style id="routineBoardV19WidthFix">
+/* v19.1 Routine board width fix: force 50:50 inside parent card */
+.quick-habits.routine-board{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:8px !important;
+  overflow:hidden !important;
+}
+.quick-habits.routine-board .routine-zone{
+  min-width:0 !important;
+  max-width:100% !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+.quick-habits.routine-board .routine-zone-list{
+  min-width:0 !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+}
+.quick-habits.routine-board .quick-habit.routine-line{
+  min-width:0 !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+.quick-habits.routine-board .routine-name,
+.quick-habits.routine-board .routine-pillar,
+.quick-habits.routine-board .routine-freq{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+@media(max-width:640px){
+  .quick-habits.routine-board{
+    grid-template-columns:1fr !important;
+    overflow:visible !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -2346,7 +2489,7 @@ input:focus,textarea:focus,select:focus{
     {key:'bvichi',emo:'🐾',name:'버찌',cap:'반려와의 일상'},
     {key:'viola',emo:'🎻',name:'비올라',cap:'음악·연주'},
     {key:'body',emo:'💪',name:'Body / Condition',cap:'몸과 컨디션'},
-    {key:'golf',emo:'⛳',name:'골프',cap:'취미·필드'},
+    {key:'golf',emo:'💼',name:'Job',cap:'일·커리어·회사 운영'},
     {key:'mini',emo:'🚗',name:'Mini Life',cap:'쿠퍼 S · 라이프스타일'}
   ];
   const ETC_PILLAR={key:'etc',emo:'📌',name:'Misc',cap:'단발 업무·Quick Capture'};
@@ -6090,29 +6233,76 @@ function renderWeekMetrics(){
 
 
   /* v14.2 Routine UI overrides: compact list instead of card blocks */
+
+  function ensureTodayRoutineZones(){
+    if(!state.todayRoutineZones || typeof state.todayRoutineZones!=='object' || Array.isArray(state.todayRoutineZones)) state.todayRoutineZones={};
+    state.habits.forEach(h=>{
+      const id=String(h.id);
+      if(state.todayRoutineZones[id]!=='work' && state.todayRoutineZones[id]!=='after'){
+        const title=String(h.title||'').toLowerCase();
+        const pillar=String(h.pillar||'');
+        const workWords=['업무','회사','보고','회의','메일','경영','자료','장표','work','job','office'];
+        state.todayRoutineZones[id]=(pillar==='golf' || workWords.some(w=>title.includes(w)))?'work':'after';
+      }
+    });
+    Object.keys(state.todayRoutineZones).forEach(id=>{
+      if(!state.habits.some(h=>String(h.id)===String(id))) delete state.todayRoutineZones[id];
+    });
+  }
+  function routineZoneOf(h){ ensureTodayRoutineZones(); return state.todayRoutineZones[String(h.id)] || 'after'; }
+  function setRoutineZone(id, zone){
+    ensureTodayRoutineZones();
+    state.todayRoutineZones[String(id)]=(zone==='work')?'work':'after';
+    ensureTodayRoutineOrder();
+    const sid=String(id);
+    state.todayRoutineOrder=(state.todayRoutineOrder||[]).map(String).filter(x=>x!==sid);
+    const current=sortBySavedOrder(state.habits,state.todayRoutineOrder,(a,b)=>{
+      const pa=(pillarOf(a.pillar).name||'').localeCompare(pillarOf(b.pillar).name||'');
+      if(pa) return pa;
+      return (a.title||'').localeCompare(b.title||'');
+    }).map(h=>String(h.id));
+    const zoneIds=current.filter(x=>{
+      const h=state.habits.find(v=>String(v.id)===x);
+      return h && routineZoneOf(h)===state.todayRoutineZones[sid];
+    });
+    const insertAfter=zoneIds[zoneIds.length-1];
+    if(insertAfter){
+      const idx=current.indexOf(insertAfter);
+      current.splice(idx+1,0,sid);
+    }else current.push(sid);
+    state.todayRoutineOrder=current;
+  }
+
   function renderQuickHabits(){
     const box=document.getElementById('quickHabits');
     if(!box) return;
     box.innerHTML='';
+    box.className='quick-habits routine-board';
     if(!state.habits.length){ box.innerHTML='<div class="empty">Routine 없음</div>'; return; }
     ensureTodayRoutineOrder();
+    ensureTodayRoutineZones();
     const pinned=todaySlotHabitIds();
     const sorted=sortBySavedOrder(state.habits,state.todayRoutineOrder,(a,b)=>{
       const pa=(pillarOf(a.pillar).name||'').localeCompare(pillarOf(b.pillar).name||'');
       if(pa) return pa;
       return (a.title||'').localeCompare(b.title||'');
     });
-    sorted.forEach(h=>{
+    const zones=[
+      {key:'work',title:'Work Flow',sub:'업무중'},
+      {key:'after',title:'After Hours',sub:'퇴근후'}
+    ];
+    const makeCard=(h)=>{
       const pi=pillarOf(h.pillar);
       const div=document.createElement('div');
-      div.className='quick-habit routine-line '+(pinned.has(String(h.id))?'pinned':'');
-      div.setAttribute('data-dragid',String(h.id));
       const done=habitDoneOn(h,viewDateStr());
+      div.className='quick-habit routine-line '+(pinned.has(String(h.id))?'pinned ':'')+(done?'done':'');
+      div.setAttribute('data-dragid',String(h.id));
+      div.setAttribute('draggable','true');
       const freqStr=(h.freq==='daily'?'매일':'주 '+h.target+'회');
       const b=document.createElement('button');
       b.className='routine-check '+(done?'on':'');
       b.textContent='✓';
-      b.title=done?'완료':'체크';
+      b.title=done?'완료됨':'체크';
       b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
       div.appendChild(b);
       div.insertAdjacentHTML('beforeend',
@@ -6121,11 +6311,36 @@ function renderWeekMetrics(){
         '<span class="routine-freq">'+freqStr+'</span>'+ 
         '<span class="habit-spark">'+habitSparkline(h)+'</span>'
       );
-      box.appendChild(div);
-    });
-    bindPlainDragSort(box,'.routine-line',(ids)=>{
-      state.todayRoutineOrder=ids;
-      save(); renderQuickHabits();
+      div.addEventListener('dragstart',e=>{
+        if(e.target.closest('button,input,select,textarea,a,label')){ e.preventDefault(); return; }
+        e.dataTransfer.setData('text/plain',String(h.id));
+        e.dataTransfer.effectAllowed='move';
+        div.classList.add('dragging-routine');
+      });
+      div.addEventListener('dragend',()=>div.classList.remove('dragging-routine'));
+      return div;
+    };
+    zones.forEach(z=>{
+      const items=sorted.filter(h=>routineZoneOf(h)===z.key);
+      const col=document.createElement('div');
+      col.className='routine-zone';
+      col.setAttribute('data-zone',z.key);
+      col.innerHTML='<div class="routine-zone-head"><div class="routine-zone-title">'+z.title+'<small>'+z.sub+'</small></div><span class="routine-zone-count">'+items.length+'</span></div><div class="routine-zone-list"></div>';
+      const list=col.querySelector('.routine-zone-list');
+      if(items.length) items.forEach(h=>list.appendChild(makeCard(h)));
+      else list.innerHTML='<div class="routine-empty-note">여기로 루틴을 드래그</div>';
+      col.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; col.classList.add('drag-over'); });
+      col.addEventListener('dragleave',e=>{ if(!col.contains(e.relatedTarget)) col.classList.remove('drag-over'); });
+      col.addEventListener('drop',e=>{
+        e.preventDefault();
+        col.classList.remove('drag-over');
+        const id=e.dataTransfer.getData('text/plain');
+        if(!id) return;
+        setRoutineZone(id,z.key);
+        save();
+        renderQuickHabits();
+      });
+      box.appendChild(col);
     });
   }
 
