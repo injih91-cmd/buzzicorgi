@@ -1287,6 +1287,89 @@ input:focus,textarea:focus,select:focus{
 .project-purpose{border-left-color:#00A66A !important;}
 ::selection{background:rgba(0,166,106,.22) !important;}
 
+
+/* v15.1 hero text contrast fix */
+.vision .vis-area,
+.vision .vis-area.big,
+.vision textarea.vis-area {
+  color:#FFFFFF !important;
+  font-weight:800 !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+  caret-color:#FFFFFF !important;
+}
+.vision .vis-area.big{
+  font-weight:900 !important;
+}
+.vision .vis-area::placeholder,
+.vision textarea.vis-area::placeholder{
+  color:rgba(255,255,255,.58) !important;
+  -webkit-text-fill-color:rgba(255,255,255,.58) !important;
+  font-weight:700 !important;
+}
+.vision .vis-label,
+.vision .eyebrow{
+  color:#FFFFFF !important;
+  font-weight:900 !important;
+}
+.vision .grat-item input{
+  color:#FFFFFF !important;
+  font-weight:800 !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+}
+.vision .grat-item input::placeholder{
+  color:rgba(255,255,255,.58) !important;
+  -webkit-text-fill-color:rgba(255,255,255,.58) !important;
+}
+
+
+/* v15 ideation chips */
+.idea-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}
+.idea-filters,.idea-toolbar-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.idea-filter{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:850;cursor:pointer}
+.idea-filter.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.idea-chipwrap{display:flex;flex-wrap:wrap;gap:8px}
+.idea-group{margin-bottom:10px}
+.idea-group-title{font-size:12px;font-weight:900;color:var(--navy);margin:0 0 8px 2px}
+.idea-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;min-height:38px;max-width:100%;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.idea-chip-main{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.idea-chip-tag{font-size:11px;font-weight:900;color:var(--navy);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:2px 8px;flex:0 0 auto}
+.idea-chip-del{border:0;background:transparent;color:#b5b9b1;font-size:16px;line-height:1;cursor:pointer;padding:0 1px;flex:0 0 auto}
+.idea-chip-del:hover{color:var(--danger)}
+.idea-compose-row.simple{display:grid;grid-template-columns:1.4fr .8fr auto;gap:6px;align-items:center}
+.idea-compose-row.simple input{height:36px !important;padding:7px 10px !important;font-size:12px !important;border-radius:10px !important}
+@media(max-width:700px){
+  .idea-compose-row.simple{grid-template-columns:1fr 1fr}
+  .idea-compose-row.simple button{grid-column:1/3}
+  .idea-chip-main{max-width:150px}
+}
+
+
+/* v16 FORCE Ideation chip board: old row UI removed */
+.idea-list,.idea-row,.idea-row-title,.idea-row-memo,.idea-row-tags{all:unset !important;display:contents !important}
+.idea-toolbar{display:flex !important;justify-content:space-between !important;gap:8px !important;align-items:flex-start !important;flex-wrap:wrap !important;margin:0 0 10px !important}
+.idea-filters,.idea-toolbar-actions{display:flex !important;gap:6px !important;flex-wrap:wrap !important;align-items:center !important}
+.idea-filter{border:1px solid rgba(82,109,91,.24) !important;background:#fff !important;color:#526D5B !important;border-radius:999px !important;padding:5px 9px !important;font-size:11px !important;font-weight:900 !important;line-height:1.1 !important;cursor:pointer !important}
+.idea-filter.active{background:#526D5B !important;border-color:#526D5B !important;color:#fff !important}
+.idea-chip-board{display:block !important;margin-bottom:8px !important}
+.idea-chipwrap{display:flex !important;flex-wrap:wrap !important;gap:7px !important;align-items:flex-start !important}
+.idea-group{width:100%;margin:0 0 10px !important}
+.idea-group-title{font-size:12px !important;font-weight:950 !important;color:#526D5B !important;margin:0 0 7px 2px !important}
+.idea-chip{display:inline-flex !important;align-items:center !important;gap:7px !important;background:#fff !important;border:1px solid rgba(82,109,91,.22) !important;border-radius:999px !important;padding:7px 11px !important;min-height:34px !important;max-width:100% !important;box-shadow:0 3px 10px rgba(38,53,46,.04) !important}
+.idea-chip-main{font-size:13px !important;font-weight:900 !important;color:#26352E !important;white-space:nowrap !important;max-width:260px !important;overflow:hidden !important;text-overflow:ellipsis !important}
+.idea-chip-tag{font-size:10px !important;font-weight:950 !important;color:#006C4A !important;background:#E7F8EF !important;border:1px solid rgba(0,168,107,.22) !important;border-radius:999px !important;padding:2px 7px !important;line-height:1.2 !important;white-space:nowrap !important}
+.idea-chip-del{border:0 !important;background:transparent !important;color:#AEB7B0 !important;font-size:15px !important;line-height:1 !important;cursor:pointer !important;padding:0 1px !important;margin-left:1px !important}
+.idea-chip-del:hover{color:#D64545 !important}
+.idea-empty{width:100% !important;padding:14px !important}
+.idea-composer.idea-composer-chips{margin-top:9px !important;padding:8px !important;border-radius:12px !important;background:rgba(82,109,91,.04) !important;border:1px dashed rgba(82,109,91,.24) !important}
+.idea-compose-row.simple{display:grid !important;grid-template-columns:1.4fr .8fr auto !important;gap:6px !important;align-items:center !important}
+.idea-compose-row.simple input{height:34px !important;padding:6px 10px !important;font-size:12px !important;border-radius:9px !important}
+.idea-compose-row.simple button{height:34px !important;white-space:nowrap !important}
+@media(max-width:700px){
+  .idea-compose-row.simple{grid-template-columns:1fr 1fr !important}
+  .idea-compose-row.simple button{grid-column:1/3 !important}
+  .idea-chip-main{max-width:150px !important}
+}
+
 </style>
 
 
@@ -4730,36 +4813,1015 @@ function renderWeekMetrics(){
     const box=document.getElementById('ideaBoard'); if(!box) return;
     ensureIdeas();
     box.innerHTML='';
+    if(!state.ideaUi) state.ideaUi={filterTag:'', grouped:false};
+    const ui=state.ideaUi;
 
-    const list=document.createElement('div'); list.className='idea-list';
-    if(!state.ideas.length){
-      const empty=document.createElement('div'); empty.className='empty';
+    // Backward compatibility: old ideas with memo keep their memo inside title if title is empty.
+    state.ideas.forEach(idea=>{
+      if(!idea.title && idea.memo) idea.title=idea.memo;
+      if(!Array.isArray(idea.tags)) idea.tags=[];
+      if(idea.tags.length>2) idea.tags=idea.tags.slice(0,2);
+    });
+
+    const allTags=[...new Set(state.ideas.flatMap(idea=>(idea.tags||[]).filter(Boolean)))].sort();
+
+    const toolbar=document.createElement('div'); toolbar.className='idea-toolbar';
+    const filters=document.createElement('div'); filters.className='idea-filters';
+    const actions=document.createElement('div'); actions.className='idea-toolbar-actions';
+    const mkBtn=(label,active,cb)=>{ const b=document.createElement('button'); b.className='idea-filter'+(active?' active':''); b.textContent=label; b.onclick=cb; return b; };
+    filters.appendChild(mkBtn('전체', !ui.filterTag, ()=>{ ui.filterTag=''; renderIdeaBoard(); }));
+    allTags.forEach(tag=>filters.appendChild(mkBtn('#'+tag, ui.filterTag===tag, ()=>{ ui.filterTag = ui.filterTag===tag ? '' : tag; renderIdeaBoard(); })));
+    actions.appendChild(mkBtn(ui.grouped ? '태그별 ON' : '태그별 OFF', !!ui.grouped, ()=>{ ui.grouped=!ui.grouped; renderIdeaBoard(); }));
+    toolbar.append(filters, actions);
+    box.appendChild(toolbar);
+
+    const visibleIdeas = ui.filterTag ? state.ideas.filter(idea => (idea.tags||[]).includes(ui.filterTag)) : state.ideas.slice();
+    const makeChip=(idea)=>{
+      const chip=document.createElement('div'); chip.className='idea-chip';
+      const tags=(idea.tags||[]).slice(0,2);
+      chip.innerHTML='<span class="idea-chip-main">'+escape(idea.title||'Untitled')+'</span>'+
+        tags.map(t=>'<span class="idea-chip-tag">'+escape(t)+'</span>').join('')+
+        '<button class="idea-chip-del" aria-label="삭제">×</button>';
+      chip.querySelector('.idea-chip-del').onclick=(e)=>{ e.stopPropagation(); state.ideas=state.ideas.filter(x=>x.id!==idea.id); save(); renderIdeaBoard(); renderTodayFlow(); };
+      return chip;
+    };
+
+    const board=document.createElement('div'); board.className='idea-chip-board';
+    if(!visibleIdeas.length){
+      const empty=document.createElement('div'); empty.className='empty idea-empty';
       empty.textContent='떠오르면 아래에 적어두기.';
-      list.appendChild(empty);
-    } else {
-      state.ideas.forEach(idea=>{
-        const row=document.createElement('div'); row.className='idea-row';
-        row.innerHTML='<div class="idea-row-title">'+escape(idea.title||'Untitled')+'</div>'+ 
-          '<div class="idea-row-memo">'+escape(idea.memo||'')+'</div>'+ 
-          '<div class="idea-row-tags">'+(idea.tags||[]).map(t=>'<span class="idea-tag">'+escape(t)+'</span>').join('')+' <span class="x">삭제</span></div>';
-        row.querySelector('.x').onclick=()=>{ state.ideas=state.ideas.filter(x=>x.id!==idea.id); save(); renderIdeaBoard(); renderTodayFlow(); };
-        list.appendChild(row);
+      board.appendChild(empty);
+    } else if(ui.grouped){
+      const tagList = ui.filterTag ? [ui.filterTag] : (allTags.length ? allTags : ['기타']);
+      tagList.forEach(tag=>{
+        const groupIdeas=visibleIdeas.filter(idea => tag==='기타' ? !(idea.tags||[]).length : (idea.tags||[]).includes(tag));
+        if(!groupIdeas.length) return;
+        const group=document.createElement('div'); group.className='idea-group';
+        group.innerHTML='<div class="idea-group-title">#'+escape(tag)+'</div>';
+        const chips=document.createElement('div'); chips.className='idea-chipwrap';
+        groupIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
+        group.appendChild(chips);
+        board.appendChild(group);
       });
+    } else {
+      const chips=document.createElement('div'); chips.className='idea-chipwrap';
+      visibleIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
+      board.appendChild(chips);
     }
-    box.appendChild(list);
+    box.appendChild(board);
 
-    const composer=document.createElement('div'); composer.className='idea-composer';
-    composer.innerHTML='<div class="idea-compose-row"><input id="ideaTitle" placeholder="아이디어"><input id="ideaTags" placeholder="태그: 맛집, 여행"><input id="ideaMemo" placeholder="메모 한 줄"><button class="btn small ghost">+ 저장</button></div>';
+    const composer=document.createElement('div'); composer.className='idea-composer idea-composer-chips';
+    composer.innerHTML='<div class="idea-compose-row simple"><input id="ideaTitle" placeholder="아이디어"><input id="ideaTags" placeholder="태그 1, 태그 2"><button class="btn small ghost">+ 저장</button></div>';
     const add=()=>{
       const title=composer.querySelector('#ideaTitle').value.trim();
-      const memo=composer.querySelector('#ideaMemo').value.trim();
-      const tags=composer.querySelector('#ideaTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-      if(!title && !memo) return;
-      state.ideas.unshift({id:uid(),title:title||'Untitled',memo,tags,createdDate:todayStr()});
+      const tags=composer.querySelector('#ideaTags').value.split(',').map(t=>t.trim()).filter(Boolean).slice(0,2);
+      if(!title) return;
+      state.ideas.unshift({id:uid(),title,tags,createdDate:todayStr()});
       save(); renderIdeaBoard(); renderTodayFlow();
     };
     composer.querySelector('button').onclick=add;
-    ['#ideaTitle','#ideaTags','#ideaMemo'].forEach(sel=>composer.querySelector(sel).addEventListener('keydown',e=>{ if(e.key==='Enter') add(); }));
+    ['#ideaTitle','#ideaTags'].forEach(sel=>composer.querySelector(sel).addEventListener('keydown',e=>{ if(e.key==='Enter') add(); }));
+    box.appendChild(composer);
+  }
+
+  function countDoneProjectToday(){ let n=0; state.projects.forEach(p=>p.subs.forEach(sub=>{ if(sub.done&&sub.completedDate===todayStr())n++; })); return n; }
+  function getTodayScore(){
+    // 하루 기록용 총점: 화면 신호등에는 쓰지 않고, 저장 스냅샷에만 사용
+    const checkin=getCheckinScore();
+    const routine=getRoutineScore();
+    const checkout=getCheckoutScore();
+    const slotDone=SLOT_DEF.filter(def=>slotDisplay(state.todayDraft.slots[def.key]).done).length;
+    const project=Math.min(100,countDoneProjectToday()*25);
+    return Math.round((checkin*0.25)+(routine*0.25)+(checkout*0.25)+(slotDone/3*100*0.15)+(project*0.10));
+  }
+  function getTodayJudgement(){
+    const score=getTodayScore();
+    if(score>=75) return {title:'🟢 잘 산 날',text:'체크인·Routine·체크아웃 흐름이 안정적으로 연결됐습니다.'};
+    if(score>=45) return {title:'🟡 유지한 날',text:'크게 무너지지 않고 하루를 운영했습니다.'};
+    return {title:'🔴 리셋 필요',text:'내일은 회복과 최소 실행만 잡는 게 좋습니다.'};
+  }
+  function renderBiorhythmCharts(){
+    renderCheckinChart();
+    renderCheckoutChart();
+  }
+  function last7Dates(){
+    const arr=[];
+    for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); arr.push(ymd(d)); }
+    return arr;
+  }
+  function logByDate(date){ return state.todayLogs.find(l=>l.date===date); }
+  function draftForDate(date){
+    // every day's check-in/out now lives in state.dayLogs keyed by date
+    if(state.dayLogs && state.dayLogs[date]) return state.dayLogs[date];
+    if(date===viewDateStr()) return state.todayDraft;
+    return null;
+  }
+  function checkinScoreForDate(date){
+    const draft=draftForDate(date);
+    if(draft) return metricScore(draft.checkin||{},checkinMetrics());
+    const log=logByDate(date);
+    return log&&log.checkin ? metricScore(log.checkin,checkinMetrics()) : 0;
+  }
+  function checkoutScoreForDate(date){
+    const draft=draftForDate(date);
+    if(draft) return metricScore(draft.checkout||{},checkoutMetrics());
+    const log=logByDate(date);
+    return log&&log.checkout ? metricScore(log.checkout,checkoutMetrics()) : 0;
+  }
+  function routineScoreForDate(date){
+    if(!state.habits.length) return 0;
+    const done=state.habits.filter(h=>h.log&&h.log.includes(date)).length;
+    return Math.round(done/state.habits.length*100);
+  }
+  function metricValueForDate(date,group,key){
+    const draft=draftForDate(date);
+    if(draft && draft[group]) return +draft[group][key] || null;
+    const log=logByDate(date);
+    if(log && log[group]) return +log[group][key] || null;
+    return null;
+  }
+
+  function cleanMetricLabel(label){
+    return String(label||'').replace(/\s*\(.+?\)\s*/g,'');
+  }
+
+  function makeMultiMetricChart(existing,canvasId,group,metrics){ if(!hasChart())return existing;
+    const ctx=document.getElementById(canvasId);
+    if(!ctx) return existing;
+    if(existing) existing.destroy();
+    const dates=last7Dates();
+    const labels=dates.map(d=>d.slice(5).replace('-','.'));
+    const palette=['#1F3864','#00A66A','#1D7A5A','#B8924A'];
+    const datasets=metrics.map((m,i)=>({
+      label:cleanMetricLabel(m.label),
+      data:dates.map(d=>metricValueForDate(d,group,m.key)),
+      tension:.32,
+      fill:false,
+      pointRadius:2.5,
+      pointHoverRadius:4,
+      borderWidth:2,
+      borderColor:palette[i%palette.length],
+      backgroundColor:palette[i%palette.length],
+      spanGaps:true
+    }));
+    return new Chart(ctx,{
+      type:'line',
+      data:{labels,datasets},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:true,position:'bottom',labels:{boxWidth:10,boxHeight:10,usePointStyle:true,font:{size:11}}},
+          tooltip:{enabled:true}
+        },
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:11}}},
+          y:{min:1,max:5,ticks:{stepSize:1,font:{size:11}},grid:{color:'rgba(31,56,100,.08)'}}
+        }
+      }
+    });
+  }
+
+  function renderCheckinChart(){ if(!hasChart())return; checkinChart=makeMultiMetricChart(checkinChart,'checkinChart','checkin',checkinMetrics()); }
+  function renderCheckoutChart(){ if(!hasChart())return; checkoutChart=makeMultiMetricChart(checkoutChart,'checkoutChart','checkout',checkoutMetrics()); }
+
+  document.getElementById('saveToday').onclick=()=>{
+    syncAllSlotMemos();
+    SLOT_DEF.forEach(def=>{ const slot=state.todayDraft.slots[def.key]; if(slot.kind==='direct'&&(slot.text||'').trim())ensureDirectSlotLinked(def.key); });
+    const j=getTodayJudgement(), score=getTodayScore();
+    const completedHabits=state.habits.filter(h=>habitDoneOn(h)).map(h=>h.title);
+    const completedProjectActions=[];
+    state.projects.forEach(p=>p.subs.forEach(sub=>{ if(sub.done&&sub.completedDate===todayStr()) completedProjectActions.push((p.title||'Project')+' - '+(sub.title||'Actions')); }));
+    const slotSnap=SLOT_DEF.map(def=>{ const slot=state.todayDraft.slots[def.key], st=slotDisplay(slot); return {label:def.label,kind:slot.kind,done:st.done,text:(st.title||'')+' · '+(st.detail||''),memo:slot.memo||''}; });
+    const log={
+      date:todayStr(),
+      display:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),
+      score,
+      judge:j.title,
+      checkin:JSON.parse(JSON.stringify(state.todayDraft.checkin)),
+      checkout:JSON.parse(JSON.stringify(state.todayDraft.checkout)),
+      slots:slotSnap,
+      completedHabits,
+      completedProjectActions,
+      review:[
+        state.todayDraft.checkout.good,
+        state.todayDraft.checkout.hard,
+        state.todayDraft.checkout.tomorrow
+      ].filter(Boolean).join(' / ')
+    };
+    const idx=state.todayLogs.findIndex(x=>x.date===todayStr()); if(idx>=0)state.todayLogs[idx]=log; else state.todayLogs.unshift(log);
+    state.todayLogs=state.todayLogs.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,160);
+    save(); renderAllLinked(); alert('Daily Log saved');
+  };
+
+function renderWeekMetrics(){
+    const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-6); cutoff.setHours(0,0,0,0);
+    const logs=state.todayLogs.filter(l=>new Date(l.date)>=cutoff);
+    const good=logs.filter(l=>(l.judge||'').includes('잘 산')).length;
+    const avg=logs.length?Math.round(logs.reduce((a,b)=>a+(+b.score||0),0)/logs.length):0;
+    const habitDays=logs.filter(l=>(l.completedHabits||[]).length>=2).length;
+    const projectDays=logs.filter(l=>(l.completedProjectActions||[]).length>=1).length;
+    const metrics=[['기록한 날',logs.length],['평균 점수',avg+'%'],['Routine 2개+',habitDays],['Project Done일',projectDays]];
+    document.getElementById('weekMetrics').innerHTML=metrics.map(m=>'<div class="metric"><div class="num">'+m[1]+'</div><div class="label">'+m[0]+'</div></div>').join('');
+  }
+
+  /* Habits */
+  function renderHabits(){
+    const box=document.getElementById('habitList'); box.innerHTML='';
+    if(!state.habits.length){ box.innerHTML='<div class="empty">No Routines</div>'; return; }
+    const monday=mondayOf(new Date()), dates=weekDates(monday), t=todayStr();
+    state.habits.forEach(h=>{
+      const el=document.createElement('div'); el.className='habit';
+      const top=document.createElement('div'); top.className='habit-top';
+      top.innerHTML='<div><div class="habit-name">'+escape(h.title||'Routine')+'</div><div class="hint" style="margin:0">'+pillarOf(h.pillar).name+' · Today 체크와 같은 데이터</div></div>';
+      const del=document.createElement('button'); del.className='btn ghost small'; del.textContent='삭제'; del.onclick=()=>{ if(confirm('삭제할까요?')){ clearSlotsReferencingHabit(h.id); state.habits=state.habits.filter(x=>x.id!==h.id); save(); renderAllLinked(); } };
+      top.appendChild(del); el.appendChild(top);
+      const cfg=document.createElement('div'); cfg.className='habit-config';
+      const nameInput=document.createElement('input'); nameInput.value=h.title||''; nameInput.placeholder='Routine Name'; nameInput.oninput=()=>{h.title=nameInput.value;save();renderTodaySlots();renderQuickHabits();};
+      const pillarSel=document.createElement('select'); pillarSel.innerHTML=ALL_PILLARS.map(p=>'<option value="'+p.key+'">'+p.emo+' '+p.name+'</option>').join(''); pillarSel.value=h.pillar; pillarSel.onchange=()=>{h.pillar=pillarSel.value;save();renderAllLinked();};
+      const freqSel=document.createElement('select'); freqSel.innerHTML='<option value="daily">매일</option><option value="weekly">주 N회</option>'; freqSel.value=h.freq; freqSel.onchange=()=>{h.freq=freqSel.value;h.target=h.freq==='daily'?7:3;save();renderAllLinked();};
+      cfg.append(nameInput,pillarSel,freqSel); el.appendChild(cfg);
+      const week=document.createElement('div'); week.className='week';
+      dates.forEach((d,i)=>{ const ds=ymd(d), cell=document.createElement('div'); cell.className='day '+(h.log.includes(ds)?'on ':'')+(ds===t?'today':''); cell.textContent=['월','화','수','목','금','토','일'][i]; if(d<=new Date())cell.onclick=()=>{setHabitDone(h,ds,!h.log.includes(ds));save();renderAllLinked();}; week.appendChild(cell); });
+      el.appendChild(week); box.appendChild(el);
+    });
+  }
+  document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
+
+  /* Money */
+  function latestRecord(){ if(!state.records.length)return null; return [...state.records].sort((a,b)=>new Date(b.date)-new Date(a.date))[0]; }
+  function recordTotal(r){ return (+r.stock||0)+(+r.pension||0)+(+r.housing||0); }
+  function renderFinanceStats(){
+    const r=latestRecord();
+    if(!r){ ['curTotal','curPct','proj2031','reach'].forEach(id=>document.getElementById(id).textContent='—'); document.getElementById('barFill').style.width='0%'; return; }
+    const total=recordTotal(r), pct=total/TARGET*100;
+    document.getElementById('curTotal').textContent=fmt(total);
+    document.getElementById('curPct').textContent=Math.round(pct)+'%';
+    document.getElementById('barFill').style.width=Math.min(100,pct)+'%';
+    const sim=simulate();
+    document.getElementById('proj2031').textContent=sim?fmt(sim.last.total):'—';
+    document.getElementById('reach').textContent=sim&&sim.reach?sim.reach.label:'미도달';
+  }
+  function numFromInput(id){ const el=document.getElementById(id); return el ? (+String(el.value).replace(/[^0-9.-]/g,'')||0) : 0; }
+  function bindCommaInputs(){
+    document.querySelectorAll('.num-comma').forEach(el=>{
+      if(el._commaBound) return; el._commaBound=true;
+      el.addEventListener('input',()=>{ const raw=String(el.value).replace(/[^0-9]/g,''); el.value = raw ? Number(raw).toLocaleString() : ''; });
+    });
+  }
+  bindCommaInputs();
+  document.getElementById('saveAsset').onclick=()=>{ const r={date:document.getElementById('aDate').value||todayStr(),stock:numFromInput('aStock'),pension:numFromInput('aPension'),housing:numFromInput('aHousing'),memo:document.getElementById('aMemo').value||''}; const idx=state.records.findIndex(x=>x.date===r.date); if(idx>=0)state.records[idx]=r; else state.records.push(r); state.records.sort((a,b)=>new Date(b.date)-new Date(a.date)); save(); refreshMoney(); loadAssetDate(); };
+  document.getElementById('saveCard').onclick=()=>{ const r={month:document.getElementById('cMonth').value||todayStr().slice(0,7),hyundai:numFromInput('cHyundai'),woori:numFromInput('cWoori'),samsung:numFromInput('cSamsung'),etc:numFromInput('cEtc'),memo:document.getElementById('cMemo').value||''}; r.total=r.hyundai+r.woori+r.samsung+r.etc; const idx=state.cardExpenses.findIndex(x=>x.month===r.month); if(idx>=0)state.cardExpenses[idx]=r; else state.cardExpenses.push(r); state.cardExpenses.sort((a,b)=>b.month.localeCompare(a.month)); save(); refreshMoney(); loadCardMonth(); };
+
+  function loadCardMonth(){
+    const m=document.getElementById('cMonth').value;
+    const rec=state.cardExpenses.find(x=>x.month===m);
+    const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
+    set('cHyundai', rec&&rec.hyundai); set('cWoori', rec&&rec.woori); set('cSamsung', rec&&rec.samsung); set('cEtc', rec&&rec.etc);
+    document.getElementById('cMemo').value = rec ? (rec.memo||'') : '';
+    const btn=document.getElementById('saveCard'); if(btn) btn.textContent = rec ? '이 달 값 수정' : '카드값 저장';
+  }
+  document.getElementById('cMonth').addEventListener('change', loadCardMonth);
+
+  function loadAssetDate(){
+    const d=document.getElementById('aDate').value;
+    const rec=state.records.find(x=>x.date===d);
+    const set=(id,v)=>{ document.getElementById(id).value = (rec&&v)?Number(v).toLocaleString():''; };
+    set('aStock', rec&&rec.stock); set('aPension', rec&&rec.pension); set('aHousing', rec&&rec.housing);
+    document.getElementById('aMemo').value = rec ? (rec.memo||'') : '';
+    const btn=document.getElementById('saveAsset'); if(btn) btn.textContent = rec ? '이 날짜 값 수정' : '자산 기록 저장';
+  }
+  document.getElementById('aDate').addEventListener('change', loadAssetDate);
+  function renderAssetTable(){ const box=document.getElementById('assetTable'); if(!state.records.length){box.innerHTML='<div class="empty">자산 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>기준일</th><th>주식</th><th>연금</th><th>청약</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.records.map((r,i)=>'<tr><td>'+r.date+'</td><td>'+fmt(r.stock)+'</td><td>'+fmt(r.pension)+'</td><td>'+fmt(r.housing)+'</td><td><b>'+fmt(recordTotal(r))+'</b></td><td><span class="x" data-del-a="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-a]').forEach(x=>x.onclick=()=>{state.records.splice(+x.dataset.delA,1);save();refreshMoney();}); }
+  function renderCardTable(){ const box=document.getElementById('cardTable'); if(!state.cardExpenses.length){box.innerHTML='<div class="empty">카드값 기록 None</div>';return;} box.innerHTML='<table><thead><tr><th>월</th><th>현대</th><th>우리</th><th>삼성</th><th>기타</th><th>총액</th><th>삭제</th></tr></thead><tbody>'+state.cardExpenses.map((r,i)=>'<tr><td>'+r.month+'</td><td>'+fmt(r.hyundai)+'</td><td>'+fmt(r.woori)+'</td><td>'+fmt(r.samsung)+'</td><td>'+fmt(r.etc)+'</td><td><b>'+fmt(r.total||0)+'</b></td><td><span class="x" data-del-c="'+i+'">삭제</span></td></tr>').join('')+'</tbody></table>'; box.querySelectorAll('[data-del-c]').forEach(x=>x.onclick=()=>{state.cardExpenses.splice(+x.dataset.delC,1);save();refreshMoney();}); }
+  function renderAssetChart(){ if(!hasChart())return; const rows=[...state.records].sort((a,b)=>new Date(a.date)-new Date(b.date)); const ctx=document.getElementById('assetChart'); if(assetChart)assetChart.destroy(); assetChart=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.date),datasets:[{label:'총자산',data:rows.map(recordTotal),tension:.25},{label:'유동원랩/주식',data:rows.map(r=>r.stock),tension:.25},{label:'연금',data:rows.map(r=>r.pension),tension:.25},{label:'청약',data:rows.map(r=>r.housing),tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  function renderCardChart(){ if(!hasChart())return; const rows=[...state.cardExpenses].sort((a,b)=>a.month.localeCompare(b.month)); const ctx=document.getElementById('cardChart'); if(cardChart)cardChart.destroy(); cardChart=new Chart(ctx,{type:'bar',data:{labels:rows.map(r=>r.month),datasets:[{label:'월 카드값',data:rows.map(r=>r.total||0)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  ['sRate','sMonthly','sHousingM','sLump'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; renderFinanceStats(); renderSim(); }));
+  function simulate(){ const base=latestRecord(); if(!base)return null; const annual=(+document.getElementById('sRate').value||0)/100, mRate=Math.pow(1+annual,1/12)-1, monthly=+document.getElementById('sMonthly').value||0, housingM=+document.getElementById('sHousingM').value||0, lump=+document.getElementById('sLump').value||0; let stock=+base.stock||0,pension=+base.pension||0,housing=+base.housing||0; const d=new Date(base.date+'T00:00:00'); d.setDate(1); const rows=[{label:base.date.slice(0,7),stock,pension,housing,total:stock+pension+housing}]; let reach=null; while(d<goalDate){ d.setMonth(d.getMonth()+1); if(d.getMonth()===0)stock+=lump; stock=stock*(1+mRate)+monthly; housing+=housingM; const total=stock+pension+housing; const row={label:d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0'),stock,pension,housing,total}; rows.push(row); if(!reach&&total>=TARGET)reach=row; } return {rows,last:rows[rows.length-1],reach}; }
+  function renderSim(){ if(!hasChart())return; const sim=simulate(), ctx=document.getElementById('simChart'); if(simChart)simChart.destroy(); if(!sim){document.getElementById('simBasis').textContent='자산 기록을 먼저 추가하면 시뮬레이션이 표시됩니다.';return;} document.getElementById('simBasis').textContent='계산 기준: 주식 수익률은 유동원랩/주식에만 적용 · 목돈은 매년 1월 초 선입금 · 연금 고정 · 청약 월 불입'; const yearly=sim.rows.filter((r,i)=>i===0||r.label.endsWith('.12')||i===sim.rows.length-1); simChart=new Chart(ctx,{type:'line',data:{labels:yearly.map(r=>r.label),datasets:[{label:'총 예상 자산',data:yearly.map(r=>r.total),tension:.25},{label:'유동원랩/주식',data:yearly.map(r=>r.stock),tension:.25},{label:'연금(고정)',data:yearly.map(r=>r.pension),tension:.25},{label:'청약(월 불입)',data:yearly.map(r=>r.housing),tension:.25},{label:'Metric 10억',data:yearly.map(()=>TARGET),borderDash:[6,6],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}}); }
+  function refreshMoney(){ renderFinanceStats(); renderAssetTable(); renderCardTable(); renderAssetChart(); renderCardChart(); renderSim(); }
+
+  /* Records and backup */
+  function renderTodayLogs(){ const box=document.getElementById('todayLogs'); if(!state.todayLogs.length){box.innerHTML='<div class="empty">아직 Today 기록 None</div>';return;} box.innerHTML=state.todayLogs.map(l=>{ const slots=(l.slots||[]).map(s=>s.label+': '+s.text+(s.memo?' · Description: '+s.memo:'')).join(' / '), habits=(l.completedHabits||[]).join(', ')||'None', projects=(l.completedProjectActions||[]).join(', ')||'None'; return '<div class="record"><div class="record-top"><span>'+escape(l.display||l.date)+'</span><span>'+l.score+'%</span></div><b>'+escape(l.judge||'')+'</b><p class="hint" style="margin:5px 0 0">'+escape(l.review||'회고 None')+'</p><p class="hint" style="margin:3px 0 0">Today’s 3: '+escape(slots||'None')+'</p><p class="hint" style="margin:3px 0 0">Done Routine: '+escape(habits)+'</p><p class="hint" style="margin:3px 0 0">Done Project: '+escape(projects)+'</p></div>'; }).join(''); }
+  function exportBackup(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='didi-life-os-backup-'+todayStr()+'.json'; a.click(); URL.revokeObjectURL(a.href); state.lastBackup=todayStr(); save(); renderBackupStatus(); }
+  function daysSince(dateStr){ if(!dateStr) return null; const a=new Date(dateStr+'T00:00:00'); const b=new Date(); b.setHours(0,0,0,0); return Math.round((b-a)/864e5); }
+  function renderBackupStatus(){
+    const el=document.getElementById('backupStatus'); if(!el) return;
+    const d=daysSince(state.lastBackup);
+    if(d===null){ el.className='backup-status warn'; el.textContent='⚠️ 아직 JSON 백업을 한 번도 받지 않았어요. (동기화는 되고 있지만, 가끔 파일로도 받아두면 안전해요)'; }
+    else if(d===0){ el.className='backup-status ok'; el.textContent='✓ 오늘 백업함'; }
+    else if(d<=7){ el.className='backup-status ok'; el.textContent='✓ 마지막 백업 '+d+'일 전'; }
+    else { el.className='backup-status warn'; el.textContent='⚠️ 마지막 백업 '+d+'일 전 — 한 번 받아두는 걸 권해요'; }
+  }
+  function importBackup(){ document.getElementById('importFile').click(); }
+  document.getElementById('importFile').onchange=e=>{ const f=e.target.files[0]; if(!f)return; const rd=new FileReader(); rd.onload=()=>{ try{state=JSON.parse(rd.result);migrate();save();rerenderAll();alert('Import complete');}catch(err){alert('파일을 읽지 못했어.');} }; rd.readAsText(f); };
+  function resetAll(){ if(!resetArmed){ resetArmed=true; ['resetBtn','resetBtnTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='정말 초기화?';}); setTimeout(()=>{resetArmed=false; const a=document.getElementById('resetBtn'); if(a)a.textContent='Reset'; const b=document.getElementById('resetBtnTop'); if(b)b.textContent='Reset';},2500); return;} localStorage.removeItem(KEY); state=fresh(); save(); rerenderAll(); }
+  document.getElementById('exportBtn').onclick=exportBackup; document.getElementById('exportBtnTop').onclick=exportBackup; document.getElementById('importBtn').onclick=importBackup; document.getElementById('importBtnTop').onclick=importBackup; document.getElementById('resetBtn').onclick=resetAll; document.getElementById('resetBtnTop').onclick=resetAll;
+
+  /* Render orchestration */
+  function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
+  function rerenderAll(){ document.getElementById('v-identity').value=state.identity||''; document.getElementById('v-daily').value=state.daily||''; autoSize(document.getElementById('v-identity')); autoSize(document.getElementById('v-daily')); renderGrat(); renderQuotes(); renderAllLinked(); refreshMoney(); renderBackupStatus(); }
+  function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; loadAssetDate(); loadCardMonth(); }
+
+
+  /* =========================
+     v14 Life OS overrides
+     - Check-in / Check-out / Routines preserved
+     - Today’s 3 + Today’s Projects merged into Today Focus
+     - Projects simplified: Project > Purpose > 1-level Actions
+     - Light Ideation is a persistent board, not a daily log
+     ========================= */
+
+  function fresh(){
+    const pillarMeta={};
+    ALL_PILLARS.forEach(p=>pillarMeta[p.key]={cap:p.cap});
+    return {
+      identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
+      habits:[], projects:[], ideas:[], records:[], cardExpenses:[],
+      todayDraft:newTodayDraft(), todayLogs:[]
+    };
+  }
+
+  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false}; }
+
+  function newTodayDraft(forDate){
+    return {
+      date:forDate||todayStr(),
+      checkin:{
+        theme:'', bodyState:'',
+        mood:0, energy:0, sleep:0, anxiety:0, bodyFatigue:0, focus:0,
+        note:''
+      },
+      checkout:{
+        satisfaction:0, accomplishment:0, calm:0, selfCare:0, fatigue:0,
+        good:'', hard:'', tomorrow:''
+      },
+      mode:'', condition:'', review:'',
+      focuses:[],
+      slots:{must:emptySlot(),nice:emptySlot(),care:emptySlot()}
+    };
+  }
+
+  function normalizeProject(p){
+    p=p||{};
+    p.id=p.id||uid();
+    p.pillar=p.pillar||p.tag||'etc';
+    if(!ALL_PILLARS.some(x=>x.key===p.pillar)) p.pillar='etc';
+    p.title=p.title||p.t||'';
+    p.status=p.status || (p.done?'done':'active');
+    if(!['active','done','paused'].includes(p.status)) p.status='active';
+    p.purpose=p.purpose || p.objective || p.goal || '';
+    p.memo=p.memo||'';
+    p.todayFocus=!!p.todayFocus;
+    if(typeof p.pillarOrder!=='number') p.pillarOrder=9999;
+    if(typeof p.todayOrder!=='number') p.todayOrder=9999;
+    if(!Array.isArray(p.subs)) p.subs=[];
+    p.subs=p.subs.map(s=>({
+      id:s.id||uid(),
+      title:s.title||s.t||'',
+      done:!!s.done,
+      createdDate:s.createdDate||'',
+      completedDate:s.completedDate||'',
+      todayFocus:!!s.todayFocus,
+      source:s.source||'',
+      dailyNotes:Array.isArray(s.dailyNotes)?s.dailyNotes:[],
+      children:[]
+    }));
+    // keep legacy arrays empty so old metric/pipeline UI no longer leaks into the project concept
+    p.kind='free';
+    p.dueDate='';
+    p.goals=[];
+    p.stages=[];
+    p.items=[];
+    if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
+    p.linkedHabits=p.linkedHabits.map(String);
+    return p;
+  }
+
+  function normalizeDraft(draft, forDate){
+    if(!draft || typeof draft!=='object') draft=newTodayDraft(forDate);
+    draft.date=forDate||draft.date||todayStr();
+    if(!draft.checkin) draft.checkin={};
+    if(!draft.checkout) draft.checkout={};
+    const ci=draft.checkin;
+    if(!('theme' in ci)) ci.theme=draft.mode||'';
+    if(!('bodyState' in ci)) ci.bodyState=draft.condition||'';
+    ['mood','energy','sleep','anxiety','bodyFatigue','focus'].forEach(k=>{ ci[k]=+ci[k]||0; });
+    if(typeof ci.note!=='string') ci.note='';
+    const co=draft.checkout;
+    ['satisfaction','accomplishment','calm','selfCare','fatigue'].forEach(k=>{ co[k]=+co[k]||0; });
+    ['good','hard','tomorrow'].forEach(k=>{ if(typeof co[k]!=='string') co[k]=''; });
+    if(!co.good && draft.review) co.good=draft.review;
+
+    if(!draft.slots) draft.slots={};
+    SLOT_DEF.forEach(s=>{
+      if(!draft.slots[s.key]) draft.slots[s.key]=emptySlot();
+      if(typeof draft.slots[s.key].memo!=='string') draft.slots[s.key].memo='';
+    });
+
+    if(!Array.isArray(draft.focuses)){
+      const fromSlots=[];
+      if(draft.slots){
+        Object.values(draft.slots).forEach(slot=>{
+          if(slot && slot.kind==='project' && slot.projectId){
+            const p=getProject(slot.projectId);
+            fromSlots.push({
+              id:uid(),
+              pillar:p?p.pillar:'',
+              projectId:String(slot.projectId||''),
+              subId:String(slot.subId||''),
+              note:slot.memo||'',
+              done:!!slot.done
+            });
+          }
+        });
+      }
+      draft.focuses=fromSlots;
+    }
+    draft.focuses=draft.focuses.map(f=>({
+      id:f.id||uid(),
+      pillar:f.pillar||'',
+      projectId:f.projectId?String(f.projectId):'',
+      subId:f.subId?String(f.subId):'',
+      note:typeof f.note==='string'?f.note:'',
+      done:!!f.done
+    }));
+    return draft;
+  }
+
+  function ensureIdeas(){
+    if(!Array.isArray(state.ideas)) state.ideas=[];
+    state.ideas=state.ideas.map(x=>({
+      id:x.id||uid(),
+      title:x.title||'',
+      memo:x.memo||'',
+      tags:Array.isArray(x.tags)?x.tags:(typeof x.tags==='string'?x.tags.split(',').map(t=>t.trim()).filter(Boolean):[]),
+      createdDate:x.createdDate||todayStr()
+    }));
+  }
+
+  function setupLifeOSv14Layout(){
+    const flow=document.getElementById('todayFlow');
+    if(flow){
+      flow.classList.add('v14-flow');
+      flow.innerHTML=[
+        '<div class="flow-step" id="flowCheckin"><b>1</b><span>Check-in</span></div>',
+        '<div class="flow-line"></div>',
+        '<div class="flow-step" id="flowRoutine"><b>2</b><span>Routines</span></div>',
+        '<div class="flow-line"></div>',
+        '<div class="flow-step" id="flowFocus"><b>3</b><span>Focus</span></div>',
+        '<div class="flow-line"></div>',
+        '<div class="flow-step" id="flowIdeation"><b>4</b><span>Ideation</span></div>',
+        '<div class="flow-line"></div>',
+        '<div class="flow-step" id="flowCheckout"><b>5</b><span>Check-out</span></div>'
+      ].join('');
+    }
+
+    const slots=document.getElementById('todaySlots');
+    const oldThree=slots?slots.closest('.card'):null;
+    const projects=document.getElementById('todayProjects');
+    const oldProjects=projects?projects.closest('.card'):null;
+    const routines=document.getElementById('quickHabits')?document.getElementById('quickHabits').closest('.card'):null;
+    const checkout=document.getElementById('saveToday')?document.getElementById('saveToday').closest('.card'):null;
+
+    if(oldThree) oldThree.remove();
+    if(oldProjects) oldProjects.remove();
+
+    if(routines && !document.getElementById('todayFocusBoard')){
+      const focus=document.createElement('div');
+      focus.className='card span-12';
+      focus.innerHTML=[
+        '<h3>Today Focus <span class="ko-gloss">오늘 집중</span></h3>',
+        '<div class="hint">Value → Project → Action. 오늘 할 만큼만.</div>',
+        '<div id="yesterdayNote"></div>',
+        '<div class="focus-board" id="todayFocusBoard"></div>'
+      ].join('');
+      routines.insertAdjacentElement('afterend', focus);
+
+      const ideas=document.createElement('div');
+      ideas.className='card span-12';
+      ideas.innerHTML=[
+        '<h3>Ideation <span class="ko-gloss">메모보드</span></h3>',
+        '<div class="hint">맛집·여행·데이트·컬처. 떠오르면 저장.</div>',
+        '<div class="idea-board" id="ideaBoard"></div>'
+      ].join('');
+      focus.insertAdjacentElement('afterend', ideas);
+    }
+
+    if(checkout){
+      const label=checkout.querySelector('label[for="checkoutTomorrow"], .field label span.ko-gloss');
+      const all=checkout.querySelectorAll('label');
+      all.forEach(l=>{
+        if((l.textContent||'').includes('내일의 나에게')){
+          l.innerHTML='내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today Focus 맨 위에 떠요</span>';
+        }
+      });
+    }
+
+    const misc=document.getElementById('miscWrap');
+    if(misc) misc.style.display='none';
+
+    const projHint=document.querySelector('#tab-life .card:nth-of-type(2) .hint');
+    if(projHint) projHint.textContent='Project = 목적 + Action.';
+  }
+
+  function projectProgress(p){
+    const total=(p.subs||[]).length;
+    const done=(p.subs||[]).filter(s=>s.done).length;
+    return {total,done,pct:total?Math.round(done/total*100):0};
+  }
+
+  function createProject(pillar){
+    const pr=normalizeProject({id:uid(),pillar,title:'New Project',status:'active',purpose:'',subs:[],memo:''});
+    state.projects.push(pr); save(); renderAllLinked(); openProjectModal(pr.id);
+  }
+
+  function makeProjectTile(p){
+    const tile=document.createElement('div');
+    tile.className='project-tile v14-simple '+statusClass(p.status);
+    tile.setAttribute('data-dragid',String(p.id));
+    tile.onclick=(e)=>{ if(window._justDragged && Date.now()-window._justDragged<300)return; openProjectModal(p.id); };
+    const pg=projectProgress(p);
+    const pi=pillarOf(p.pillar);
+    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+pi.emo+' '+escape(p.title||'(제목 없음)')+'</div><span class="tag">'+statusLabel(p.status)+'</span></div>'+
+      '<div class="project-purpose">'+escape(p.purpose||'목적')+'</div>'+
+      '<div class="progress"><span style="width:'+pg.pct+'%"></span></div>'+
+      '<div class="tile-meta">'+pg.done+'/'+pg.total+'</div>';
+    if((p.subs||[]).length){
+      const goals=document.createElement('div'); goals.className='goal-pills';
+      p.subs.slice(0,6).forEach(s=>{ 
+        const chip=document.createElement('span'); chip.className='goal-pill'; chip.textContent=(s.done?'✓ ':'')+(s.title||'Action'); goals.appendChild(chip);
+      });
+      if(p.subs.length>6){ const more=document.createElement('span'); more.className='goal-pill'; more.textContent='+'+(p.subs.length-6); goals.appendChild(more); }
+      tile.appendChild(goals);
+    }
+    return tile;
+  }
+
+  function renderProjectModal(pid){
+    const p=state.projects.find(x=>String(x.id)===String(pid));
+    if(!p) return;
+    document.getElementById('modalTitle').textContent=p.title||'Project';
+    const c=document.getElementById('projectModalContent');
+    const pg=projectProgress(p);
+    c.innerHTML='';
+
+    const base=document.createElement('div'); base.className='modal-section';
+    base.innerHTML='<h4>Project</h4>';
+    const grid=document.createElement('div'); grid.className='modal-grid';
+    grid.innerHTML='<div class="field"><label>프로젝트명</label><input id="pmTitle" value="'+escape(p.title)+'" placeholder="예: 오케스트라"></div>'+
+      '<div class="field"><label>Value</label><select id="pmPillar">'+ALL_PILLARS.map(pi=>'<option value="'+pi.key+'">'+pi.emo+' '+pi.name+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>상태</label><select id="pmStatus"><option value="active">진행중</option><option value="paused">보류</option><option value="done">완료</option></select></div>';
+    base.appendChild(grid);
+    const purpose=document.createElement('div'); purpose.className='field';
+    purpose.innerHTML='<label>목적</label><input id="pmPurpose" value="'+escape(p.purpose||'')+'" placeholder="예: 즐기자">';
+    base.appendChild(purpose);
+    const memo=document.createElement('div'); memo.className='field';
+    memo.innerHTML='<label>메모</label><textarea id="pmMemo" placeholder="메모">'+escape(p.memo||'')+'</textarea>';
+    base.appendChild(memo);
+    const prog=document.createElement('div');
+    prog.innerHTML='<div class="hint">Action '+pg.done+'/'+pg.total+'</div><div class="progress"><span style="width:'+pg.pct+'%"></span></div>';
+    base.appendChild(prog);
+    c.appendChild(base);
+
+    base.querySelector('#pmTitle').oninput=e=>{ p.title=e.target.value; save(); renderAllLinkedNoModal(); document.getElementById('modalTitle').textContent=p.title||'Project'; };
+    base.querySelector('#pmPillar').value=p.pillar;
+    base.querySelector('#pmPillar').onchange=e=>{ p.pillar=e.target.value; save(); renderAllLinkedNoModal(); renderProjectModal(pid); };
+    base.querySelector('#pmStatus').value=p.status;
+    base.querySelector('#pmStatus').onchange=e=>{ p.status=e.target.value; save(); renderAllLinkedNoModal(); renderProjectModal(pid); };
+    base.querySelector('#pmPurpose').oninput=e=>{ p.purpose=e.target.value; save(); renderAllLinkedNoModal(); };
+    base.querySelector('#pmMemo').oninput=e=>{ p.memo=e.target.value; save(); renderAllLinkedNoModal(); };
+
+    const sec=document.createElement('div'); sec.className='modal-section';
+    sec.innerHTML='<h4>Actions</h4><div class="hint">1계위만.</div>';
+    const list=document.createElement('div');
+    if(!p.subs.length) list.innerHTML='<div class="empty">Action 없음.</div>';
+    p.subs.forEach((s,idx)=>{
+      const row=document.createElement('div'); row.className='action-checkline '+(s.done?'done':'');
+      row.setAttribute('data-dragid',String(s.id));
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!s.done;
+      cb.onchange=()=>{ setSubDone(s,cb.checked); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
+      const inp=document.createElement('input'); inp.type='text'; inp.value=s.title||''; inp.placeholder='Action';
+      inp.oninput=()=>{ s.title=inp.value; save(); renderAllLinkedNoModal(); };
+      const del=document.createElement('button'); del.className='btn small ghost'; del.textContent='삭제';
+      del.onclick=()=>{ 
+        if(confirm('Action을 삭제할까요?')){
+          p.subs=p.subs.filter(x=>String(x.id)!==String(s.id));
+          Object.values(state.dayLogs||{}).forEach(d=>{ (d.focuses||[]).forEach(f=>{ if(String(f.subId)===String(s.id)) f.subId=''; }); });
+          save(); renderProjectModal(pid); renderAllLinkedNoModal();
+        }
+      };
+      row.append(cb,inp,del);
+      list.appendChild(row);
+    });
+    sec.appendChild(list);
+    const add=document.createElement('div'); add.className='add-line';
+    add.innerHTML='<input placeholder="새 Action"><button class="btn small ghost">+ 추가</button>';
+    add.querySelector('button').onclick=()=>{
+      const val=add.querySelector('input').value.trim();
+      if(!val) return;
+      p.subs.push({id:uid(),title:val,done:false,createdDate:todayStr(),completedDate:'',todayFocus:false,source:'',dailyNotes:[],children:[]});
+      save(); renderProjectModal(pid); renderAllLinkedNoModal();
+    };
+    add.querySelector('input').addEventListener('keydown',e=>{ if(e.key==='Enter') add.querySelector('button').click(); });
+    sec.appendChild(add);
+    c.appendChild(sec);
+
+    const delSec=document.createElement('div'); delSec.className='modal-section';
+    delSec.innerHTML='<button class="btn danger">삭제</button>';
+    delSec.querySelector('button').onclick=()=>{ if(confirm('이 Project를 삭제할까요?')){ clearSlotsReferencingProject(pid); state.projects=state.projects.filter(x=>String(x.id)!==String(pid)); closeModal(); save(); renderAllLinkedNoModal(); } };
+    c.appendChild(delSec);
+  }
+
+  function renderTodaySlots(){ /* v14: Today’s 3 removed */ }
+  function renderTodayProjects(){ /* v14: Today’s Projects merged into Today Focus */ }
+
+  function renderToday(){
+    setupLifeOSv14Layout();
+    renderDateNav();
+    renderYesterdayNote();
+    const viewed=new Date((state.viewDate||todayStr())+'T00:00:00');
+    document.getElementById('todayDate').textContent=viewed.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+    const ci=state.todayDraft.checkin;
+    const co=state.todayDraft.checkout;
+
+    document.getElementById('checkinNote').value=ci.note||'';
+    document.getElementById('checkinNote').oninput=()=>{ ci.note=document.getElementById('checkinNote').value; save(); renderCheckinSignal(); renderBiorhythmCharts(); };
+
+    document.getElementById('checkoutGood').value=co.good||'';
+    document.getElementById('checkoutHard').value=co.hard||'';
+    document.getElementById('checkoutTomorrow').value=co.tomorrow||'';
+    document.getElementById('checkoutGood').oninput=()=>{ co.good=document.getElementById('checkoutGood').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
+    document.getElementById('checkoutHard').oninput=()=>{ co.hard=document.getElementById('checkoutHard').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
+    document.getElementById('checkoutTomorrow').oninput=()=>{ co.tomorrow=document.getElementById('checkoutTomorrow').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
+
+    renderChipGroup('themeChips','theme','checkin');
+    renderChipGroup('bodyStateChips','bodyState','checkin');
+    renderCheckinScales();
+    renderCheckoutScales();
+
+    renderQuickHabits();
+    renderTodayFocus();
+    renderIdeaBoard();
+    renderTodaySignals();
+    renderBiorhythmCharts();
+    renderTodayFlow();
+  }
+
+  function renderTodayFlow(){
+    const checkinDone=getCheckinScore()>0;
+    const routineDone=getRoutineScore()>0;
+    const focusDone=(state.todayDraft.focuses||[]).some(f=>f.projectId || f.note || f.done);
+    const ideaDone=(state.ideas||[]).length>0;
+    const checkoutDone=getCheckoutScore()>0;
+    const steps=[
+      ['flowCheckin',checkinDone],
+      ['flowRoutine',routineDone],
+      ['flowFocus',focusDone],
+      ['flowIdeation',ideaDone],
+      ['flowCheckout',checkoutDone]
+    ];
+    steps.forEach(([id,done],idx)=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      el.classList.toggle('done',done);
+      const active=!done && steps.slice(0,idx).every(x=>x[1]);
+      el.classList.toggle('active',active);
+    });
+  }
+
+
+  /* v14.4: invisible drag-sort helpers — no visual handle */
+  function ensureTodayRoutineOrder(){
+    if(!Array.isArray(state.todayRoutineOrder)) state.todayRoutineOrder=[];
+  }
+  function sortBySavedOrder(items, orderArr, fallback){
+    const order=(orderArr||[]).map(String);
+    return [...items].sort((a,b)=>{
+      const ai=order.indexOf(String(a.id));
+      const bi=order.indexOf(String(b.id));
+      const av=ai<0?999999:ai;
+      const bv=bi<0?999999:bi;
+      if(av!==bv) return av-bv;
+      return fallback?fallback(a,b):0;
+    });
+  }
+  function bindPlainDragSort(container, selector, onReorder){
+    if(!container || container._plainDragBound) return;
+    container._plainDragBound=true;
+    container.classList.add('drag-surface');
+    let dragEl=null, placeholder=null, startY=0, dragging=false, pointerId=null;
+    const THRESHOLD=7;
+    const interactive='button,input,select,textarea,a,label';
+    const rows=()=>Array.from(container.querySelectorAll(selector));
+    const getAfterElement=(y)=>{
+      return rows().filter(el=>el!==dragEl).reduce((closest,child)=>{
+        const box=child.getBoundingClientRect();
+        const offset=y-box.top-box.height/2;
+        if(offset<0 && offset>closest.offset) return {offset,element:child};
+        return closest;
+      },{offset:-Infinity,element:null}).element;
+    };
+    const cleanup=()=>{
+      if(dragEl) dragEl.classList.remove('dragging-plain');
+      if(placeholder && placeholder.parentNode) placeholder.remove();
+      if(dragEl) dragEl.style.zIndex='';
+      dragEl=null; placeholder=null; dragging=false; pointerId=null;
+    };
+    container.addEventListener('pointerdown',e=>{
+      const row=e.target.closest(selector);
+      if(!row || !container.contains(row)) return;
+      if(e.target.closest(interactive)) return;
+      dragEl=row; startY=e.clientY; pointerId=e.pointerId; dragging=false;
+    });
+    container.addEventListener('pointermove',e=>{
+      if(!dragEl) return;
+      if(!dragging && Math.abs(e.clientY-startY)>THRESHOLD){
+        dragging=true;
+        dragEl.classList.add('dragging-plain');
+        dragEl.style.zIndex='5';
+        placeholder=document.createElement('div');
+        placeholder.className='drag-placeholder-plain';
+        placeholder.style.height=dragEl.getBoundingClientRect().height+'px';
+        dragEl.parentNode.insertBefore(placeholder, dragEl.nextSibling);
+        try{ dragEl.setPointerCapture(pointerId); }catch(_e){}
+      }
+      if(dragging){
+        e.preventDefault();
+        const after=getAfterElement(e.clientY);
+        if(after==null) container.appendChild(placeholder);
+        else container.insertBefore(placeholder, after);
+      }
+    }, {passive:false});
+    const finish=(e)=>{
+      if(!dragEl) return;
+      if(dragging && placeholder){
+        placeholder.parentNode.insertBefore(dragEl, placeholder);
+        const ids=rows().map(el=>el.getAttribute('data-dragid')).filter(Boolean);
+        window._justDragged=Date.now();
+        cleanup();
+        onReorder(ids);
+      }else{
+        cleanup();
+      }
+    };
+    container.addEventListener('pointerup',finish);
+    container.addEventListener('pointercancel',finish);
+  }
+
+  function renderTodayFocus(){
+    const box=document.getElementById('todayFocusBoard'); if(!box) return;
+    if(!Array.isArray(state.todayDraft.focuses)) state.todayDraft.focuses=[];
+    box.innerHTML='';
+
+    const kanban=document.createElement('div');
+    kanban.className='focus-kanban';
+    const ongoing=state.todayDraft.focuses.filter(f=>!f.done);
+    const done=state.todayDraft.focuses.filter(f=>!!f.done);
+
+    const makeCol=(status,title,items)=>{
+      const col=document.createElement('div'); col.className='focus-col '+(status==='done'?'done-col':'ongoing-col'); col.dataset.status=status;
+      col.innerHTML='<div class="focus-col-head"><span>'+title+'</span><span>'+items.length+'</span></div>';
+      const list=document.createElement('div'); list.className='focus-col-list'; list.dataset.status=status;
+      if(!items.length){
+        const empty=document.createElement('div'); empty.className='focus-drop-hint';
+        empty.textContent=status==='done'?'끝낸 Focus를 여기로.':'오늘 챙길 Action을 아래에서 추가.';
+        list.appendChild(empty);
+      }
+      items.forEach(f=>list.appendChild(makeFocusCard(f)));
+      col.appendChild(list);
+      return col;
+    };
+
+    kanban.append(makeCol('ongoing','On-going',ongoing), makeCol('done','Done',done));
+    box.appendChild(kanban);
+    bindFocusKanbanDrag(kanban);
+
+    const add=document.createElement('div'); add.className='focus-add';
+    const draft=newFocusItem();
+    buildFocusEditor(add,draft,()=>{
+      if(!draft.projectId && !draft.subId && !draft.note.trim()) return;
+      draft.done=false;
+      state.todayDraft.focuses.push(draft);
+      save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
+    }, true);
+    box.appendChild(add);
+  }
+
+  function makeFocusCard(f){
+    const p=getProject(f.projectId);
+    const s=p?(p.subs||[]).find(x=>String(x.id)===String(f.subId)):null;
+    const pillarKey=f.pillar || (p&&p.pillar) || '';
+    const pi=PRIMARY_PILLARS.find(x=>x.key===pillarKey) || (pillarKey==='etc'?ETC_PILLAR:null);
+    const row=document.createElement('div');
+    row.className='focus-line '+(f.done?'done':'');
+    row.setAttribute('data-dragid',String(f.id));
+    row.draggable=true;
+
+    const summary=document.createElement('div'); summary.className='focus-summary';
+    const tag=document.createElement('span'); tag.className='focus-vtag'; tag.textContent=pi?pi.name:'Value';
+    const main=document.createElement('span'); main.className='focus-main'; main.textContent=(p?p.title:'Project')+(s?' › '+s.title:'');
+    summary.append(tag,main);
+
+    const actions=document.createElement('div'); actions.className='focus-card-actions';
+    const edit=document.createElement('button'); edit.className='focus-mini-btn'; edit.textContent='수정'; edit.draggable=false;
+    const del=document.createElement('button'); del.className='focus-mini-btn'; del.textContent='삭제'; del.draggable=false;
+    del.onclick=()=>{ state.todayDraft.focuses=state.todayDraft.focuses.filter(x=>x.id!==f.id); save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow(); };
+    actions.append(edit,del);
+
+    const memo=document.createElement('div'); memo.className='focus-memo'; memo.textContent=f.note||'오늘 어떻게 할지 한 줄';
+    row.append(summary,actions,memo);
+    row.onclick=(e)=>{
+      if(e.target.closest('button,input,select,textarea')) return;
+      if(window._justDragged && Date.now()-window._justDragged<350) return;
+      if(f.projectId) openProjectModal(f.projectId);
+    };
+
+    const editor=document.createElement('div'); editor.className='focus-edit'; editor.style.display='none'; editor.draggable=false;
+    buildFocusEditor(editor,f,()=>{ save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow(); }, false);
+    edit.onclick=(e)=>{
+      e.stopPropagation();
+      if(editor.parentNode){ editor.style.display=editor.style.display==='none'?'grid':'none'; return; }
+      row.insertAdjacentElement('afterend',editor);
+      editor.style.display='grid';
+    };
+    return row;
+  }
+
+  function bindFocusKanbanDrag(root){
+    let draggedId=null;
+    const cards=()=>Array.from(root.querySelectorAll('.focus-line'));
+    root.addEventListener('dragstart',e=>{
+      const card=e.target.closest('.focus-line');
+      if(!card || e.target.closest('button,input,select,textarea')){ e.preventDefault(); return; }
+      draggedId=card.getAttribute('data-dragid');
+      card.classList.add('dragging-card');
+      e.dataTransfer.effectAllowed='move';
+      try{ e.dataTransfer.setData('text/plain', draggedId); }catch(_e){}
+    });
+    root.addEventListener('dragend',()=>{
+      cards().forEach(c=>c.classList.remove('dragging-card'));
+      draggedId=null;
+    });
+    root.querySelectorAll('.focus-col-list').forEach(list=>{
+      list.addEventListener('dragover',e=>{
+        e.preventDefault();
+        const card=root.querySelector('.focus-line.dragging-card');
+        if(!card) return;
+        const empty=list.querySelector('.focus-drop-hint'); if(empty) empty.remove();
+        const after=getFocusAfterElement(list,e.clientY);
+        if(after==null) list.appendChild(card); else list.insertBefore(card,after);
+      });
+      list.addEventListener('drop',e=>{
+        e.preventDefault();
+        window._justDragged=Date.now();
+      updateFocusFromKanban(root);
+      });
+    });
+  }
+
+  function getFocusAfterElement(container,y){
+    const els=[...container.querySelectorAll('.focus-line:not(.dragging-card)')];
+    return els.reduce((closest,child)=>{
+      const box=child.getBoundingClientRect();
+      const offset=y-box.top-box.height/2;
+      if(offset<0 && offset>closest.offset) return {offset,element:child};
+      return closest;
+    },{offset:-Infinity,element:null}).element;
+  }
+
+  function updateFocusFromKanban(root){
+    const byId=new Map((state.todayDraft.focuses||[]).map(f=>[String(f.id),f]));
+    const next=[];
+    root.querySelectorAll('.focus-col-list').forEach(list=>{
+      const isDone=list.dataset.status==='done';
+      list.querySelectorAll('.focus-line').forEach(card=>{
+        const f=byId.get(String(card.getAttribute('data-dragid')));
+        if(f){ f.done=isDone; next.push(f); }
+      });
+    });
+    state.todayDraft.focuses=next;
+    save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
+  }
+
+  function buildFocusEditor(container,f,onCommit,isNew){
+    container.innerHTML='';
+    const pillarSel=document.createElement('select');
+    pillarSel.innerHTML='<option value="">Value</option>'+PRIMARY_PILLARS.map(pi=>'<option value="'+pi.key+'">'+pi.emo+' '+pi.name+'</option>').join('')+'<option value="etc">📌 Misc</option>';
+    const p0=getProject(f.projectId);
+    pillarSel.value=f.pillar || (p0&&p0.pillar) || '';
+
+    const projectSel=document.createElement('select');
+    const subSel=document.createElement('select');
+    const noteInput=document.createElement('input');
+    noteInput.placeholder='오늘 어떻게?'; noteInput.value=f.note||'';
+    const btn=document.createElement('button'); btn.className='btn small '+(isNew?'today':'ghost'); btn.textContent=isNew?'+ 추가':'저장';
+
+    const fillProjects=()=>{
+      const val=pillarSel.value;
+      const pOpts=(val?state.projects.filter(pr=>pr.status!=='done' && pr.pillar===val):state.projects.filter(pr=>pr.status!=='done'));
+      projectSel.innerHTML='<option value="">Project</option>'+pOpts.map(pr=>'<option value="'+pr.id+'">'+escape(pr.title||'Project')+'</option>').join('');
+      if(pOpts.some(pr=>String(pr.id)===String(f.projectId))) projectSel.value=f.projectId||'';
+      else projectSel.value='';
+      fillActions();
+    };
+    const fillActions=()=>{
+      const p=getProject(projectSel.value);
+      const subs=p?(p.subs||[]):[];
+      subSel.innerHTML='<option value="">Action</option>'+subs.map(s=>'<option value="'+s.id+'">'+(s.done?'✓ ':'')+escape(s.title||'Action')+'</option>').join('');
+      if(subs.some(s=>String(s.id)===String(f.subId))) subSel.value=f.subId||'';
+      else subSel.value='';
+    };
+    pillarSel.onchange=()=>{ f.pillar=pillarSel.value; f.projectId=''; f.subId=''; fillProjects(); };
+    projectSel.onchange=()=>{ f.projectId=projectSel.value; const p=getProject(f.projectId); f.pillar=p?p.pillar:(f.pillar||''); f.subId=''; fillActions(); };
+    subSel.onchange=()=>{ f.subId=subSel.value; };
+    noteInput.oninput=()=>{ f.note=noteInput.value; };
+    noteInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); btn.click(); }});
+    btn.onclick=()=>{ f.note=noteInput.value; onCommit(); };
+    fillProjects();
+    container.append(pillarSel,projectSel,subSel,noteInput,btn);
+  }
+
+  function wrapField(label, el){
+    const w=document.createElement('div'); w.className='field';
+    const l=document.createElement('label'); l.textContent=label;
+    w.append(l,el); return w;
+  }
+
+  function renderIdeaBoard(){
+    const box=document.getElementById('ideaBoard'); if(!box) return;
+    ensureIdeas();
+    box.innerHTML='';
+    if(!state.ideaUi) state.ideaUi={filterTag:'', grouped:false};
+    const ui=state.ideaUi;
+
+    // Backward compatibility: old ideas with memo keep their memo inside title if title is empty.
+    state.ideas.forEach(idea=>{
+      if(!idea.title && idea.memo) idea.title=idea.memo;
+      if(!Array.isArray(idea.tags)) idea.tags=[];
+      if(idea.tags.length>2) idea.tags=idea.tags.slice(0,2);
+    });
+
+    const allTags=[...new Set(state.ideas.flatMap(idea=>(idea.tags||[]).filter(Boolean)))].sort();
+
+    const toolbar=document.createElement('div'); toolbar.className='idea-toolbar';
+    const filters=document.createElement('div'); filters.className='idea-filters';
+    const actions=document.createElement('div'); actions.className='idea-toolbar-actions';
+    const mkBtn=(label,active,cb)=>{ const b=document.createElement('button'); b.className='idea-filter'+(active?' active':''); b.textContent=label; b.onclick=cb; return b; };
+    filters.appendChild(mkBtn('전체', !ui.filterTag, ()=>{ ui.filterTag=''; renderIdeaBoard(); }));
+    allTags.forEach(tag=>filters.appendChild(mkBtn('#'+tag, ui.filterTag===tag, ()=>{ ui.filterTag = ui.filterTag===tag ? '' : tag; renderIdeaBoard(); })));
+    actions.appendChild(mkBtn(ui.grouped ? '태그별 ON' : '태그별 OFF', !!ui.grouped, ()=>{ ui.grouped=!ui.grouped; renderIdeaBoard(); }));
+    toolbar.append(filters, actions);
+    box.appendChild(toolbar);
+
+    const visibleIdeas = ui.filterTag ? state.ideas.filter(idea => (idea.tags||[]).includes(ui.filterTag)) : state.ideas.slice();
+    const makeChip=(idea)=>{
+      const chip=document.createElement('div'); chip.className='idea-chip';
+      const tags=(idea.tags||[]).slice(0,2);
+      chip.innerHTML='<span class="idea-chip-main">'+escape(idea.title||'Untitled')+'</span>'+
+        tags.map(t=>'<span class="idea-chip-tag">'+escape(t)+'</span>').join('')+
+        '<button class="idea-chip-del" aria-label="삭제">×</button>';
+      chip.querySelector('.idea-chip-del').onclick=(e)=>{ e.stopPropagation(); state.ideas=state.ideas.filter(x=>x.id!==idea.id); save(); renderIdeaBoard(); renderTodayFlow(); };
+      return chip;
+    };
+
+    const board=document.createElement('div'); board.className='idea-chip-board';
+    if(!visibleIdeas.length){
+      const empty=document.createElement('div'); empty.className='empty idea-empty';
+      empty.textContent='떠오르면 아래에 적어두기.';
+      board.appendChild(empty);
+    } else if(ui.grouped){
+      const tagList = ui.filterTag ? [ui.filterTag] : (allTags.length ? allTags : ['기타']);
+      tagList.forEach(tag=>{
+        const groupIdeas=visibleIdeas.filter(idea => tag==='기타' ? !(idea.tags||[]).length : (idea.tags||[]).includes(tag));
+        if(!groupIdeas.length) return;
+        const group=document.createElement('div'); group.className='idea-group';
+        group.innerHTML='<div class="idea-group-title">#'+escape(tag)+'</div>';
+        const chips=document.createElement('div'); chips.className='idea-chipwrap';
+        groupIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
+        group.appendChild(chips);
+        board.appendChild(group);
+      });
+    } else {
+      const chips=document.createElement('div'); chips.className='idea-chipwrap';
+      visibleIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
+      board.appendChild(chips);
+    }
+    box.appendChild(board);
+
+    const composer=document.createElement('div'); composer.className='idea-composer idea-composer-chips';
+    composer.innerHTML='<div class="idea-compose-row simple"><input id="ideaTitle" placeholder="아이디어"><input id="ideaTags" placeholder="태그 1, 태그 2"><button class="btn small ghost">+ 저장</button></div>';
+    const add=()=>{
+      const title=composer.querySelector('#ideaTitle').value.trim();
+      const tags=composer.querySelector('#ideaTags').value.split(',').map(t=>t.trim()).filter(Boolean).slice(0,2);
+      if(!title) return;
+      state.ideas.unshift({id:uid(),title,tags,createdDate:todayStr()});
+      save(); renderIdeaBoard(); renderTodayFlow();
+    };
+    composer.querySelector('button').onclick=add;
+    ['#ideaTitle','#ideaTags'].forEach(sel=>composer.querySelector(sel).addEventListener('keydown',e=>{ if(e.key==='Enter') add(); }));
     box.appendChild(composer);
   }
 
