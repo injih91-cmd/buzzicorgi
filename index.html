@@ -5627,16 +5627,31 @@ function renderWeekMetrics(){
   }
 
   function updateFocusFromKanban(root){
-    const byId=new Map((state.todayDraft.focuses||[]).map(f=>[String(f.id),f]));
-    const next=[];
+    const original=Array.isArray(state.todayDraft.focuses)?state.todayDraft.focuses:[];
+    const byId=new Map(original.map(f=>[String(f.id),f]));
+    const visibleNext=[];
+    const visibleIds=new Set();
     root.querySelectorAll('.focus-col-list').forEach(list=>{
-      const isDone=list.dataset.status==='done';
+      const status=list.dataset.status;
+      const zone=list.dataset.zone;
       list.querySelectorAll('.focus-line').forEach(card=>{
-        const f=byId.get(String(card.getAttribute('data-dragid')));
-        if(f){ f.done=isDone; next.push(f); }
+        const id=String(card.getAttribute('data-dragid'));
+        const f=byId.get(id);
+        if(!f) return;
+        visibleIds.add(id);
+        if(status==='done' || zone==='done'){ f.done=true; }
+        else {
+          f.done=false;
+          if(zone==='work' || zone==='after') f.zone=zone;
+        }
+        visibleNext.push(f);
       });
     });
-    state.todayDraft.focuses=next;
+    // IMPORTANT: When Today is filtered to Work Flow or After Hours, cards in the
+    // hidden zone are not present in the DOM. Preserve them instead of treating
+    // the visible DOM as the whole source of truth.
+    const hidden=original.filter(f=>!visibleIds.has(String(f.id)));
+    state.todayDraft.focuses=visibleNext.concat(hidden);
     save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
   }
 
@@ -6777,19 +6792,26 @@ function renderWeekMetrics(){
   }
 
   function updateFocusFromKanban(root){
-    const byId=new Map((state.todayDraft.focuses||[]).map(f=>[String(f.id),f]));
-    const next=[];
+    const original=Array.isArray(state.todayDraft.focuses)?state.todayDraft.focuses:[];
+    const byId=new Map(original.map(f=>[String(f.id),f]));
+    const visibleNext=[];
+    const visibleIds=new Set();
     root.querySelectorAll('.focus-col-list').forEach(list=>{
       const zone=list.dataset.zone; // 'work' | 'after' | 'done'
       list.querySelectorAll('.focus-line').forEach(card=>{
-        const f=byId.get(String(card.getAttribute('data-dragid')));
+        const id=String(card.getAttribute('data-dragid'));
+        const f=byId.get(id);
         if(!f) return;
+        visibleIds.add(id);
         if(zone==='done'){ f.done=true; }
-        else { f.done=false; f.zone=zone; }
-        next.push(f);
+        else { f.done=false; f.zone=(zone==='work'||zone==='after')?zone:(f.zone||'after'); }
+        visibleNext.push(f);
       });
     });
-    state.todayDraft.focuses=next;
+    // IMPORTANT: A filtered board only renders one active zone. Keep hidden-zone
+    // focus cards in the saved draft so switching time/filter cannot erase them.
+    const hidden=original.filter(f=>!visibleIds.has(String(f.id)));
+    state.todayDraft.focuses=visibleNext.concat(hidden);
     save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
   }
 
@@ -7310,7 +7332,7 @@ function renderWeekMetrics(){
   const AUTH_KEY='buzzicorgi_auth';
   const AUTH_EXPIRES_KEY='buzzicorgi_auth_expires';
   const AUTH_DURATION=1000*60*60*24*90;
-  const PASSWORD_SHA256='56bd199fde762b620319103e55a58662bb5773ea3290f361206ff09b2b2c646a';
+  const PASSWORD_SHA256='055e01d46e71458cd3de8181f5393e9a99dc0be2f87cda07ab20e4e2758adac0';
 
   function unlock(){
     document.documentElement.classList.remove('auth-locked');
