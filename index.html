@@ -2234,6 +2234,48 @@ input:focus,textarea:focus,select:focus{
   box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .zone-filter button.on:hover{background:var(--sage-active,#788c5c);color:#fff;}
+
+/* v22 pointer-based kanban drag (PC + mobile) */
+.focus-line, .quick-habit.routine-line{ touch-action:none; }
+.kb-dragging{ opacity:0; }
+.kb-placeholder{
+  border:1.5px dashed var(--sage-active,#788c5c);
+  background:rgba(120,140,92,.08);
+  border-radius:10px; margin:4px 0;
+}
+.kb-clone{
+  position:fixed; z-index:9999; pointer-events:none;
+  margin:0 !important; opacity:.96;
+  box-shadow:0 10px 30px rgba(0,0,0,.22);
+  transform:rotate(1.5deg);
+}
+
+/* v22 today nudge + routine streak */
+.today-nudge{
+  display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;
+}
+.tn-item{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--soft,#f4f2ec);border:0.5px solid var(--line,#e3dfd4);
+  border-radius:999px;padding:6px 13px;font-size:12.5px;color:var(--ink,#2c2632);
+}
+.tn-ic{font-size:13px;}
+.routine-streak{
+  font-size:11px;font-weight:700;color:#c2410c;
+  background:rgba(216,90,48,.10);border-radius:999px;padding:1px 7px;white-space:nowrap;
+  margin-left:5px;display:inline-block;vertical-align:baseline;
+}
+.routine-streak.avoid{
+  color:var(--navy,#1F3864);
+  background:rgba(31,56,100,.10);
+}
+.routine-zone.zone-active .routine-streak.avoid{
+  background:rgba(255,255,255,.25);color:#fff;
+}
+.habit-kind{min-width:108px;}
+.routine-zone.zone-active .routine-streak{
+  background:rgba(255,255,255,.25);color:#fff;
+}
 /* single-zone routine board → 1 column */
 .quick-habits.routine-board.single-zone{grid-template-columns:1fr !important;}
 /* focus kanban column-count classes (override the fixed 3-col rule) */
@@ -2344,6 +2386,7 @@ input:focus,textarea:focus,select:focus{
       <button class="date-arrow" id="dayNext" aria-label="다음 날">›</button>
       <button class="date-today-btn" id="dayToday">오늘로</button>
     </div>
+    <div id="todayNudge"></div>
     <div class="today-flow v14-flow" id="todayFlow">
       <div class="flow-step" id="flowCheckin"><b>1</b><span>Check-in</span></div>
       <div class="flow-line"></div>
@@ -2896,6 +2939,7 @@ input:focus,textarea:focus,select:focus{
     h.target=typeof h.target==='number'?h.target:(h.freq==='daily'?7:3);
     h.log=Array.isArray(h.log)?[...new Set(h.log.filter(Boolean))]:[];
     h.principles=typeof h.principles==='string'?h.principles:'';
+    h.kind=(h.kind==='avoid')?'avoid':'todo';
     if(typeof h.pillarOrder!=='number') h.pillarOrder=9999;
     if(typeof h.todayOrder!=='number') h.todayOrder=9999;
     return h;
@@ -3722,16 +3766,71 @@ input:focus,textarea:focus,select:focus{
   function getProject(pid){ return state.projects.find(p=>String(p.id)===String(pid)); }
   function getSub(pid,sid){ const p=getProject(pid); return p ? p.subs.find(s=>String(s.id)===String(sid)) : null; }
   function getHabit(hid){ return state.habits.find(h=>String(h.id)===String(hid)); }
-  function habitWeekCount(h){
-    const set=new Set(h.log); const now=new Date(); now.setHours(0,0,0,0);
+  function habitWeekCount(h){ return habitCountInWeekOf(h, new Date()); }
+  function habitTargetCount(h){ return h.freq==='daily'?7:(h.target||3); }
+  // count completions within the ISO week (Mon–Sun) containing date `ref`
+  function habitCountInWeekOf(h, ref){
+    const set=new Set(h.log); const now=new Date(ref); now.setHours(0,0,0,0);
     const wd=(now.getDay()+6)%7; const mon=new Date(now); mon.setDate(now.getDate()-wd);
     let c=0; for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); if(set.has(ymd(d))) c++; } return c;
   }
-  function habitTargetCount(h){ return h.freq==='daily'?7:(h.target||3); }
-  function habitStreak(h){
+  function habitStreakDays(h){
     const set=new Set(h.log); let n=0; const d=new Date(); d.setHours(0,0,0,0);
     if(!set.has(ymd(d))) d.setDate(d.getDate()-1);
     while(set.has(ymd(d))){ n++; d.setDate(d.getDate()-1); } return n;
+  }
+  // consecutive weeks (ending this week) where the weekly target was met
+  function habitStreakWeeks(h){
+    const target=h.target||3; let n=0;
+    const cur=new Date(); cur.setHours(0,0,0,0);
+    // start from this week; if this week not yet met, don't break the past streak — start from last week
+    let probe=new Date(cur);
+    if(habitCountInWeekOf(h,probe) < target){ probe.setDate(probe.getDate()-7); }
+    while(habitCountInWeekOf(h,probe) >= target){ n++; probe.setDate(probe.getDate()-7); }
+    return n;
+  }
+  function habitStreak(h){ return h.freq==='daily' ? habitStreakDays(h) : habitStreakWeeks(h); }
+  function renderTodayNudge(){
+    const box=document.getElementById('todayNudge'); if(!box) return;
+    if((state.viewDate||todayStr())!==todayStr()){ box.innerHTML=''; return; }
+    const habits=state.habits||[];
+    const parts=[];
+    // yesterday's missed daily routines (split by kind)
+    const y=new Date(); y.setHours(0,0,0,0); y.setDate(y.getDate()-1); const yStr=ymd(y);
+    const missedTodo=habits.filter(h=>h.freq==='daily' && (h.kind||'todo')!=='avoid' && !(h.log||[]).includes(yStr));
+    const missedAvoid=habits.filter(h=>h.freq==='daily' && h.kind==='avoid' && !(h.log||[]).includes(yStr));
+    if(missedTodo.length){
+      const names=missedTodo.slice(0,3).map(h=>h.title||'루틴').join(', ');
+      parts.push({icon:'💤', text:'어제 놓친 매일 루틴 '+missedTodo.length+'개'+(names?' · '+names:'')+(missedTodo.length>3?' 외':'')});
+    }
+    if(missedAvoid.length){
+      const names=missedAvoid.slice(0,2).map(h=>h.title||'루틴').join(', ');
+      parts.push({icon:'🛡️', text:'어제 사수 체크 안 한 '+missedAvoid.length+'개'+(names?' · '+names:'')});
+    }
+    // best active streak (kind-aware icon/wording)
+    let best=null, bestN=0;
+    habits.forEach(h=>{ const s=habitStreak(h); if(s>=2 && s>bestN){ bestN=s; best=h; } });
+    if(best){
+      const unit=(best.freq==='daily')?'일':'주';
+      if(best.kind==='avoid') parts.push({icon:'🛡️', text:(best.title||'루틴')+' '+bestN+unit+'째 사수 중 — 이어가요'});
+      else parts.push({icon:'🔥', text:(best.title||'루틴')+' '+bestN+unit+' 연속 — 이어가요'});
+    }
+    // today's daily routine progress
+    const todayDaily=habits.filter(h=>h.freq==='daily');
+    if(todayDaily.length){
+      const doneN=todayDaily.filter(h=>(h.log||[]).includes(todayStr())).length;
+      if(doneN<todayDaily.length) parts.push({icon:'✓', text:'오늘 매일 루틴 '+doneN+'/'+todayDaily.length});
+    }
+    // this week's weekly routines that still need more sessions
+    const weekly=habits.filter(h=>h.freq==='weekly');
+    const behind=weekly.map(h=>({h, c:habitCountInWeekOf(h,new Date()), t:(h.target||3)})).filter(o=>o.c<o.t);
+    if(behind.length){
+      const top=behind[0];
+      const extra=behind.length>1?(' 외 '+(behind.length-1)+'개'):'';
+      parts.push({icon:'📅', text:'이번 주 '+(top.h.title||'루틴')+' '+top.c+'/'+top.t+extra});
+    }
+    if(!parts.length){ box.innerHTML=''; return; }
+    box.innerHTML='<div class="today-nudge">'+parts.slice(0,4).map(p=>'<span class="tn-item"><span class="tn-ic">'+p.icon+'</span>'+escape(p.text)+'</span>').join('')+'</div>';
   }
   function addProjectSub(project,text,source='today'){
     const sub={id:uid(),title:text||'',done:false,createdDate:todayStr(),completedDate:'',dueDate:'',todayFocus:source.includes('today'),source,dailyNotes:[]};
@@ -5758,7 +5857,7 @@ function renderWeekMetrics(){
       const pi=pillarOf(h.pillar);
       const total=(h.log||[]).length;
       const freq=h.freq==='daily'?'매일':('주 '+h.target+'회');
-      W('- ['+(pi&&pi.name||'')+'] '+(h.title||'')+' ('+freq+', 누적 체크 '+total+'일)'+(h.principles?(' / 원칙: '+h.principles.replace(/\n/g,'; ')):''));
+      W('- ['+(pi&&pi.name||'')+'] '+(h.title||'')+' ('+(h.kind==='avoid'?'Not-to-Do · ':'')+freq+', 누적 체크 '+total+'일)'+(h.principles?(' / 원칙: '+h.principles.replace(/\n/g,'; ')):''));
     });
     W('');
 
@@ -6216,6 +6315,7 @@ function renderWeekMetrics(){
     setupLifeOSv14Layout();
     renderDateNav();
     renderYesterdayNote();
+    renderTodayNudge();
     const viewed=new Date((state.viewDate||todayStr())+'T00:00:00');
     document.getElementById('todayDate').textContent=viewed.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
@@ -6438,35 +6538,83 @@ function renderWeekMetrics(){
     return row;
   }
 
-  function bindFocusKanbanDrag(root){
-    let draggedId=null;
-    const cards=()=>Array.from(root.querySelectorAll('.focus-line'));
-    root.addEventListener('dragstart',e=>{
-      const card=e.target.closest('.focus-line');
-      if(!card || e.target.closest('button,input,select,textarea')){ e.preventDefault(); return; }
-      draggedId=card.getAttribute('data-dragid');
-      card.classList.add('dragging-card');
-      e.dataTransfer.effectAllowed='move';
-      try{ e.dataTransfer.setData('text/plain', draggedId); }catch(_e){}
-    });
-    root.addEventListener('dragend',()=>{
-      cards().forEach(c=>c.classList.remove('dragging-card'));
-      draggedId=null;
-    });
-    root.querySelectorAll('.focus-col-list').forEach(list=>{
-      list.addEventListener('dragover',e=>{
-        e.preventDefault();
-        const card=root.querySelector('.focus-line.dragging-card');
-        if(!card) return;
-        const empty=list.querySelector('.focus-drop-hint'); if(empty) empty.remove();
-        const after=getFocusAfterElement(list,e.clientY);
-        if(after==null) list.appendChild(card); else list.insertBefore(card,after);
-      });
-      list.addEventListener('drop',e=>{
-        e.preventDefault();
+  // Universal pointer-based kanban drag — works with mouse, touch, and pen.
+  // opts: { cardSel, listSel, handleIgnore, onDrop(cardEl, targetList, beforeEl) }
+  function bindPointerKanban(root, opts){
+    const cardSel=opts.cardSel, listSel=opts.listSel;
+    const ignore=opts.handleIgnore||'button,input,select,textarea,a,label';
+    let card=null, clone=null, ph=null, startX=0, startY=0, dragging=false, offX=0, offY=0;
+    const THRESH=8;
+    function lists(){ return Array.from(root.querySelectorAll(listSel)); }
+    function begin(){
+      dragging=true;
+      const r=card.getBoundingClientRect();
+      offX=startX-r.left; offY=startY-r.top;
+      ph=document.createElement('div'); ph.className='kb-placeholder'; ph.style.height=r.height+'px';
+      card.parentNode.insertBefore(ph, card.nextSibling);
+      clone=card.cloneNode(true); clone.classList.add('kb-clone');
+      clone.style.width=r.width+'px'; clone.style.left=r.left+'px'; clone.style.top=r.top+'px';
+      document.body.appendChild(clone);
+      card.classList.add('kb-dragging'); card.style.display='none';
+    }
+    function nearestList(x,y){
+      let best=null,bestD=Infinity;
+      lists().forEach(l=>{ const r=l.getBoundingClientRect();
+        const cx=Math.max(r.left,Math.min(x,r.right)), cy=Math.max(r.top,Math.min(y,r.bottom));
+        const d=(x-cx)*(x-cx)+(y-cy)*(y-cy); if(d<bestD){bestD=d;best=l;} });
+      return best;
+    }
+    function afterEl(list,y){
+      const els=[...list.querySelectorAll(cardSel+':not(.kb-dragging)')];
+      return els.reduce((c,ch)=>{ const b=ch.getBoundingClientRect(); const off=y-b.top-b.height/2;
+        if(off<0 && off>c.off) return {off,el:ch}; return c; },{off:-Infinity,el:null}).el;
+    }
+    function onMove(e){
+      if(!card) return;
+      if(!dragging){ if(Math.abs(e.clientX-startX)<THRESH && Math.abs(e.clientY-startY)<THRESH) return; begin(); }
+      e.preventDefault();
+      clone.style.left=(e.clientX-offX)+'px'; clone.style.top=(e.clientY-offY)+'px';
+      const list=nearestList(e.clientX,e.clientY); if(!list) return;
+      const hint=list.querySelector('.focus-drop-hint,.routine-empty-note'); if(hint) hint.remove();
+      const after=afterEl(list,e.clientY);
+      if(after==null) list.appendChild(ph); else list.insertBefore(ph,after);
+    }
+    function onUp(){
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onUp);
+      if(card && dragging && ph){
+        const targetList=ph.parentNode;
+        const beforeEl=ph.nextElementSibling && ph.nextElementSibling!==card ? ph.nextElementSibling : null;
+        card.style.display=''; ph.parentNode.insertBefore(card, ph); ph.remove();
+        card.classList.remove('kb-dragging');
         window._justDragged=Date.now();
-      updateFocusFromKanban(root);
-      });
+        const moved=card;
+        if(clone){ clone.remove(); } clone=null; ph=null; card=null; dragging=false;
+        try{ opts.onDrop(moved, targetList, beforeEl); }catch(_e){}
+        return;
+      }
+      if(clone){clone.remove();clone=null;} if(ph){ph.remove();ph=null;}
+      if(card){ card.classList.remove('kb-dragging'); card.style.display=''; card=null; }
+      dragging=false;
+    }
+    root.addEventListener('pointerdown', e=>{
+      if(e.button!=null && e.button!==0) return;
+      const t=e.target.closest(cardSel);
+      if(!t || !root.contains(t)) return;
+      if(e.target.closest(ignore)) return;
+      card=t; startX=e.clientX; startY=e.clientY; dragging=false;
+      document.addEventListener('pointermove', onMove, {passive:false});
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+    });
+  }
+
+  function bindFocusKanbanDrag(root){
+    bindPointerKanban(root, {
+      cardSel:'.focus-line',
+      listSel:'.focus-col-list',
+      onDrop:()=>{ updateFocusFromKanban(root); }
     });
   }
 
@@ -6794,7 +6942,6 @@ function renderWeekMetrics(){
       const done=habitDoneOn(h,viewDateStr());
       div.className='quick-habit routine-line '+(pinned.has(String(h.id))?'pinned ':'')+(done?'done':'');
       div.setAttribute('data-dragid',String(h.id));
-      div.setAttribute('draggable','true');
       const freqStr=(h.freq==='daily'?'매일':'주 '+h.target+'회');
       const b=document.createElement('button');
       b.className='routine-check '+(done?'on':'');
@@ -6803,9 +6950,17 @@ function renderWeekMetrics(){
       b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
       div.appendChild(b);
       const hasPrin=!!(h.principles&&h.principles.trim());
+      const stk=habitStreak(h);
+      const stkUnit=(h.freq==='daily')?'':'주';
+      const stkIcon=(h.kind==='avoid')?'🛡️':'🔥';
+      const stkSuffix=(h.kind==='avoid')?(stkUnit?' ':'')+(stkUnit?'주째 사수':'일째 사수'):(stkUnit?'주':'');
+      const stkText=(h.kind==='avoid')
+        ? stkIcon+stk+(h.freq==='daily'?'일째 사수':'주째 사수')
+        : stkIcon+stk+stkUnit;
+      const stkHtml=stk>=2?'<span class="routine-streak'+(h.kind==='avoid'?' avoid':'')+'">'+stkText+'</span>':'';
       div.insertAdjacentHTML('beforeend',
         '<span class="routine-pillar">'+escape((pi.emo||'')+' '+(pi.name||''))+'</span>'+ 
-        '<span class="routine-name">'+escape(h.title||'Routine')+(hasPrin?'<button class="routine-prin-btn" type="button" aria-label="원칙 보기">ⓘ</button>':'')+'</span>'+ 
+        '<span class="routine-name">'+escape(h.title||'Routine')+(hasPrin?'<button class="routine-prin-btn" type="button" aria-label="원칙 보기">ⓘ</button>':'')+stkHtml+'</span>'+ 
         '<span class="routine-freq">'+freqStr+'</span>'+ 
         '<span class="habit-spark">'+habitSparkline(h)+'</span>'
       );
@@ -6828,13 +6983,6 @@ function renderWeekMetrics(){
         btn.addEventListener('click',e=>{ e.stopPropagation(); if(pop.classList.contains('show'))hide(); else show(); });
         pop.addEventListener('click',e=>e.stopPropagation());
       }
-      div.addEventListener('dragstart',e=>{
-        if(e.target.closest('button,input,select,textarea,a,label')){ e.preventDefault(); return; }
-        e.dataTransfer.setData('text/plain',String(h.id));
-        e.dataTransfer.effectAllowed='move';
-        div.classList.add('dragging-routine');
-      });
-      div.addEventListener('dragend',()=>div.classList.remove('dragging-routine'));
       return div;
     };
     const az=activeZone();
@@ -6845,20 +6993,28 @@ function renderWeekMetrics(){
       col.setAttribute('data-zone',z.key);
       col.innerHTML='<div class="routine-zone-head"><div class="routine-zone-title">'+z.title+'<small>'+z.sub+'</small></div><span class="routine-zone-count">'+items.length+'</span></div><div class="routine-zone-list"></div>';
       const list=col.querySelector('.routine-zone-list');
+      list.setAttribute('data-zone', z.key);
       if(items.length) items.forEach(h=>list.appendChild(makeCard(h)));
       else list.innerHTML='<div class="routine-empty-note">여기로 루틴을 드래그</div>';
-      col.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; col.classList.add('drag-over'); });
-      col.addEventListener('dragleave',e=>{ if(!col.contains(e.relatedTarget)) col.classList.remove('drag-over'); });
-      col.addEventListener('drop',e=>{
-        e.preventDefault();
-        col.classList.remove('drag-over');
-        const id=e.dataTransfer.getData('text/plain');
-        if(!id) return;
-        setRoutineZone(id,z.key);
+      box.appendChild(col);
+    });
+    bindPointerKanban(box, {
+      cardSel:'.quick-habit.routine-line',
+      listSel:'.routine-zone-list',
+      onDrop:(cardEl, targetList)=>{
+        const id=cardEl.getAttribute('data-dragid');
+        const zone=targetList.getAttribute('data-zone')||'after';
+        ensureTodayRoutineZones();
+        state.todayRoutineZones[String(id)]=(zone==='work')?'work':'after';
+        // rebuild order from the on-screen DOM order across both zones
+        const order=[];
+        box.querySelectorAll('.routine-zone-list .quick-habit.routine-line').forEach(c=>{
+          const cid=c.getAttribute('data-dragid'); if(cid) order.push(String(cid));
+        });
+        state.todayRoutineOrder=order;
         save();
         renderQuickHabits();
-      });
-      box.appendChild(col);
+      }
     });
   }
 
@@ -6888,6 +7044,12 @@ function renderWeekMetrics(){
       freqSel.value=h.freq;
       freqSel.onchange=()=>{ h.freq=freqSel.value; h.target=h.freq==='daily'?7:3; save(); renderAllLinked(); };
 
+      const kindSel=document.createElement('select');
+      kindSel.className='habit-kind';
+      kindSel.innerHTML='<option value="todo">✔ To-Do</option><option value="avoid">🛡️ Not-to-Do</option>';
+      kindSel.value=h.kind||'todo';
+      kindSel.onchange=()=>{ h.kind=kindSel.value; save(); renderAllLinked(); };
+
       const week=document.createElement('div');
       week.className='week compact-week';
       dates.forEach((d,i)=>{
@@ -6903,7 +7065,7 @@ function renderWeekMetrics(){
       del.textContent='×';
       del.title='삭제';
       del.onclick=()=>{ if(confirm('삭제할까요?')){ clearSlotsReferencingHabit(h.id); state.habits=state.habits.filter(x=>x.id!==h.id); save(); renderAllLinked(); } };
-      el.append(nameInput,pillarSel,freqSel,week,del);
+      el.append(nameInput,pillarSel,freqSel,kindSel,week,del);
 
       const prin=document.createElement('textarea');
       prin.className='habit-principles';
