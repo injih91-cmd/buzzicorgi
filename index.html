@@ -2236,7 +2236,9 @@ input:focus,textarea:focus,select:focus{
 .zone-filter button.on:hover{background:var(--sage-active,#788c5c);color:#fff;}
 
 /* v22 pointer-based kanban drag (PC + mobile) */
-.focus-line, .quick-habit.routine-line{ touch-action:none; }
+.focus-line, .quick-habit.routine-line{ touch-action:auto; }
+.kb-dragging-active{ touch-action:none !important; }
+.kb-dragging-active .focus-line, .kb-dragging-active .quick-habit.routine-line{ touch-action:none; }
 .kb-dragging{ opacity:0; }
 .kb-placeholder{
   border:1.5px dashed var(--sage-active,#788c5c);
@@ -2270,12 +2272,53 @@ input:focus,textarea:focus,select:focus{
   background:rgba(31,56,100,.10);
 }
 .routine-zone.zone-active .routine-streak.avoid{
-  background:rgba(255,255,255,.25);color:#fff;
+  background:rgba(0,0,0,.28);color:#fff;
 }
 .habit-kind{min-width:108px;}
 .routine-zone.zone-active .routine-streak{
-  background:rgba(255,255,255,.25);color:#fff;
+  background:rgba(0,0,0,.28);color:#fff;
 }
+
+/* v23 pillar memo pad */
+.pnote-section{margin-bottom:20px;}
+.pnote-shead{display:flex;align-items:center;gap:8px;margin:0 0 9px;padding-bottom:7px;border-bottom:1.5px solid var(--line,#e3dfd4);}
+.pnote-emo{font-size:16px;}
+.pnote-name{font-size:14px;font-weight:800;color:var(--navy,#1F3864);}
+.pnote-cnt{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted,#9a93a3);background:var(--soft,#f4f2ec);border-radius:999px;padding:1px 9px;}
+.pnote-card{border:1px solid var(--line,#e3dfd4);border-radius:11px;background:#fff;margin-bottom:8px;overflow:hidden;transition:border-color .15s;}
+.pnote-card.editing{border-color:var(--sage-active,#788c5c);}
+.pnote-card-head{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--soft,#faf8f3);}
+.pnote-title{flex:1;border:none;background:transparent;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink,#2c2632);}
+.pnote-title:focus{outline:none;}
+.pnote-card-tools{display:flex;gap:2px;}
+.pnote-tool{border:none;background:none;cursor:pointer;color:var(--muted,#9a93a3);font-size:14px;line-height:1;padding:3px 6px;border-radius:6px;}
+.pnote-tool:hover{background:rgba(0,0,0,.05);color:var(--ink,#2c2632);}
+.pnote-tool.danger:hover{color:var(--danger,#a32d2d);}
+.pnote-card.collapsed .pnote-card-body{display:none;}
+.pnote-card-body{padding:10px;}
+.pnote-body-area{width:100%;box-sizing:border-box;border:none;resize:none;overflow:hidden;font:inherit;font-size:13px;line-height:1.55;color:var(--ink,#2c2632);background:transparent;display:none;}
+.pnote-body-area:focus{outline:none;}
+.pnote-card.editing .pnote-body-area{display:block;}
+.pnote-card.editing .pnote-preview{display:none;}
+.pnote-preview{font-size:13px;line-height:1.6;color:var(--ink,#2c2632);cursor:text;min-height:20px;}
+.pnote-preview:empty::before{content:'';}
+.pnote-empty{color:var(--muted,#c4bfb4);}
+.md-body h3.md-h{font-size:14px;margin:8px 0 4px;color:var(--navy,#1F3864);}
+.md-body h4{font-size:12.5px;margin:6px 0 3px;color:var(--navy,#1F3864);}
+.md-body ul{margin:4px 0;padding-left:18px;}
+.md-body li{margin:2px 0;}
+.md-body code{background:var(--soft,#f1efe6);padding:1px 5px;border-radius:4px;font-size:12px;}
+.pnote-add{display:flex;gap:6px;margin-top:4px;}
+.pnote-add-btn{border:1px dashed var(--line,#d8d2c4);background:transparent;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted,#6b7280);padding:7px 12px;}
+.pnote-add-btn:hover{border-color:var(--sage-active,#788c5c);color:var(--sage-active,#788c5c);}
+.pnote-check-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
+.pnote-cb{width:20px;height:20px;min-width:20px;border:1.5px solid var(--line,#d8d2c4);border-radius:6px;background:#fff;cursor:pointer;color:#fff;font-size:12px;font-weight:900;line-height:1;padding:0;}
+.pnote-cb.on{background:var(--ok,#3B6D5A);border-color:var(--ok,#3B6D5A);}
+.pnote-check-text{flex:1;border:none;background:transparent;font:inherit;font-size:13px;color:var(--ink,#2c2632);}
+.pnote-check-text:focus{outline:none;}
+.pnote-check-row.done .pnote-check-text{text-decoration:line-through;color:var(--muted,#9a93a3);}
+.pnote-additem{border:none;background:none;cursor:pointer;color:var(--muted,#9a93a3);font-size:12px;font-weight:600;padding:5px 2px;margin-top:2px;}
+.pnote-additem:hover{color:var(--sage-active,#788c5c);}
 /* single-zone routine board → 1 column */
 .quick-habits.routine-board.single-zone{grid-template-columns:1fr !important;}
 /* focus kanban column-count classes (override the fixed 3-col rule) */
@@ -2342,6 +2385,7 @@ input:focus,textarea:focus,select:focus{
     <div class="toolbar-actions">
       <span class="sync-status" id="syncStatus">Sync ready…</span>
       <span class="reset" id="exportBtnTop">Export</span>
+      <span class="reset" id="aiExportTop">🧠 AI</span>
       <span class="reset" id="importBtnTop">Import</span>
       <span class="reset" id="resetBtnTop">Reset</span>
       <input type="file" id="importFile" accept="application/json" style="display:none;">
@@ -2375,7 +2419,7 @@ input:focus,textarea:focus,select:focus{
       <button class="tab active" data-tab="today">Today<small>오늘</small></button>
       <button class="tab" data-tab="life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></button>
       <button class="tab" data-tab="money">Money<small>자산</small></button>
-      <button class="tab" data-tab="records">Logs<small>하루 기록</small></button>
+      <button class="tab" data-tab="records">Memo<small>메모 · 기록</small></button>
     </div>
   </nav>
 
@@ -2644,7 +2688,12 @@ input:focus,textarea:focus,select:focus{
 
   <section class="panel" id="tab-records">
     <div class="grid">
-      <div class="card span-8">
+      <div class="card span-12">
+        <h3>메모 <small style="font-weight:600;color:var(--muted)">5대 필러 기준</small></h3>
+        <div class="hint">필러별로 떠오르는 생각·아이디어·기록을 자유롭게 남기세요.</div>
+        <div id="pillarNotes"></div>
+      </div>
+      <div class="card span-12">
         <h3>활동 <small style="font-weight:600;color:var(--muted)">Activity</small></h3>
         <div class="hint">키인하는 거의 모든 변화가 시간순으로 자동 기록됩니다.</div>
         <div class="act-tools">
@@ -2653,24 +2702,12 @@ input:focus,textarea:focus,select:focus{
         </div>
         <div class="act-list" id="activityLog"></div>
       </div>
-      <div class="card span-8">
-        <h3>Daily Logs</h3>
-        <div class="hint">Today에서 저장된 하루 단위 스냅샷입니다.</div>
+      <div class="card span-12" style="display:none">
         <div class="log-list" id="todayLogs"></div>
-      </div>
-      <div class="card span-4">
-        <h3>Backup</h3>
-        <div class="hint">Local storage + Supabase sync. JSON 백업도 가능합니다.</div>
-        <div class="backup-status" id="backupStatus"></div>
-        <div class="row">
-          <button class="btn ghost" id="exportBtn">Export</button>
-          <button class="btn ghost" id="importBtn">Import</button>
-          <button class="btn danger" id="resetBtn">Reset</button>
-        </div>
-        <div class="hint" style="margin-top:12px">AI에게 분석을 맡길 때 — 아래 파일을 받아 ChatGPT나 Claude에 업로드하면 됩니다.</div>
-        <div class="row">
-          <button class="btn" id="aiExportBtn" style="background:var(--ok,#3B6D5A);color:#fff;border:none">🧠 AI 분석용 내보내기</button>
-        </div>
+        <button class="btn ghost" id="exportBtn">Export</button>
+        <button class="btn ghost" id="importBtn">Import</button>
+        <button class="btn danger" id="resetBtn">Reset</button>
+        <button id="aiExportBtn"></button>
       </div>
     </div>
   </section>
@@ -2959,6 +2996,23 @@ input:focus,textarea:focus,select:focus{
     if(!Array.isArray(state.activity)) state.activity=[];
     if(typeof state.zoneFilter!=='string') state.zoneFilter='all';
     if(typeof state.zoneFilterTouched!=='boolean') state.zoneFilterTouched=false;
+    if(!state.pillarNotes || typeof state.pillarNotes!=='object') state.pillarNotes={};
+    if(!Array.isArray(state.notes)) state.notes=[];
+    if(!state.notesMigrated){
+      Object.keys(state.pillarNotes||{}).forEach(pk=>{
+        const t=(state.pillarNotes[pk]||'').trim();
+        if(t){ state.notes.push({id:uid(),pillar:pk,title:'메모',type:'text',body:t,items:[],collapsed:false,order:state.notes.length,updatedAt:Date.now()}); }
+      });
+      state.notesMigrated=true;
+    }
+    state.notes=state.notes.filter(n=>n&&typeof n==='object').map((n,i)=>({
+      id:n.id||uid(), pillar:n.pillar||'etc',
+      title:typeof n.title==='string'?n.title:'',
+      type:(n.type==='check')?'check':'text',
+      body:typeof n.body==='string'?n.body:'',
+      items:Array.isArray(n.items)?n.items.filter(x=>x&&typeof x==='object').map(x=>({id:x.id||uid(),text:typeof x.text==='string'?x.text:'',done:!!x.done})):[],
+      collapsed:!!n.collapsed, order:typeof n.order==='number'?n.order:i, updatedAt:n.updatedAt||Date.now()
+    }));
     if(!Array.isArray(state.projects)) state.projects=[];
     if(!Array.isArray(state.todayLogs)) state.todayLogs=[];
     if(typeof state.lastBackup!=='string') state.lastBackup=state.lastBackup||'';
@@ -3124,6 +3178,114 @@ input:focus,textarea:focus,select:focus{
   }
   let __actPrev=null;
   let __actQuery='';
+  // lightweight markdown: ## h, **bold**, *italic*, - bullet, `code`
+  function mdToHtml(s){
+    s=escape(s||'');
+    const lines=s.split('\n'); let out=[]; let inUl=false;
+    lines.forEach(ln=>{
+      let m;
+      if(/^\s*-\s+/.test(ln)){ if(!inUl){out.push('<ul>');inUl=true;} out.push('<li>'+inline(ln.replace(/^\s*-\s+/,''))+'</li>'); return; }
+      if(inUl){out.push('</ul>');inUl=false;}
+      if((m=ln.match(/^###\s+(.*)/))){ out.push('<h4>'+inline(m[1])+'</h4>'); return; }
+      if((m=ln.match(/^##\s+(.*)/))){ out.push('<h3 class="md-h">'+inline(m[1])+'</h3>'); return; }
+      if(ln.trim()==='') { out.push('<br>'); return; }
+      out.push('<div>'+inline(ln)+'</div>');
+    });
+    if(inUl) out.push('</ul>');
+    function inline(t){
+      return t
+        .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+        .replace(/\*([^*]+)\*/g,'<i>$1</i>')
+        .replace(/`([^`]+)`/g,'<code>$1</code>');
+    }
+    return out.join('');
+  }
+
+  function noteCountFor(pk){ return (state.notes||[]).filter(n=>n.pillar===pk).length; }
+
+  function renderPillarNotes(){
+    const box=document.getElementById('pillarNotes'); if(!box) return;
+    if(!Array.isArray(state.notes)) state.notes=[];
+    box.innerHTML='';
+    [...PRIMARY_PILLARS, ETC_PILLAR].forEach(p=>{
+      const sec=document.createElement('div'); sec.className='pnote-section';
+      const head=document.createElement('div'); head.className='pnote-shead';
+      head.innerHTML='<span class="pnote-emo">'+p.emo+'</span><span class="pnote-name">'+escape(p.name)+'</span><span class="pnote-cnt">'+noteCountFor(p.key)+'</span>';
+      sec.appendChild(head);
+
+      const notes=(state.notes||[]).filter(n=>n.pillar===p.key).sort((a,b)=>(a.order-b.order)||(a.updatedAt-b.updatedAt));
+      notes.forEach(n=>sec.appendChild(noteCard(n)));
+
+      const add=document.createElement('div'); add.className='pnote-add';
+      add.innerHTML='<button class="pnote-add-btn" data-t="text">📝 메모 추가</button><button class="pnote-add-btn" data-t="check">✅ 체크리스트 추가</button>';
+      add.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+        const note={id:uid(),pillar:p.key,title:'',type:b.dataset.t,body:'',items:b.dataset.t==='check'?[{id:uid(),text:'',done:false}]:[],collapsed:false,order:(state.notes.filter(x=>x.pillar===p.key).length),updatedAt:Date.now()};
+        state.notes.push(note); save(); renderPillarNotes();
+        setTimeout(()=>{ const el=document.querySelector('[data-noteid="'+note.id+'"] .pnote-title'); if(el) el.focus(); },30);
+      });
+      sec.appendChild(add);
+      box.appendChild(sec);
+    });
+  }
+
+  function noteCard(n){
+    const card=document.createElement('div'); card.className='pnote-card'+(n.collapsed?' collapsed':''); card.setAttribute('data-noteid',n.id);
+    // header: title + type toggle + collapse + delete
+    const hd=document.createElement('div'); hd.className='pnote-card-head';
+    const titleI=document.createElement('input'); titleI.className='pnote-title'; titleI.placeholder='제목'; titleI.value=n.title||'';
+    titleI.oninput=()=>{ n.title=titleI.value; n.updatedAt=Date.now(); saveDebouncedNote(); };
+
+    const tools=document.createElement('div'); tools.className='pnote-card-tools';
+    const collapse=document.createElement('button'); collapse.className='pnote-tool'; collapse.textContent=n.collapsed?'▸':'▾'; collapse.title='접기';
+    collapse.onclick=()=>{ n.collapsed=!n.collapsed; save(); renderPillarNotes(); };
+    const del=document.createElement('button'); del.className='pnote-tool danger'; del.textContent='×'; del.title='삭제';
+    del.onclick=()=>{ if(confirm('이 노트를 삭제할까요?')){ state.notes=state.notes.filter(x=>x.id!==n.id); save(); renderPillarNotes(); } };
+    tools.append(collapse,del);
+    hd.append(titleI,tools);
+    card.appendChild(hd);
+
+    const body=document.createElement('div'); body.className='pnote-card-body';
+    if(n.type==='check'){
+      body.appendChild(checklistEditor(n));
+    } else {
+      // text note: edit textarea + live markdown preview toggle
+      const ta=document.createElement('textarea'); ta.className='pnote-body-area'; ta.placeholder='내용… (## 제목, - 목록, **굵게** 지원)'; ta.value=n.body||'';
+      const prev=document.createElement('div'); prev.className='pnote-preview md-body';
+      const sync=()=>{ prev.innerHTML=mdToHtml(n.body||'') || '<span class="pnote-empty">미리보기</span>'; };
+      const autosize=()=>{ ta.style.height='auto'; ta.style.height=Math.max(54,Math.min(ta.scrollHeight,500))+'px'; };
+      ta.oninput=()=>{ n.body=ta.value; n.updatedAt=Date.now(); autosize(); sync(); saveDebouncedNote(); };
+      ta.onfocus=()=>{ card.classList.add('editing'); };
+      ta.onblur=()=>{ card.classList.remove('editing'); };
+      setTimeout(autosize,0); sync();
+      prev.onclick=()=>{ card.classList.add('editing'); setTimeout(()=>{ autosize(); ta.focus(); },10); };
+      body.append(ta,prev);
+    }
+    card.appendChild(body);
+    return card;
+  }
+
+  function checklistEditor(n){
+    const wrap=document.createElement('div'); wrap.className='pnote-check';
+    (n.items||[]).forEach(it=>{
+      const row=document.createElement('div'); row.className='pnote-check-row'+(it.done?' done':'');
+      const cb=document.createElement('button'); cb.className='pnote-cb'+(it.done?' on':''); cb.textContent=it.done?'✓':'';
+      cb.onclick=()=>{ it.done=!it.done; n.updatedAt=Date.now(); save(); renderPillarNotes(); };
+      const ti=document.createElement('input'); ti.className='pnote-check-text'; ti.value=it.text||''; ti.placeholder='항목';
+      ti.oninput=()=>{ it.text=ti.value; n.updatedAt=Date.now(); saveDebouncedNote(); };
+      ti.onkeydown=(e)=>{ if(e.key==='Enter'){ e.preventDefault(); const ni={id:uid(),text:'',done:false}; const idx=n.items.indexOf(it); n.items.splice(idx+1,0,ni); save(); renderPillarNotes(); setTimeout(()=>{const el=document.querySelector('[data-noteid="'+n.id+'"] .pnote-check-row:nth-child('+(idx+2)+') .pnote-check-text'); if(el) el.focus();},20); } };
+      const x=document.createElement('button'); x.className='pnote-tool'; x.textContent='×';
+      x.onclick=()=>{ n.items=n.items.filter(z=>z.id!==it.id); save(); renderPillarNotes(); };
+      row.append(cb,ti,x);
+      wrap.appendChild(row);
+    });
+    const addItem=document.createElement('button'); addItem.className='pnote-additem'; addItem.textContent='+ 항목';
+    addItem.onclick=()=>{ n.items.push({id:uid(),text:'',done:false}); save(); renderPillarNotes(); };
+    wrap.appendChild(addItem);
+    return wrap;
+  }
+  let __noteTimer=null;
+  function saveDebouncedNote(){ clearTimeout(__noteTimer); __noteTimer=setTimeout(()=>save(), 600); }
+
   function renderActivityLog(){
     const box=document.getElementById('activityLog');
     if(!box) return;
@@ -4807,7 +4969,7 @@ function renderWeekMetrics(){
       el.appendChild(week); box.appendChild(el);
     });
   }
-  document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
+  document.getElementById('addHabit').onclick=()=>{ const nh=normalizeHabit({id:uid(),title:'',pillar:'etc',freq:'daily',target:7,log:[],kind:'todo'}); state.habits.push(nh); save(); renderAllLinked(); setTimeout(()=>{ const list=document.getElementById('habitList'); if(list){ const inputs=list.querySelectorAll('.compact-habit input'); const last=inputs[inputs.length-1]; if(last){ last.focus(); last.scrollIntoView({behavior:'smooth',block:'center'}); } } },60); };
 
   /* Money */
   function latestRecord(){ if(!state.records.length)return null; return [...state.records].sort((a,b)=>new Date(b.date)-new Date(a.date))[0]; }
@@ -5774,7 +5936,7 @@ function renderWeekMetrics(){
       el.appendChild(week); box.appendChild(el);
     });
   }
-  document.getElementById('addHabit').onclick=()=>{ const title=prompt('Routine Name'); if(!title)return; state.habits.push(normalizeHabit({id:uid(),title,pillar:'etc',freq:'daily',target:7,log:[]})); save(); renderAllLinked(); };
+  document.getElementById('addHabit').onclick=()=>{ const nh=normalizeHabit({id:uid(),title:'',pillar:'etc',freq:'daily',target:7,log:[],kind:'todo'}); state.habits.push(nh); save(); renderAllLinked(); setTimeout(()=>{ const list=document.getElementById('habitList'); if(list){ const inputs=list.querySelectorAll('.compact-habit input'); const last=inputs[inputs.length-1]; if(last){ last.focus(); last.scrollIntoView({behavior:'smooth',block:'center'}); } } },60); };
 
   /* Money */
   function latestRecord(){ if(!state.records.length)return null; return [...state.records].sort((a,b)=>new Date(b.date)-new Date(a.date))[0]; }
@@ -5903,6 +6065,22 @@ function renderWeekMetrics(){
       if(co.tomorrow) W('- 내일 다짐: '+co.tomorrow);
       W('');
     });
+
+    // Pillar memos (structured notes)
+    if(Array.isArray(state.notes) && state.notes.length){
+      W('## 메모 (필러별)');
+      [...PRIMARY_PILLARS, ETC_PILLAR].forEach(p=>{
+        const ns=state.notes.filter(n=>n.pillar===p.key);
+        if(!ns.length) return;
+        W('### '+p.name);
+        ns.forEach(n=>{
+          W('#### '+(n.title||'(제목없음)'));
+          if(n.type==='check'){ (n.items||[]).forEach(it=>W('- ['+(it.done?'x':' ')+'] '+(it.text||''))); }
+          else if((n.body||'').trim()){ W(n.body.trim()); }
+          W('');
+        });
+      });
+    }
 
     // Activity log
     W('## 활동 로그 (Activity)');
@@ -6476,10 +6654,10 @@ function renderWeekMetrics(){
       return col;
     };
 
-    const zfF=getZoneFilter();
+    // Today Focus always shows all three columns; zone filter only affects routine board.
     const cols=[];
-    if(zfF==='all' || zfF==='work') cols.push(makeCol('work','Work Flow','업무중',workItems));
-    if(zfF==='all' || zfF==='after') cols.push(makeCol('after','After Work','퇴근후',afterItems));
+    cols.push(makeCol('work','Work Flow','업무중',workItems));
+    cols.push(makeCol('after','After Work','퇴근후',afterItems));
     cols.push(makeCol('done','Done','',doneItems));
     kanban.classList.add('cols-'+cols.length);
     kanban.append(...cols);
@@ -6543,9 +6721,18 @@ function renderWeekMetrics(){
   function bindPointerKanban(root, opts){
     const cardSel=opts.cardSel, listSel=opts.listSel;
     const ignore=opts.handleIgnore||'button,input,select,textarea,a,label';
-    let card=null, clone=null, ph=null, startX=0, startY=0, dragging=false, offX=0, offY=0;
-    const THRESH=8;
+    const HOLD=450, MOVE_CANCEL=10;
+    let card=null, clone=null, ph=null, startX=0, startY=0, offX=0, offY=0;
+    let holdTimer=null, armed=false, dragging=false;
     function lists(){ return Array.from(root.querySelectorAll(listSel)); }
+    function clearHold(){ if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; } }
+    function teardown(){
+      clearHold();
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onUp);
+      armed=false;
+    }
     function begin(){
       dragging=true;
       const r=card.getBoundingClientRect();
@@ -6556,6 +6743,8 @@ function renderWeekMetrics(){
       clone.style.width=r.width+'px'; clone.style.left=r.left+'px'; clone.style.top=r.top+'px';
       document.body.appendChild(clone);
       card.classList.add('kb-dragging'); card.style.display='none';
+      document.body.classList.add('kb-dragging-active');
+      if(navigator.vibrate){ try{ navigator.vibrate(15); }catch(_e){} }
     }
     function nearestList(x,y){
       let best=null,bestD=Infinity;
@@ -6570,8 +6759,15 @@ function renderWeekMetrics(){
         if(off<0 && off>c.off) return {off,el:ch}; return c; },{off:-Infinity,el:null}).el;
     }
     function onMove(e){
-      if(!card) return;
-      if(!dragging){ if(Math.abs(e.clientX-startX)<THRESH && Math.abs(e.clientY-startY)<THRESH) return; begin(); }
+      // before drag is armed: ANY movement = scrolling/tapping -> cancel, let browser scroll
+      if(!dragging){
+        if(Math.abs(e.clientX-startX)>MOVE_CANCEL || Math.abs(e.clientY-startY)>MOVE_CANCEL){
+          teardown(); card=null;
+          return;
+        }
+        if(!armed) return;
+        begin();
+      }
       e.preventDefault();
       clone.style.left=(e.clientX-offX)+'px'; clone.style.top=(e.clientY-offY)+'px';
       const list=nearestList(e.clientX,e.clientY); if(!list) return;
@@ -6580,9 +6776,8 @@ function renderWeekMetrics(){
       if(after==null) list.appendChild(ph); else list.insertBefore(ph,after);
     }
     function onUp(){
-      document.removeEventListener('pointermove', onMove);
-      document.removeEventListener('pointerup', onUp);
-      document.removeEventListener('pointercancel', onUp);
+      teardown();
+      document.body.classList.remove('kb-dragging-active');
       if(card && dragging && ph){
         const targetList=ph.parentNode;
         const beforeEl=ph.nextElementSibling && ph.nextElementSibling!==card ? ph.nextElementSibling : null;
@@ -6603,10 +6798,12 @@ function renderWeekMetrics(){
       const t=e.target.closest(cardSel);
       if(!t || !root.contains(t)) return;
       if(e.target.closest(ignore)) return;
-      card=t; startX=e.clientX; startY=e.clientY; dragging=false;
+      card=t; startX=e.clientX; startY=e.clientY; dragging=false; armed=false;
       document.addEventListener('pointermove', onMove, {passive:false});
       document.addEventListener('pointerup', onUp);
       document.addEventListener('pointercancel', onUp);
+      clearHold();
+      holdTimer=setTimeout(()=>{ armed=true; }, HOLD);
     });
   }
 
@@ -6957,7 +7154,7 @@ function renderWeekMetrics(){
       const stkText=(h.kind==='avoid')
         ? stkIcon+stk+(h.freq==='daily'?'일째 사수':'주째 사수')
         : stkIcon+stk+stkUnit;
-      const stkHtml=stk>=2?'<span class="routine-streak'+(h.kind==='avoid'?' avoid':'')+'">'+stkText+'</span>':'';
+      const stkHtml=stk>=1?'<span class="routine-streak'+(h.kind==='avoid'?' avoid':'')+'">'+stkText+'</span>':'';
       div.insertAdjacentHTML('beforeend',
         '<span class="routine-pillar">'+escape((pi.emo||'')+' '+(pi.name||''))+'</span>'+ 
         '<span class="routine-name">'+escape(h.title||'Routine')+(hasPrin?'<button class="routine-prin-btn" type="button" aria-label="원칙 보기">ⓘ</button>':'')+stkHtml+'</span>'+ 
@@ -7094,6 +7291,9 @@ function renderWeekMetrics(){
     const c=document.getElementById('actClear');
     if(c) c.addEventListener('click',()=>{ if(confirm('활동 기록을 전부 지울까요? (Daily Logs는 유지됩니다)')){ state.activity=[]; save(); renderActivityLog(); } });
     try{ renderActivityLog(); }catch(e){}
+    try{ renderPillarNotes(); }catch(e){}
+    const ait=document.getElementById('aiExportTop');
+    if(ait) ait.onclick=exportAIAnalysis;
   })();
 
   const toolbarEl=document.querySelector('.toolbar');
