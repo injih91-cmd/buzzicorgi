@@ -6947,11 +6947,17 @@ function renderWeekMetrics(){
       visibleIdeas.forEach(idea=>chips.appendChild(makeChip(idea)));
       board.appendChild(chips);
       if(!ui.filterTag){
-        bindPlainDragSort(chips, '.idea-chip', (ids)=>{
-          const byId=new Map(state.ideas.map(x=>[String(x.id),x]));
-          const next=ids.map(id=>byId.get(String(id))).filter(Boolean);
-          state.ideas.forEach(x=>{ if(!ids.includes(String(x.id))) next.push(x); });
-          state.ideas=next; save(); renderTodayFlow();
+        chips.classList.add('idea-droplist');
+        bindPointerKanban(board, {
+          cardSel:'.idea-chip',
+          listSel:'.idea-chipwrap',
+          onDrop:()=>{
+            const ids=[...board.querySelectorAll('.idea-chip')].map(c=>c.getAttribute('data-dragid')).filter(Boolean);
+            const byId=new Map(state.ideas.map(x=>[String(x.id),x]));
+            const next=ids.map(id=>byId.get(String(id))).filter(Boolean);
+            state.ideas.forEach(x=>{ if(!ids.includes(String(x.id))) next.push(x); });
+            state.ideas=next; save(); renderTodayFlow();
+          }
         });
       }
     }
