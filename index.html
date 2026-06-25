@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>나의 인생 Project 2026 — 디디 Life OS v14</title>
+<title>나의 인생 Project 2026 — 디디 Life OS v13</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css">
@@ -863,371 +863,7 @@ textarea{min-height:88px}
   border-left:3px solid rgba(216,90,48,.55);
 }
 
-
-/* v14 Life OS: lighter Project + Today Focus + persistent Ideation */
-.today-flow.v14-flow{
-  grid-template-columns:auto 1fr auto 1fr auto 1fr auto 1fr auto;
-}
-.focus-board{display:grid;gap:12px}
-.focus-item{
-  background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 16px;
-  box-shadow:0 8px 22px rgba(31,56,100,.04);
-}
-.focus-item.done{background:#F3F8F5;border-color:rgba(29,122,90,.28)}
-.focus-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
-.focus-item-title{font-weight:850;color:var(--navy);line-height:1.4}
-.focus-grid{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;gap:9px;margin-bottom:10px}
-.focus-note textarea{min-height:58px !important}
-.focus-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.action-checkline{display:flex;align-items:center;gap:8px;background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin:7px 0}
-.action-checkline input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
-.action-checkline input[type=text]{border:0 !important;background:transparent !important;box-shadow:none !important;padding:2px !important;flex:1}
-.action-checkline.done input[type=text]{text-decoration:line-through;color:var(--muted)}
-.project-purpose{
-  color:#5E6678;background:#FBFAF6;border-left:3px solid var(--gold-soft);border-radius:12px;padding:10px 12px;margin:8px 0 12px;font-size:14px;line-height:1.6
-}
-.idea-board{display:grid;gap:12px}
-.idea-composer{background:var(--soft);border:1px dashed var(--line);border-radius:16px;padding:14px}
-.idea-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.idea-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px}
-.idea-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:7px}
-.idea-title{font-weight:850;color:var(--navy);line-height:1.35}
-.idea-tags{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0}
-.idea-tag{font-size:10px;font-weight:850;padding:3px 7px;border-radius:999px;background:#F1EFE8;color:#5F5E5A}
-.idea-memo{font-size:13px;color:#616B7F;line-height:1.6;white-space:pre-wrap}
-.project-tile.v14-simple .progress{margin:8px 0}
-.project-tile.v14-simple .tile-meta{font-size:12px;line-height:1.55}
-@media(max-width:930px){
-  .focus-grid,.idea-grid{grid-template-columns:1fr}
-  .today-flow.v14-flow{grid-template-columns:repeat(5,1fr);border-radius:16px}
-  .today-flow.v14-flow .flow-line{display:none}
-}
-
-
-/* v14.1 Compact: less scheduler, lighter daily board */
-.today-flow{display:none !important}
-.card{padding:20px !important}
-.card>h3{font-size:21px !important;margin-bottom:4px !important}
-.hint{font-size:12px !important;line-height:1.45 !important;margin-bottom:10px !important}
-.today-source-note{display:none !important}
-.focus-board{gap:9px}
-.focus-item{padding:11px 12px !important;border-radius:14px !important;box-shadow:none !important}
-.focus-item-top{margin-bottom:7px !important}
-.focus-item-title{font-size:13px !important;color:#697488 !important}
-.focus-grid{grid-template-columns:1fr 1fr 1fr !important;gap:7px !important;margin-bottom:7px !important}
-.focus-grid .field{margin-bottom:0 !important}
-.focus-grid label,.focus-note label{display:none !important}
-.focus-note{margin-bottom:0 !important}
-.focus-note textarea{min-height:44px !important;font-size:13px !important;padding:8px 10px !important}
-.focus-actions{margin-top:8px !important;gap:6px !important}
-.idea-board{gap:9px}
-.idea-composer{padding:11px !important;border-radius:14px !important}
-.idea-grid{grid-template-columns:1.2fr .8fr !important;gap:7px !important}
-.idea-composer textarea{min-height:42px !important;margin-top:7px !important;font-size:13px !important}
-.idea-card{padding:10px 11px !important;border-radius:13px !important}
-.idea-top{margin-bottom:3px !important}
-.idea-title{font-size:14px !important}
-.idea-tags{margin:4px 0 !important}
-.idea-memo{font-size:12px !important;line-height:1.45 !important}
-.project-purpose{padding:7px 9px !important;margin:6px 0 8px !important;font-size:13px !important;line-height:1.45 !important}
-.goal-pills{gap:4px !important;margin-top:6px !important}
-.goal-pill{font-size:10px !important;padding:2px 6px !important}
-.scale-row{padding:10px 12px !important}
-.scale-btn{min-height:48px !important}
-.scorebox{padding:14px 16px !important}
-.scorebox .mini-score{font-size:30px !important}
-.modal-section{padding:12px !important;margin-bottom:9px !important}
-.modal-grid{gap:8px !important}
-.action-checkline{padding:7px 9px !important;margin:5px 0 !important}
-@media(max-width:930px){.focus-grid,.idea-grid{grid-template-columns:1fr !important}}
-
-
-
-/* v14.2 Ultra Compact: tighter nav + denser layout */
-body{
-  padding:12px 12px 56px !important;
-  font-size:14px !important;
-  line-height:1.55 !important;
-}
-.wrap{max-width:1080px !important}
-.toolbar{margin-bottom:8px !important;gap:8px !important}
-.quote-ticker #tickerText{font-size:12px !important}
-.toolbar-actions{gap:9px !important}
-.sync-status,.reset{font-size:11px !important}
-
-.section{
-  padding:16px 18px !important;
-  margin-bottom:12px !important;
-  border-radius:14px !important;
-}
-.vision .eyebrow{font-size:10px !important;margin-bottom:8px !important;letter-spacing:.16em !important}
-.vis-label{font-size:10px !important;margin:12px 0 4px !important;letter-spacing:.12em !important}
-.vis-area{font-size:13px !important;padding:8px 10px !important;line-height:1.45 !important;min-height:42px !important;border-radius:9px !important}
-.vis-area.big{font-size:17px !important;line-height:1.35 !important;min-height:36px !important}
-.grat-grid{gap:6px !important;grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) !important}
-.grat-item{padding:2px 8px !important;border-radius:8px !important}
-.grat-item input{font-size:12px !important;padding:4px 0 !important}
-.grat-add{margin-top:8px !important;padding:6px 10px !important;font-size:12px !important;border-radius:8px !important}
-.quote-box{margin-top:14px !important;padding-top:10px !important}
-.quote-head > span:first-child{font-size:10px !important}
-.quote-cnt{font-size:10px !important}
-
-.tabs{
-  padding:6px 0 !important;
-  margin:-2px 0 10px !important;
-  background:rgba(244,242,236,.94) !important;
-}
-.tabrow{
-  display:flex !important;
-  gap:6px !important;
-  align-items:center !important;
-}
-.tab{
-  flex:1 1 0 !important;
-  border-radius:13px !important;
-  padding:8px 8px !important;
-  min-height:34px !important;
-  font-size:13px !important;
-  line-height:1.1 !important;
-  box-shadow:none !important;
-}
-.tab small{display:none !important}
-.tab.active{box-shadow:0 4px 12px rgba(31,56,100,.12) !important}
-
-.grid{gap:10px !important}
-.card{
-  padding:14px 15px !important;
-  border-radius:14px !important;
-  box-shadow:0 8px 20px rgba(31,56,100,.045) !important;
-}
-.card>h3,h3{
-  font-size:18px !important;
-  margin-bottom:3px !important;
-  line-height:1.22 !important;
-}
-.ko-gloss{font-size:11px !important;margin-left:3px !important}
-.hint{font-size:11px !important;line-height:1.38 !important;margin-bottom:8px !important}
-.field{margin-bottom:8px !important}
-.field label{font-size:11px !important;margin-bottom:4px !important}
-input,textarea,select{
-  font-size:13px !important;
-  line-height:1.35 !important;
-  padding:8px 9px !important;
-  border-radius:9px !important;
-}
-textarea{min-height:56px !important}
-.btn{font-size:13px !important;padding:8px 11px !important;border-radius:9px !important}
-.btn.small{font-size:12px !important;padding:6px 8px !important;border-radius:8px !important}
-
-.date-nav{margin:0 0 10px !important;gap:7px !important}
-.date-arrow{width:32px !important;height:32px !important;font-size:18px !important}
-.date-current{min-width:122px !important;padding:6px 12px !important;border-radius:10px !important}
-.date-current .dn-date{font-size:13px !important}
-.date-current .dn-rel{font-size:10px !important}
-.date-today-btn{padding:6px 10px !important;font-size:11px !important}
-
-.scorebox{padding:10px 12px !important;border-radius:13px !important;margin-bottom:9px !important;gap:10px !important}
-.scorebox .judge{font-size:15px !important;line-height:1.2 !important}
-.scorebox .mini-score{font-size:24px !important;min-width:44px !important}
-.chips{gap:5px !important}
-.chip{padding:6px 8px !important;font-size:12px !important}
-.scale-stack{gap:6px !important;margin:8px 0 !important}
-.scale-row{padding:8px 9px !important;border-radius:10px !important}
-.scale-top{gap:8px !important;margin-bottom:6px !important}
-.scale-label{font-size:12px !important;line-height:1.3 !important}
-.scale-help{font-size:10px !important;max-width:45% !important;line-height:1.3 !important}
-.scale-buttons{gap:4px !important}
-.scale-btn{min-height:38px !important;padding:4px 4px !important;border-radius:8px !important}
-.scale-btn span{font-size:13px !important}
-.scale-btn small{font-size:9px !important;line-height:1.05 !important}
-.mini-chart{height:118px !important;margin-top:8px !important;padding:6px !important;border-radius:11px !important}
-
-.quick-habits{gap:6px !important}
-.quick-habit{padding:7px 9px !important;border-radius:10px !important}
-.quick-habit .name,.habit-name{font-size:12px !important;line-height:1.25 !important}
-.habit-freq{font-size:10px !important;padding:1px 6px !important}
-.habit-dot{width:10px !important;height:10px !important;border-radius:3px !important}
-.toggle{min-width:52px !important;padding:5px 8px !important;font-size:11px !important}
-.today-routine-group-title{margin:10px 0 5px !important;font-size:12px !important}
-.routine-history{padding:9px !important;border-radius:12px !important;margin-top:10px !important}
-
-.focus-board{gap:7px !important}
-.focus-item{padding:9px 10px !important;border-radius:11px !important}
-.focus-item-top{margin-bottom:5px !important}
-.focus-item-title{font-size:12px !important}
-.focus-grid{gap:5px !important;margin-bottom:5px !important}
-.focus-note textarea{min-height:36px !important;font-size:12px !important;padding:6px 8px !important}
-.focus-actions{margin-top:6px !important;gap:5px !important}
-
-.idea-board{gap:7px !important}
-.idea-composer{padding:8px !important;border-radius:11px !important}
-.idea-grid{gap:5px !important}
-.idea-composer textarea{min-height:34px !important;margin-top:5px !important;font-size:12px !important;padding:6px 8px !important}
-.idea-card{padding:8px 9px !important;border-radius:11px !important}
-.idea-title{font-size:13px !important;line-height:1.25 !important}
-.idea-tags{gap:3px !important;margin:3px 0 !important}
-.idea-tag{font-size:9px !important;padding:2px 5px !important}
-.idea-memo{font-size:11px !important;line-height:1.35 !important}
-
-.category-board{gap:8px !important}
-.cat-card{padding:10px !important;border-radius:12px !important;min-height:180px !important;gap:6px !important}
-.cat-title{font-size:13px !important}
-.cat-cap{font-size:11px !important;padding:5px 6px !important}
-.stat-chip{font-size:9px !important;padding:2px 5px !important}
-.cat-proj{padding:6px !important;border-radius:8px !important}
-.cat-proj-title{font-size:11px !important}
-.cat-proj-sub{font-size:10px !important;margin-top:1px !important}
-.group-board{gap:8px !important}
-.group-head{padding:9px 11px !important}
-.group-title{font-size:13px !important}
-.group-body{padding:9px 10px !important;gap:8px !important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr)) !important}
-.project-tile{padding:9px !important;border-radius:10px !important}
-.tile-title{font-size:13px !important;line-height:1.25 !important}
-.tile-meta{font-size:10px !important;line-height:1.35 !important}
-.project-purpose{padding:6px 8px !important;margin:5px 0 7px !important;font-size:12px !important;line-height:1.35 !important}
-.action-checkline{padding:6px 8px !important;margin:4px 0 !important;border-radius:9px !important}
-.goal-pill{font-size:9px !important;padding:2px 5px !important}
-.habit{padding:9px !important;border-radius:11px !important}
-.week{gap:3px !important;margin-top:7px !important}
-.day{width:24px !important;height:24px !important;border-radius:6px !important;font-size:9px !important}
-
-.fin-stats{gap:7px !important;margin-bottom:9px !important}
-.fin-stat{padding:9px !important;border-radius:11px !important}
-.fin-stat .label{font-size:10px !important}
-.fin-stat .val{font-size:17px !important}
-.chartbox{height:220px !important;margin-top:9px !important}
-.table-wrap{max-height:240px !important}
-th,td{padding:6px 7px !important;font-size:11px !important}
-.metrics{gap:7px !important}
-.metric{padding:9px !important;border-radius:11px !important}
-.metric .num{font-size:19px !important}
-.metric .label{font-size:10px !important}
-
-.modal{border-radius:16px !important}
-.modal-head{padding:12px 14px !important}
-.modal-body{padding:14px !important}
-.modal-section{padding:9px !important;border-radius:11px !important;margin-bottom:7px !important}
-.modal-section h4{font-size:13px !important;margin-bottom:6px !important}
-.modal-grid{gap:6px !important}
-
-@media(max-width:930px){
-  .tabrow{gap:5px !important}
-  .tab{font-size:12px !important;padding:8px 4px !important;min-height:32px !important}
-  .category-board{grid-template-columns:repeat(2,1fr) !important}
-}
-@media(max-width:560px){
-  body{padding:8px 8px 44px !important}
-  .tabrow{display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
-  .tab{font-size:11px !important;padding:7px 3px !important;border-radius:10px !important;min-height:30px !important}
-  .section,.card,.modal-body{padding:11px 12px !important}
-  .card>h3,h3{font-size:16px !important}
-  .category-board{grid-template-columns:1fr !important}
-  .focus-grid,.idea-grid{grid-template-columns:1fr !important}
-  .fin-stats,.metrics{grid-template-columns:repeat(2,1fr) !important}
-}
-
-
-
-/* v14.2 Dense: one-line Today Focus + ideation board first */
-.focus-board{gap:8px !important}
-.focus-list{display:grid;gap:6px}
-.focus-line{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 9px}
-.focus-line.done{background:#f3f8f5;border-color:rgba(29,122,90,.28)}
-.focus-line input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
-.focus-summary{min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.focus-vtag{font-size:11px;font-weight:850;background:#f1efe8;color:#5f5e5a;border-radius:999px;padding:2px 7px;white-space:nowrap}
-.focus-main{font-size:13px;font-weight:800;color:var(--navy);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.focus-memo{font-size:12px;color:#697488;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.focus-line.done .focus-main,.focus-line.done .focus-memo{text-decoration:line-through;color:#7b857f}
-.focus-mini-btn{border:1px solid var(--line);background:#fff;border-radius:999px;color:#697488;font-size:11px;font-weight:800;padding:4px 8px}
-.focus-mini-btn:hover{border-color:var(--navy);color:var(--navy)}
-.focus-add{display:grid;grid-template-columns:110px 1fr 1fr 1.4fr auto;gap:6px;align-items:center;background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:8px;margin-top:2px}
-.focus-add select,.focus-add input{height:34px !important;padding:6px 9px !important;font-size:12px !important;border-radius:9px !important}
-.focus-edit{display:grid;grid-template-columns:110px 1fr 1fr 1.4fr auto;gap:6px;align-items:center;background:#fbfaf6;border:1px solid var(--line);border-radius:12px;padding:8px;margin-top:6px}
-.focus-edit select,.focus-edit input{height:34px !important;padding:6px 9px !important;font-size:12px !important;border-radius:9px !important}
-.idea-board{gap:8px !important}
-.idea-list{display:grid;gap:6px}
-.idea-row{display:grid;grid-template-columns:minmax(120px,0.9fr) minmax(140px,1.5fr) auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 9px}
-.idea-row-title{font-size:13px;font-weight:850;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.idea-row-memo{font-size:12px;color:#697488;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.idea-row-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
-.idea-row-tags .idea-tag{font-size:10px;padding:2px 6px;margin:0}
-.idea-composer{padding:8px !important;border-radius:12px !important;margin-top:2px}
-.idea-compose-row{display:grid;grid-template-columns:1fr 1.1fr 1.3fr auto;gap:6px;align-items:center}
-.idea-compose-row input{height:34px !important;padding:6px 9px !important;font-size:12px !important;border-radius:9px !important}
-@media(max-width:760px){
-  .focus-line{grid-template-columns:auto 1fr auto}
-  .focus-memo{grid-column:2/4;min-width:0;width:100%}
-  .focus-add,.focus-edit{grid-template-columns:1fr 1fr}
-  .focus-add input,.focus-edit input{grid-column:1/3}
-  .focus-add button,.focus-edit button{grid-column:1/3}
-  .idea-row{grid-template-columns:1fr auto}
-  .idea-row-memo{grid-column:1/3}
-  .idea-compose-row{grid-template-columns:1fr 1fr}
-  .idea-compose-row input:nth-child(3){grid-column:1/3}
-  .idea-compose-row button{grid-column:1/3}
-}
-
 </style>
-
-
-/* v14.2 routine ultra compact */
-<style id="routineUltraCompactStyle">
-.today-routine-group{margin:0 0 5px !important;}
-.today-routine-group-title{display:none !important;}
-.quick-habits{gap:4px !important;}
-.quick-habit.routine-line{
-  display:grid !important;
-  grid-template-columns:26px auto minmax(90px,1fr) auto auto !important;
-  align-items:center !important;
-  gap:6px !important;
-  padding:5px 7px !important;
-  border-radius:9px !important;
-  min-height:32px !important;
-  box-shadow:none !important;
-}
-.routine-check{
-  width:22px !important;height:22px !important;min-width:22px !important;
-  border:1px solid var(--line) !important;border-radius:7px !important;
-  background:#fff !important;color:transparent !important;padding:0 !important;
-  font-size:13px !important;font-weight:900 !important;line-height:1 !important;
-}
-.routine-check.on{background:var(--ok) !important;border-color:var(--ok) !important;color:#fff !important;}
-.routine-pillar{
-  font-size:10px !important;font-weight:800 !important;color:var(--muted) !important;
-  background:var(--soft) !important;border:1px solid var(--line) !important;
-  border-radius:999px !important;padding:1px 6px !important;white-space:nowrap !important;
-}
-.routine-name{
-  font-size:12px !important;font-weight:750 !important;color:var(--navy) !important;
-  white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;
-}
-.routine-freq{font-size:10px !important;color:var(--muted) !important;white-space:nowrap !important;}
-.routine-line .habit-spark{gap:2px !important;justify-self:end !important;}
-.routine-line .habit-dot{width:8px !important;height:8px !important;border-radius:2px !important;}
-.habit-list{gap:5px !important;}
-.habit.compact-habit{
-  display:grid !important;
-  grid-template-columns:minmax(130px,1.2fr) minmax(100px,.8fr) 76px minmax(150px,auto) 28px !important;
-  align-items:center !important;gap:6px !important;padding:6px 7px !important;border-radius:10px !important;
-  box-shadow:none !important;
-}
-.habit.compact-habit input,.habit.compact-habit select{font-size:11px !important;padding:5px 7px !important;border-radius:8px !important;}
-.compact-week{display:flex !important;gap:3px !important;margin:0 !important;justify-content:flex-end !important;}
-.compact-week .day{width:21px !important;height:21px !important;border-radius:6px !important;font-size:9px !important;}
-.habit-del{
-  width:26px !important;height:26px !important;padding:0 !important;border-radius:8px !important;
-  color:var(--danger) !important;background:#fff !important;border:1px solid var(--line) !important;
-  font-size:13px !important;font-weight:900 !important;
-}
-@media(max-width:720px){
-  .quick-habit.routine-line{grid-template-columns:24px auto minmax(80px,1fr) auto !important;}
-  .routine-line .habit-spark{display:none !important;}
-  .habit.compact-habit{grid-template-columns:1fr 1fr 66px 28px !important;}
-  .compact-week{grid-column:1/-1;justify-content:flex-start !important;}
-}
-</style>
-
 </head>
 <body>
 <div class="wrap">
@@ -1281,16 +917,14 @@ th,td{padding:6px 7px !important;font-size:11px !important}
       <button class="date-arrow" id="dayNext" aria-label="다음 날">›</button>
       <button class="date-today-btn" id="dayToday">오늘로</button>
     </div>
-    <div class="today-flow v14-flow" id="todayFlow">
+    <div class="today-flow" id="todayFlow">
       <div class="flow-step" id="flowCheckin"><b>1</b><span>Check-in</span></div>
       <div class="flow-line"></div>
-      <div class="flow-step" id="flowRoutine"><b>2</b><span>Routines</span></div>
+      <div class="flow-step" id="flowThree"><b>2</b><span>Today’s 3</span></div>
       <div class="flow-line"></div>
-      <div class="flow-step" id="flowFocus"><b>3</b><span>Focus</span></div>
+      <div class="flow-step" id="flowExecute"><b>3</b><span>Execute</span></div>
       <div class="flow-line"></div>
-      <div class="flow-step" id="flowIdeation"><b>4</b><span>Ideation</span></div>
-      <div class="flow-line"></div>
-      <div class="flow-step" id="flowCheckout"><b>5</b><span>Check-out</span></div>
+      <div class="flow-step" id="flowCheckout"><b>4</b><span>Check-out</span></div>
     </div>
     <div class="grid">
       <div class="card span-6">
@@ -1336,15 +970,20 @@ th,td{padding:6px 7px !important;font-size:11px !important}
         <div class="mini-chart"><canvas id="checkinChart"></canvas></div>
       </div>
 
-      
+      <div class="card span-6">
+        <h3>Today’s 3 <span class="ko-gloss">오늘의 3가지</span></h3>
+        <div class="hint">오늘 가장 의식할 3가지를 고릅니다. Project를 선택하면 실행 Description가 해당 Project에 누적됩니다.</div>
+        <div id="yesterdayNote"></div>
+        <div id="todaySlots"></div>
+      </div>
 
       <div class="card span-6">
         <h3>Today’s Routines <span class="ko-gloss">오늘 루틴</span></h3>
-        <div class="hint">오늘 루틴만 체크.</div>
+        <div class="hint">Value Pillars에 설정된 모든 Routine을 오늘 기준으로 체크합니다.</div>
         <div class="scorebox compact">
           <div>
             <div class="judge" id="routineSignal">🟡 Routine 대기</div>
-            <div class="hint" id="routineCaption" style="margin:4px 0 0">루틴 체크 기준.</div>
+            <div class="hint" id="routineCaption" style="margin:4px 0 0">오늘 Routine 체크만 기준으로 표시됩니다.</div>
           </div>
           <div class="big mini-score" id="routineScore">0%</div>
         </div>
@@ -1353,25 +992,16 @@ th,td{padding:6px 7px !important;font-size:11px !important}
           Routine 설정은 <b>Value Pillars</b>에서 관리하고, Today에서는 오늘 실행만 체크합니다.
         </div>
       </div>
-      <div class="card span-12">
-        <h3>Today Focus <span class="ko-gloss">오늘 집중</span></h3>
-        <div class="hint">Value → Project → Action. 오늘 할 만큼만.</div>
-        <div id="yesterdayNote"></div>
-        <div class="focus-board" id="todayFocusBoard"></div>
+
+      <div class="card span-6">
+        <h3>Today’s Projects <span class="ko-gloss">오늘 작업대</span></h3>
+        <div class="hint">오늘 진행할 Project Action을 확인하고, 필요한 실행 메모를 남깁니다.</div>
+        <div class="today-project-list" id="todayProjects"></div>
       </div>
-
-      <div class="card span-12">
-        <h3>Ideation <span class="ko-gloss">메모보드</span></h3>
-        <div class="hint">맛집·여행·데이트·컬처. 떠오르면 저장.</div>
-        <div class="idea-board" id="ideaBoard"></div>
-      </div>
-
-
-      
 
       <div class="card span-6">
         <h3>Daily Check-out <span class="ko-gloss">하루 마무리</span></h3>
-        <div class="hint">하루를 짧게 닫기.</div>
+        <div class="hint">오늘의 실행, 회복, 자기돌봄을 돌아보고 하루를 저장합니다.</div>
         <div class="scorebox compact">
           <div>
             <div class="judge" id="checkoutSignal">🟡 체크아웃 대기</div>
@@ -1389,10 +1019,10 @@ th,td{padding:6px 7px !important;font-size:11px !important}
           <textarea id="checkoutHard" placeholder="예: 중요한 건 오전에 해야 한다."></textarea>
         </div>
         <div class="field">
-          <label>내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today Focus 맨 위에 떠요</span></label>
+          <label>내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today’s 3 맨 위에 떠요</span></label>
           <textarea id="checkoutTomorrow" placeholder="예: 오전에 제일 중요한 것 하나만 먼저."></textarea>
         </div>
-        <button class="btn today" id="saveToday">Save</button>
+        <button class="btn today" id="saveToday">Save Daily Log</button>
         <div class="mini-chart"><canvas id="checkoutChart"></canvas></div>
       </div>
 
@@ -1409,7 +1039,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
       <div class="card span-12">
         <div class="pill-eyebrow">Pillar Map</div>
         <h3>5대 가치 축</h3>
-        <div class="hint">5대 축 아래 Project와 Routine을 둡니다.</div>
+        <div class="hint">삶의 큰 방향입니다. 각 Pillar 아래에 Projects와 Routines가 연결됩니다.</div>
         <div class="category-board" id="categoryBoard"></div>
         <div class="misc-wrap" id="miscWrap">
           <div class="misc-head" id="miscHead">
@@ -1423,14 +1053,14 @@ th,td{padding:6px 7px !important;font-size:11px !important}
       <div class="card span-12">
         <div class="pill-eyebrow">Projects</div>
         <h3>Projects</h3>
-        <div class="hint">Project = 목적 + Action.</div>
+        <div class="hint">목적, 마감, Done 기준이 있는 실행 과제입니다.</div>
         <div class="group-board" id="groupBoard"></div>
       </div>
 
       <div class="card span-12">
         <div class="pill-eyebrow">Routines</div>
         <h3>Routines</h3>
-        <div class="hint">Today와 연결되는 반복 루틴.</div>
+        <div class="hint">반복해서 유지하는 생활 Routine입니다. Today 탭의 체크와 같은 데이터를 씁니다.</div>
         <div class="habit-list" id="habitList"></div>
         <button class="btn ghost" id="addHabit" style="margin-top:12px">+ Routine</button>
       </div>
@@ -2091,7 +1721,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
       ? (p.items.length? p.items.length+'개 항목 · '+p.stages.length+'단계' : '항목 없음')
       : p.kind==='metric'
       ? (p.goals.length? p.goals.length+'개 지표' : '지표 없음')
-      : (pg.total?pg.done+'/'+pg.total+' 완료':'No Actions');
+      : (pg.total?pg.done+'/'+pg.total+' Actions 완료':'No Actions');
     tile.innerHTML='<div class="tile-top"><div class="tile-title">'+(p.kind==='pipeline'?'🎼 ':p.kind==='metric'?'📊 ':'')+escape(p.title||'(제목 None)')+'</div><span class="tag">'+statusLabel(p.status)+'</span></div><div class="progress"><span style="width:'+pg.pct+'%"></span></div><div class="tile-meta">'+metaText+(p.dueDate?' · 마감 '+p.dueDate:'')+'</div>';
     if(p.kind==='metric' && p.goals.length){
       const wrap=document.createElement('div'); wrap.className='tile-metric';
@@ -2225,7 +1855,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
   function renderProjectModal(pid){
     const p=state.projects.find(x=>String(x.id)===String(pid));
     if(!p) return;
-    document.getElementById('modalTitle').textContent=p.title||'Project';
+    document.getElementById('modalTitle').textContent=p.title||'Project Detail';
     const c=document.getElementById('projectModalContent');
     const pg=projectProgress(p);
     c.innerHTML='';
@@ -2241,7 +1871,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
     base.appendChild(prog);
     c.appendChild(base);
 
-    base.querySelector('#pmTitle').oninput=e=>{ p.title=e.target.value; save(); renderAllLinkedNoModal(); document.getElementById('modalTitle').textContent=p.title||'Project'; };
+    base.querySelector('#pmTitle').oninput=e=>{ p.title=e.target.value; save(); renderAllLinkedNoModal(); document.getElementById('modalTitle').textContent=p.title||'Project Detail'; };
     base.querySelector('#pmPillar').value=p.pillar;
     base.querySelector('#pmPillar').onchange=e=>{ p.pillar=e.target.value; save(); renderAllLinkedNoModal(); };
     base.querySelector('#pmStatus').value=p.status;
@@ -2796,7 +2426,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
     }
 
     if(slot.kind==='project'){
-      body.innerHTML='<h4>Project / 선택</h4><div class="hint">Today’s 3에 Project를 연결하면 아래 오늘 Project 포커스 작업대에도 자동으로 뜹니다.</div>';
+      body.innerHTML='<h4>Project / Actions 선택</h4><div class="hint">Today’s 3에 Project를 연결하면 아래 오늘 Project 포커스 작업대에도 자동으로 뜹니다.</div>';
 
       const psel=document.createElement('select');
       const projects=state.projects.filter(p=>p.status!=='done');
@@ -2809,7 +2439,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
       const subsel=document.createElement('select');
       subsel.style.marginTop='8px';
       const subs=p?p.subs:[];
-      subsel.innerHTML='<option value="">선택</option>'+subs.map(s=>'<option value="'+s.id+'">'+(s.done?'✓ ':'')+escape(s.title||'(빈 과제)')+'</option>').join('');
+      subsel.innerHTML='<option value="">Actions 선택</option>'+subs.map(s=>'<option value="'+s.id+'">'+(s.done?'✓ ':'')+escape(s.title||'(빈 과제)')+'</option>').join('');
       subsel.value=slot.subId||'';
       subsel.onchange=()=>{ slot.subId=subsel.value; save(); renderAllLinkedNoModal(); renderSlotModal(slotKey); };
       body.appendChild(subsel);
@@ -3514,661 +3144,6 @@ function renderWeekMetrics(){
   function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
   function rerenderAll(){ document.getElementById('v-identity').value=state.identity||''; document.getElementById('v-daily').value=state.daily||''; autoSize(document.getElementById('v-identity')); autoSize(document.getElementById('v-daily')); renderGrat(); renderQuotes(); renderAllLinked(); refreshMoney(); renderBackupStatus(); }
   function initDates(){ document.getElementById('aDate').value=todayStr(); document.getElementById('cMonth').value=todayStr().slice(0,7); document.getElementById('rateOut').textContent=document.getElementById('sRate').value+'%'; loadAssetDate(); loadCardMonth(); }
-
-
-  /* =========================
-     v14 Life OS overrides
-     - Check-in / Check-out / Routines preserved
-     - Today’s 3 + Today’s Projects merged into Today Focus
-     - Projects simplified: Project > Purpose > 1-level Actions
-     - Light Ideation is a persistent board, not a daily log
-     ========================= */
-
-  function fresh(){
-    const pillarMeta={};
-    ALL_PILLARS.forEach(p=>pillarMeta[p.key]={cap:p.cap});
-    return {
-      identity:'', daily:'', gratitude:[''], quotes:[], pillarMeta,
-      habits:[], projects:[], ideas:[], records:[], cardExpenses:[],
-      todayDraft:newTodayDraft(), todayLogs:[]
-    };
-  }
-
-  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false}; }
-
-  function newTodayDraft(forDate){
-    return {
-      date:forDate||todayStr(),
-      checkin:{
-        theme:'', bodyState:'',
-        mood:0, energy:0, sleep:0, anxiety:0, bodyFatigue:0, focus:0,
-        note:''
-      },
-      checkout:{
-        satisfaction:0, accomplishment:0, calm:0, selfCare:0, fatigue:0,
-        good:'', hard:'', tomorrow:''
-      },
-      mode:'', condition:'', review:'',
-      focuses:[],
-      slots:{must:emptySlot(),nice:emptySlot(),care:emptySlot()}
-    };
-  }
-
-  function normalizeProject(p){
-    p=p||{};
-    p.id=p.id||uid();
-    p.pillar=p.pillar||p.tag||'etc';
-    if(!ALL_PILLARS.some(x=>x.key===p.pillar)) p.pillar='etc';
-    p.title=p.title||p.t||'';
-    p.status=p.status || (p.done?'done':'active');
-    if(!['active','done','paused'].includes(p.status)) p.status='active';
-    p.purpose=p.purpose || p.objective || p.goal || '';
-    p.memo=p.memo||'';
-    p.todayFocus=!!p.todayFocus;
-    if(typeof p.pillarOrder!=='number') p.pillarOrder=9999;
-    if(typeof p.todayOrder!=='number') p.todayOrder=9999;
-    if(!Array.isArray(p.subs)) p.subs=[];
-    p.subs=p.subs.map(s=>({
-      id:s.id||uid(),
-      title:s.title||s.t||'',
-      done:!!s.done,
-      createdDate:s.createdDate||'',
-      completedDate:s.completedDate||'',
-      todayFocus:!!s.todayFocus,
-      source:s.source||'',
-      dailyNotes:Array.isArray(s.dailyNotes)?s.dailyNotes:[],
-      children:[]
-    }));
-    // keep legacy arrays empty so old metric/pipeline UI no longer leaks into the project concept
-    p.kind='free';
-    p.dueDate='';
-    p.goals=[];
-    p.stages=[];
-    p.items=[];
-    if(!Array.isArray(p.linkedHabits)) p.linkedHabits=[];
-    p.linkedHabits=p.linkedHabits.map(String);
-    return p;
-  }
-
-  function normalizeDraft(draft, forDate){
-    if(!draft || typeof draft!=='object') draft=newTodayDraft(forDate);
-    draft.date=forDate||draft.date||todayStr();
-    if(!draft.checkin) draft.checkin={};
-    if(!draft.checkout) draft.checkout={};
-    const ci=draft.checkin;
-    if(!('theme' in ci)) ci.theme=draft.mode||'';
-    if(!('bodyState' in ci)) ci.bodyState=draft.condition||'';
-    ['mood','energy','sleep','anxiety','bodyFatigue','focus'].forEach(k=>{ ci[k]=+ci[k]||0; });
-    if(typeof ci.note!=='string') ci.note='';
-    const co=draft.checkout;
-    ['satisfaction','accomplishment','calm','selfCare','fatigue'].forEach(k=>{ co[k]=+co[k]||0; });
-    ['good','hard','tomorrow'].forEach(k=>{ if(typeof co[k]!=='string') co[k]=''; });
-    if(!co.good && draft.review) co.good=draft.review;
-
-    if(!draft.slots) draft.slots={};
-    SLOT_DEF.forEach(s=>{
-      if(!draft.slots[s.key]) draft.slots[s.key]=emptySlot();
-      if(typeof draft.slots[s.key].memo!=='string') draft.slots[s.key].memo='';
-    });
-
-    if(!Array.isArray(draft.focuses)){
-      const fromSlots=[];
-      if(draft.slots){
-        Object.values(draft.slots).forEach(slot=>{
-          if(slot && slot.kind==='project' && slot.projectId){
-            const p=getProject(slot.projectId);
-            fromSlots.push({
-              id:uid(),
-              pillar:p?p.pillar:'',
-              projectId:String(slot.projectId||''),
-              subId:String(slot.subId||''),
-              note:slot.memo||'',
-              done:!!slot.done
-            });
-          }
-        });
-      }
-      draft.focuses=fromSlots;
-    }
-    draft.focuses=draft.focuses.map(f=>({
-      id:f.id||uid(),
-      pillar:f.pillar||'',
-      projectId:f.projectId?String(f.projectId):'',
-      subId:f.subId?String(f.subId):'',
-      note:typeof f.note==='string'?f.note:'',
-      done:!!f.done
-    }));
-    return draft;
-  }
-
-  function ensureIdeas(){
-    if(!Array.isArray(state.ideas)) state.ideas=[];
-    state.ideas=state.ideas.map(x=>({
-      id:x.id||uid(),
-      title:x.title||'',
-      memo:x.memo||'',
-      tags:Array.isArray(x.tags)?x.tags:(typeof x.tags==='string'?x.tags.split(',').map(t=>t.trim()).filter(Boolean):[]),
-      createdDate:x.createdDate||todayStr()
-    }));
-  }
-
-  function setupLifeOSv14Layout(){
-    const flow=document.getElementById('todayFlow');
-    if(flow){
-      flow.classList.add('v14-flow');
-      flow.innerHTML=[
-        '<div class="flow-step" id="flowCheckin"><b>1</b><span>Check-in</span></div>',
-        '<div class="flow-line"></div>',
-        '<div class="flow-step" id="flowRoutine"><b>2</b><span>Routines</span></div>',
-        '<div class="flow-line"></div>',
-        '<div class="flow-step" id="flowFocus"><b>3</b><span>Focus</span></div>',
-        '<div class="flow-line"></div>',
-        '<div class="flow-step" id="flowIdeation"><b>4</b><span>Ideation</span></div>',
-        '<div class="flow-line"></div>',
-        '<div class="flow-step" id="flowCheckout"><b>5</b><span>Check-out</span></div>'
-      ].join('');
-    }
-
-    const slots=document.getElementById('todaySlots');
-    const oldThree=slots?slots.closest('.card'):null;
-    const projects=document.getElementById('todayProjects');
-    const oldProjects=projects?projects.closest('.card'):null;
-    const routines=document.getElementById('quickHabits')?document.getElementById('quickHabits').closest('.card'):null;
-    const checkout=document.getElementById('saveToday')?document.getElementById('saveToday').closest('.card'):null;
-
-    if(oldThree) oldThree.remove();
-    if(oldProjects) oldProjects.remove();
-
-    if(routines && !document.getElementById('todayFocusBoard')){
-      const focus=document.createElement('div');
-      focus.className='card span-12';
-      focus.innerHTML=[
-        '<h3>Today Focus <span class="ko-gloss">오늘 집중</span></h3>',
-        '<div class="hint">Value → Project → Action. 오늘 할 만큼만.</div>',
-        '<div id="yesterdayNote"></div>',
-        '<div class="focus-board" id="todayFocusBoard"></div>'
-      ].join('');
-      routines.insertAdjacentElement('afterend', focus);
-
-      const ideas=document.createElement('div');
-      ideas.className='card span-12';
-      ideas.innerHTML=[
-        '<h3>Ideation <span class="ko-gloss">메모보드</span></h3>',
-        '<div class="hint">맛집·여행·데이트·컬처. 떠오르면 저장.</div>',
-        '<div class="idea-board" id="ideaBoard"></div>'
-      ].join('');
-      focus.insertAdjacentElement('afterend', ideas);
-    }
-
-    if(checkout){
-      const label=checkout.querySelector('label[for="checkoutTomorrow"], .field label span.ko-gloss');
-      const all=checkout.querySelectorAll('label');
-      all.forEach(l=>{
-        if((l.textContent||'').includes('내일의 나에게')){
-          l.innerHTML='내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today Focus 맨 위에 떠요</span>';
-        }
-      });
-    }
-
-    const misc=document.getElementById('miscWrap');
-    if(misc) misc.style.display='none';
-
-    const projHint=document.querySelector('#tab-life .card:nth-of-type(2) .hint');
-    if(projHint) projHint.textContent='Project = 목적 + Action.';
-  }
-
-  function projectProgress(p){
-    const total=(p.subs||[]).length;
-    const done=(p.subs||[]).filter(s=>s.done).length;
-    return {total,done,pct:total?Math.round(done/total*100):0};
-  }
-
-  function createProject(pillar){
-    const pr=normalizeProject({id:uid(),pillar,title:'New Project',status:'active',purpose:'',subs:[],memo:''});
-    state.projects.push(pr); save(); renderAllLinked(); openProjectModal(pr.id);
-  }
-
-  function makeProjectTile(p){
-    const tile=document.createElement('div');
-    tile.className='project-tile v14-simple '+statusClass(p.status);
-    tile.setAttribute('data-dragid',String(p.id));
-    tile.onclick=(e)=>{ if(window._justDragged && Date.now()-window._justDragged<300)return; openProjectModal(p.id); };
-    const pg=projectProgress(p);
-    const pi=pillarOf(p.pillar);
-    tile.innerHTML='<div class="tile-top"><div class="tile-title">'+pi.emo+' '+escape(p.title||'(제목 없음)')+'</div><span class="tag">'+statusLabel(p.status)+'</span></div>'+
-      '<div class="project-purpose">'+escape(p.purpose||'목적')+'</div>'+
-      '<div class="progress"><span style="width:'+pg.pct+'%"></span></div>'+
-      '<div class="tile-meta">'+pg.done+'/'+pg.total+'</div>';
-    if((p.subs||[]).length){
-      const goals=document.createElement('div'); goals.className='goal-pills';
-      p.subs.slice(0,6).forEach(s=>{ 
-        const chip=document.createElement('span'); chip.className='goal-pill'; chip.textContent=(s.done?'✓ ':'')+(s.title||'Action'); goals.appendChild(chip);
-      });
-      if(p.subs.length>6){ const more=document.createElement('span'); more.className='goal-pill'; more.textContent='+'+(p.subs.length-6); goals.appendChild(more); }
-      tile.appendChild(goals);
-    }
-    return tile;
-  }
-
-  function renderProjectModal(pid){
-    const p=state.projects.find(x=>String(x.id)===String(pid));
-    if(!p) return;
-    document.getElementById('modalTitle').textContent=p.title||'Project';
-    const c=document.getElementById('projectModalContent');
-    const pg=projectProgress(p);
-    c.innerHTML='';
-
-    const base=document.createElement('div'); base.className='modal-section';
-    base.innerHTML='<h4>Project</h4>';
-    const grid=document.createElement('div'); grid.className='modal-grid';
-    grid.innerHTML='<div class="field"><label>프로젝트명</label><input id="pmTitle" value="'+escape(p.title)+'" placeholder="예: 오케스트라"></div>'+
-      '<div class="field"><label>Value</label><select id="pmPillar">'+ALL_PILLARS.map(pi=>'<option value="'+pi.key+'">'+pi.emo+' '+pi.name+'</option>').join('')+'</select></div>'+
-      '<div class="field"><label>상태</label><select id="pmStatus"><option value="active">진행중</option><option value="paused">보류</option><option value="done">완료</option></select></div>';
-    base.appendChild(grid);
-    const purpose=document.createElement('div'); purpose.className='field';
-    purpose.innerHTML='<label>목적</label><input id="pmPurpose" value="'+escape(p.purpose||'')+'" placeholder="예: 즐기자">';
-    base.appendChild(purpose);
-    const memo=document.createElement('div'); memo.className='field';
-    memo.innerHTML='<label>메모</label><textarea id="pmMemo" placeholder="메모">'+escape(p.memo||'')+'</textarea>';
-    base.appendChild(memo);
-    const prog=document.createElement('div');
-    prog.innerHTML='<div class="hint">Action '+pg.done+'/'+pg.total+'</div><div class="progress"><span style="width:'+pg.pct+'%"></span></div>';
-    base.appendChild(prog);
-    c.appendChild(base);
-
-    base.querySelector('#pmTitle').oninput=e=>{ p.title=e.target.value; save(); renderAllLinkedNoModal(); document.getElementById('modalTitle').textContent=p.title||'Project'; };
-    base.querySelector('#pmPillar').value=p.pillar;
-    base.querySelector('#pmPillar').onchange=e=>{ p.pillar=e.target.value; save(); renderAllLinkedNoModal(); renderProjectModal(pid); };
-    base.querySelector('#pmStatus').value=p.status;
-    base.querySelector('#pmStatus').onchange=e=>{ p.status=e.target.value; save(); renderAllLinkedNoModal(); renderProjectModal(pid); };
-    base.querySelector('#pmPurpose').oninput=e=>{ p.purpose=e.target.value; save(); renderAllLinkedNoModal(); };
-    base.querySelector('#pmMemo').oninput=e=>{ p.memo=e.target.value; save(); renderAllLinkedNoModal(); };
-
-    const sec=document.createElement('div'); sec.className='modal-section';
-    sec.innerHTML='<h4>Actions</h4><div class="hint">1계위만.</div>';
-    const list=document.createElement('div');
-    if(!p.subs.length) list.innerHTML='<div class="empty">Action 없음.</div>';
-    p.subs.forEach((s,idx)=>{
-      const row=document.createElement('div'); row.className='action-checkline '+(s.done?'done':'');
-      row.setAttribute('data-dragid',String(s.id));
-      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!s.done;
-      cb.onchange=()=>{ setSubDone(s,cb.checked); save(); renderProjectModal(pid); renderAllLinkedNoModal(); };
-      const inp=document.createElement('input'); inp.type='text'; inp.value=s.title||''; inp.placeholder='Action';
-      inp.oninput=()=>{ s.title=inp.value; save(); renderAllLinkedNoModal(); };
-      const del=document.createElement('button'); del.className='btn small ghost'; del.textContent='삭제';
-      del.onclick=()=>{ 
-        if(confirm('Action을 삭제할까요?')){
-          p.subs=p.subs.filter(x=>String(x.id)!==String(s.id));
-          Object.values(state.dayLogs||{}).forEach(d=>{ (d.focuses||[]).forEach(f=>{ if(String(f.subId)===String(s.id)) f.subId=''; }); });
-          save(); renderProjectModal(pid); renderAllLinkedNoModal();
-        }
-      };
-      row.append(cb,inp,del);
-      list.appendChild(row);
-    });
-    sec.appendChild(list);
-    const add=document.createElement('div'); add.className='add-line';
-    add.innerHTML='<input placeholder="새 Action"><button class="btn small ghost">+ 추가</button>';
-    add.querySelector('button').onclick=()=>{
-      const val=add.querySelector('input').value.trim();
-      if(!val) return;
-      p.subs.push({id:uid(),title:val,done:false,createdDate:todayStr(),completedDate:'',todayFocus:false,source:'',dailyNotes:[],children:[]});
-      save(); renderProjectModal(pid); renderAllLinkedNoModal();
-    };
-    add.querySelector('input').addEventListener('keydown',e=>{ if(e.key==='Enter') add.querySelector('button').click(); });
-    sec.appendChild(add);
-    c.appendChild(sec);
-
-    const delSec=document.createElement('div'); delSec.className='modal-section';
-    delSec.innerHTML='<button class="btn danger">삭제</button>';
-    delSec.querySelector('button').onclick=()=>{ if(confirm('이 Project를 삭제할까요?')){ clearSlotsReferencingProject(pid); state.projects=state.projects.filter(x=>String(x.id)!==String(pid)); closeModal(); save(); renderAllLinkedNoModal(); } };
-    c.appendChild(delSec);
-  }
-
-  function renderTodaySlots(){ /* v14: Today’s 3 removed */ }
-  function renderTodayProjects(){ /* v14: Today’s Projects merged into Today Focus */ }
-
-  function renderToday(){
-    setupLifeOSv14Layout();
-    renderDateNav();
-    renderYesterdayNote();
-    const viewed=new Date((state.viewDate||todayStr())+'T00:00:00');
-    document.getElementById('todayDate').textContent=viewed.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-
-    const ci=state.todayDraft.checkin;
-    const co=state.todayDraft.checkout;
-
-    document.getElementById('checkinNote').value=ci.note||'';
-    document.getElementById('checkinNote').oninput=()=>{ ci.note=document.getElementById('checkinNote').value; save(); renderCheckinSignal(); renderBiorhythmCharts(); };
-
-    document.getElementById('checkoutGood').value=co.good||'';
-    document.getElementById('checkoutHard').value=co.hard||'';
-    document.getElementById('checkoutTomorrow').value=co.tomorrow||'';
-    document.getElementById('checkoutGood').oninput=()=>{ co.good=document.getElementById('checkoutGood').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
-    document.getElementById('checkoutHard').oninput=()=>{ co.hard=document.getElementById('checkoutHard').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
-    document.getElementById('checkoutTomorrow').oninput=()=>{ co.tomorrow=document.getElementById('checkoutTomorrow').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
-
-    renderChipGroup('themeChips','theme','checkin');
-    renderChipGroup('bodyStateChips','bodyState','checkin');
-    renderCheckinScales();
-    renderCheckoutScales();
-
-    renderQuickHabits();
-    renderTodayFocus();
-    renderIdeaBoard();
-    renderTodaySignals();
-    renderBiorhythmCharts();
-    renderTodayFlow();
-  }
-
-  function renderTodayFlow(){
-    const checkinDone=getCheckinScore()>0;
-    const routineDone=getRoutineScore()>0;
-    const focusDone=(state.todayDraft.focuses||[]).some(f=>f.projectId || f.note || f.done);
-    const ideaDone=(state.ideas||[]).length>0;
-    const checkoutDone=getCheckoutScore()>0;
-    const steps=[
-      ['flowCheckin',checkinDone],
-      ['flowRoutine',routineDone],
-      ['flowFocus',focusDone],
-      ['flowIdeation',ideaDone],
-      ['flowCheckout',checkoutDone]
-    ];
-    steps.forEach(([id,done],idx)=>{
-      const el=document.getElementById(id);
-      if(!el) return;
-      el.classList.toggle('done',done);
-      const active=!done && steps.slice(0,idx).every(x=>x[1]);
-      el.classList.toggle('active',active);
-    });
-  }
-
-  function renderTodayFocus(){
-    const box=document.getElementById('todayFocusBoard'); if(!box) return;
-    if(!Array.isArray(state.todayDraft.focuses)) state.todayDraft.focuses=[];
-    box.innerHTML='';
-
-    const list=document.createElement('div'); list.className='focus-list';
-    if(!state.todayDraft.focuses.length){
-      const empty=document.createElement('div'); empty.className='empty';
-      empty.textContent='오늘 챙길 Action을 하나 올려두기.';
-      list.appendChild(empty);
-    }
-
-    state.todayDraft.focuses.forEach((f,idx)=>{
-      const p=getProject(f.projectId);
-      const s=p?(p.subs||[]).find(x=>String(x.id)===String(f.subId)):null;
-      const pillarKey=f.pillar || (p&&p.pillar) || '';
-      const pi=PRIMARY_PILLARS.find(x=>x.key===pillarKey) || (pillarKey==='etc'?ETC_PILLAR:null);
-      const row=document.createElement('div'); row.className='focus-line '+(f.done?'done':'');
-
-      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!f.done;
-      cb.onchange=()=>{ f.done=cb.checked; save(); renderToday(); };
-
-      const summary=document.createElement('div'); summary.className='focus-summary';
-      const tag=document.createElement('span'); tag.className='focus-vtag'; tag.textContent=pi?pi.name:'Value';
-      const main=document.createElement('span'); main.className='focus-main'; main.textContent=(p?p.title:'Project')+(s?' › '+s.title:'');
-      summary.append(tag,main);
-
-      const memo=document.createElement('div'); memo.className='focus-memo'; memo.textContent=f.note||'오늘 어떻게 할지 한 줄';
-
-      const edit=document.createElement('button'); edit.className='focus-mini-btn'; edit.textContent='수정';
-      const del=document.createElement('button'); del.className='focus-mini-btn'; del.textContent='삭제';
-      del.onclick=()=>{ state.todayDraft.focuses=state.todayDraft.focuses.filter(x=>x.id!==f.id); save(); renderToday(); };
-
-      row.append(cb,summary,memo,edit,del);
-      list.appendChild(row);
-
-      const editor=document.createElement('div'); editor.className='focus-edit'; editor.style.display='none';
-      buildFocusEditor(editor,f,()=>{ save(); renderToday(); }, false);
-      list.appendChild(editor);
-      edit.onclick=()=>{ editor.style.display=editor.style.display==='none'?'grid':'none'; };
-    });
-    box.appendChild(list);
-
-    const add=document.createElement('div'); add.className='focus-add';
-    const draft=newFocusItem();
-    buildFocusEditor(add,draft,()=>{
-      if(!draft.projectId && !draft.subId && !draft.note.trim()) return;
-      state.todayDraft.focuses.push(draft);
-      save(); renderToday();
-    }, true);
-    box.appendChild(add);
-  }
-
-  function buildFocusEditor(container,f,onCommit,isNew){
-    container.innerHTML='';
-    const pillarSel=document.createElement('select');
-    pillarSel.innerHTML='<option value="">Value</option>'+PRIMARY_PILLARS.map(pi=>'<option value="'+pi.key+'">'+pi.emo+' '+pi.name+'</option>').join('')+'<option value="etc">📌 Misc</option>';
-    const p0=getProject(f.projectId);
-    pillarSel.value=f.pillar || (p0&&p0.pillar) || '';
-
-    const projectSel=document.createElement('select');
-    const subSel=document.createElement('select');
-    const noteInput=document.createElement('input');
-    noteInput.placeholder='오늘 어떻게?'; noteInput.value=f.note||'';
-    const btn=document.createElement('button'); btn.className='btn small '+(isNew?'today':'ghost'); btn.textContent=isNew?'+ 추가':'저장';
-
-    const fillProjects=()=>{
-      const val=pillarSel.value;
-      const pOpts=(val?state.projects.filter(pr=>pr.status!=='done' && pr.pillar===val):state.projects.filter(pr=>pr.status!=='done'));
-      projectSel.innerHTML='<option value="">Project</option>'+pOpts.map(pr=>'<option value="'+pr.id+'">'+escape(pr.title||'Project')+'</option>').join('');
-      if(pOpts.some(pr=>String(pr.id)===String(f.projectId))) projectSel.value=f.projectId||'';
-      else projectSel.value='';
-      fillActions();
-    };
-    const fillActions=()=>{
-      const p=getProject(projectSel.value);
-      const subs=p?(p.subs||[]):[];
-      subSel.innerHTML='<option value="">Action</option>'+subs.map(s=>'<option value="'+s.id+'">'+(s.done?'✓ ':'')+escape(s.title||'Action')+'</option>').join('');
-      if(subs.some(s=>String(s.id)===String(f.subId))) subSel.value=f.subId||'';
-      else subSel.value='';
-    };
-    pillarSel.onchange=()=>{ f.pillar=pillarSel.value; f.projectId=''; f.subId=''; fillProjects(); };
-    projectSel.onchange=()=>{ f.projectId=projectSel.value; const p=getProject(f.projectId); f.pillar=p?p.pillar:(f.pillar||''); f.subId=''; fillActions(); };
-    subSel.onchange=()=>{ f.subId=subSel.value; };
-    noteInput.oninput=()=>{ f.note=noteInput.value; };
-    noteInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); btn.click(); }});
-    btn.onclick=()=>{ f.note=noteInput.value; onCommit(); };
-    fillProjects();
-    container.append(pillarSel,projectSel,subSel,noteInput,btn);
-  }
-
-  function wrapField(label, el){
-    const w=document.createElement('div'); w.className='field';
-    const l=document.createElement('label'); l.textContent=label;
-    w.append(l,el); return w;
-  }
-
-  function renderIdeaBoard(){
-    const box=document.getElementById('ideaBoard'); if(!box) return;
-    ensureIdeas();
-    box.innerHTML='';
-
-    const list=document.createElement('div'); list.className='idea-list';
-    if(!state.ideas.length){
-      const empty=document.createElement('div'); empty.className='empty';
-      empty.textContent='떠오르면 아래에 적어두기.';
-      list.appendChild(empty);
-    } else {
-      state.ideas.forEach(idea=>{
-        const row=document.createElement('div'); row.className='idea-row';
-        row.innerHTML='<div class="idea-row-title">'+escape(idea.title||'Untitled')+'</div>'+ 
-          '<div class="idea-row-memo">'+escape(idea.memo||'')+'</div>'+ 
-          '<div class="idea-row-tags">'+(idea.tags||[]).map(t=>'<span class="idea-tag">'+escape(t)+'</span>').join('')+' <span class="x">삭제</span></div>';
-        row.querySelector('.x').onclick=()=>{ state.ideas=state.ideas.filter(x=>x.id!==idea.id); save(); renderIdeaBoard(); renderTodayFlow(); };
-        list.appendChild(row);
-      });
-    }
-    box.appendChild(list);
-
-    const composer=document.createElement('div'); composer.className='idea-composer';
-    composer.innerHTML='<div class="idea-compose-row"><input id="ideaTitle" placeholder="아이디어"><input id="ideaTags" placeholder="태그: 맛집, 여행"><input id="ideaMemo" placeholder="메모 한 줄"><button class="btn small ghost">+ 저장</button></div>';
-    const add=()=>{
-      const title=composer.querySelector('#ideaTitle').value.trim();
-      const memo=composer.querySelector('#ideaMemo').value.trim();
-      const tags=composer.querySelector('#ideaTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-      if(!title && !memo) return;
-      state.ideas.unshift({id:uid(),title:title||'Untitled',memo,tags,createdDate:todayStr()});
-      save(); renderIdeaBoard(); renderTodayFlow();
-    };
-    composer.querySelector('button').onclick=add;
-    ['#ideaTitle','#ideaTags','#ideaMemo'].forEach(sel=>composer.querySelector(sel).addEventListener('keydown',e=>{ if(e.key==='Enter') add(); }));
-    box.appendChild(composer);
-  }
-
-  function countDoneProjectToday(){
-    return (state.todayDraft.focuses||[]).filter(f=>f.done).length;
-  }
-
-  function renderWeekMetrics(){
-    const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-6); cutoff.setHours(0,0,0,0);
-    const logs=state.todayLogs.filter(l=>new Date(l.date)>=cutoff);
-    const good=logs.filter(l=>(l.judge||'').includes('잘 산')).length;
-    const avg=logs.length?Math.round(logs.reduce((a,b)=>a+(+b.score||0),0)/logs.length):0;
-    const habitDays=logs.filter(l=>(l.completedHabits||[]).length>=2).length;
-    const focusDays=logs.filter(l=>(l.completedProjectActions||[]).length>=1).length;
-    const metrics=[['기록한 날',logs.length],['평균 점수',avg+'%'],['Routine 2개+',habitDays],['Focus 완료일',focusDays]];
-    const el=document.getElementById('weekMetrics');
-    if(el) el.innerHTML=metrics.map(m=>'<div class="metric"><div class="num">'+m[1]+'</div><div class="label">'+m[0]+'</div></div>').join('');
-  }
-
-  function renderTodayLogs(){
-    const box=document.getElementById('todayLogs'); 
-    if(!box) return;
-    if(!state.todayLogs.length){box.innerHTML='<div class="empty">아직 Today 기록 None</div>';return;}
-    box.innerHTML=state.todayLogs.map(l=>{
-      const focuses=(l.focuses||l.slots||[]).map(s=>'<span class="tag">'+escape(s.text||s.title||'Focus')+(s.done?' ✓':'')+'</span>').join(' ');
-      return '<div class="record"><div class="record-top"><b>'+escape(l.display||l.date)+'</b><span>'+escape(l.judge||'')+' · '+(l.score||0)+'%</span></div><div style="margin:6px 0">'+focuses+'</div><div class="hint" style="margin:0">'+escape(l.review||'')+'</div></div>';
-    }).join('');
-  }
-
-  function setupSaveTodayV14(){
-    const btn=document.getElementById('saveToday');
-    if(!btn) return;
-    btn.onclick=()=>{
-      const j=getTodayJudgement(), score=getTodayScore();
-      const completedHabits=state.habits.filter(h=>habitDoneOn(h)).map(h=>h.title);
-      const focuses=(state.todayDraft.focuses||[]).map(f=>{
-        const p=getProject(f.projectId), s=p?(p.subs||[]).find(x=>String(x.id)===String(f.subId)):null;
-        return {
-          kind:'focus',
-          done:!!f.done,
-          title:(p?p.title:'Project')+(s?' · '+s.title:''),
-          text:(p?p.title:'Project')+(s?' · '+s.title:'')+(f.note?' · '+f.note:''),
-          memo:f.note||''
-        };
-      });
-      const completedProjectActions=focuses.filter(f=>f.done).map(f=>f.title);
-      const log={
-        date:todayStr(),
-        display:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),
-        score,
-        judge:j.title,
-        checkin:JSON.parse(JSON.stringify(state.todayDraft.checkin)),
-        checkout:JSON.parse(JSON.stringify(state.todayDraft.checkout)),
-        focuses,
-        completedHabits,
-        completedProjectActions,
-        review:[
-          state.todayDraft.checkout.good,
-          state.todayDraft.checkout.hard,
-          state.todayDraft.checkout.tomorrow
-        ].filter(Boolean).join(' / ')
-      };
-      const idx=state.todayLogs.findIndex(x=>x.date===todayStr()); if(idx>=0)state.todayLogs[idx]=log; else state.todayLogs.unshift(log);
-      state.todayLogs=state.todayLogs.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,160);
-      save(); renderAllLinked(); alert('Daily Log saved');
-    };
-  }
-
-  function renderAllLinkedNoModal(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
-  function renderAllLinked(){ renderCategoryBoard(); renderGroupBoard(); renderToday(); renderHabits(); renderTodayLogs(); renderWeekMetrics(); }
-
-
-
-  /* v14.2 Routine UI overrides: compact list instead of card blocks */
-  function renderQuickHabits(){
-    const box=document.getElementById('quickHabits');
-    if(!box) return;
-    box.innerHTML='';
-    if(!state.habits.length){ box.innerHTML='<div class="empty">Routine 없음</div>'; return; }
-    const pinned=todaySlotHabitIds();
-    const sorted=[...state.habits].sort((a,b)=>{
-      const pa=(pillarOf(a.pillar).name||'').localeCompare(pillarOf(b.pillar).name||'');
-      if(pa) return pa;
-      return (a.title||'').localeCompare(b.title||'');
-    });
-    sorted.forEach(h=>{
-      const pi=pillarOf(h.pillar);
-      const div=document.createElement('div');
-      div.className='quick-habit routine-line '+(pinned.has(String(h.id))?'pinned':'');
-      const done=habitDoneOn(h,viewDateStr());
-      const freqStr=(h.freq==='daily'?'매일':'주 '+h.target+'회');
-      const b=document.createElement('button');
-      b.className='routine-check '+(done?'on':'');
-      b.textContent='✓';
-      b.title=done?'완료':'체크';
-      b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
-      div.appendChild(b);
-      div.insertAdjacentHTML('beforeend',
-        '<span class="routine-pillar">'+escape((pi.emo||'')+' '+(pi.name||''))+'</span>'+ 
-        '<span class="routine-name">'+escape(h.title||'Routine')+'</span>'+ 
-        '<span class="routine-freq">'+freqStr+'</span>'+ 
-        '<span class="habit-spark">'+habitSparkline(h)+'</span>'
-      );
-      box.appendChild(div);
-    });
-  }
-
-  function renderHabits(){
-    const box=document.getElementById('habitList');
-    if(!box) return;
-    box.innerHTML='';
-    if(!state.habits.length){ box.innerHTML='<div class="empty">No Routines</div>'; return; }
-    const monday=mondayOf(new Date()), dates=weekDates(monday), t=todayStr();
-    state.habits.forEach(h=>{
-      const el=document.createElement('div');
-      el.className='habit compact-habit';
-      const nameInput=document.createElement('input');
-      nameInput.value=h.title||'';
-      nameInput.placeholder='Routine';
-      nameInput.oninput=()=>{ h.title=nameInput.value; save(); renderQuickHabits(); };
-
-      const pillarSel=document.createElement('select');
-      pillarSel.innerHTML=ALL_PILLARS.map(p=>'<option value="'+p.key+'">'+p.emo+' '+p.name+'</option>').join('');
-      pillarSel.value=h.pillar;
-      pillarSel.onchange=()=>{ h.pillar=pillarSel.value; save(); renderAllLinked(); };
-
-      const freqSel=document.createElement('select');
-      freqSel.innerHTML='<option value="daily">매일</option><option value="weekly">주 N회</option>';
-      freqSel.value=h.freq;
-      freqSel.onchange=()=>{ h.freq=freqSel.value; h.target=h.freq==='daily'?7:3; save(); renderAllLinked(); };
-
-      const week=document.createElement('div');
-      week.className='week compact-week';
-      dates.forEach((d,i)=>{
-        const ds=ymd(d), cell=document.createElement('div');
-        cell.className='day '+(h.log.includes(ds)?'on ':'')+(ds===t?'today':'');
-        cell.textContent=['월','화','수','목','금','토','일'][i];
-        if(d<=new Date()) cell.onclick=()=>{ setHabitDone(h,ds,!h.log.includes(ds)); save(); renderAllLinked(); };
-        week.appendChild(cell);
-      });
-
-      const del=document.createElement('button');
-      del.className='habit-del';
-      del.textContent='×';
-      del.title='삭제';
-      del.onclick=()=>{ if(confirm('삭제할까요?')){ clearSlotsReferencingHabit(h.id); state.habits=state.habits.filter(x=>x.id!==h.id); save(); renderAllLinked(); } };
-      el.append(nameInput,pillarSel,freqSel,week,del);
-      box.appendChild(el);
-    });
-  }
-
-
-  setupLifeOSv14Layout();
-  setupSaveTodayV14();
-
 
   load(); initDates(); bindArea('v-identity','identity'); bindArea('v-daily','daily'); renderTabs(); rerenderAll();
 
