@@ -2331,10 +2331,157 @@ input:focus,textarea:focus,select:focus{
     overflow:visible !important;
   }
 }
+
+/* Password gate */
+html.auth-locked body{
+  min-height:100vh !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:linear-gradient(135deg,#F4F2EC 0%,#ECE7DA 100%) !important;
+}
+html.auth-locked body > :not(#authGate){
+  display:none !important;
+}
+html.auth-unlocked #authGate{
+  display:none !important;
+}
+.auth-gate{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(212,175,106,.24),transparent 28%),
+    radial-gradient(circle at 80% 70%,rgba(31,56,100,.13),transparent 34%),
+    linear-gradient(135deg,#F4F2EC 0%,#ECE7DA 100%);
+}
+.auth-card{
+  width:min(420px,100%);
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(227,223,212,.95);
+  border-radius:24px;
+  padding:32px 28px;
+  box-shadow:0 24px 70px rgba(31,56,100,.16);
+}
+.auth-eyebrow{
+  font-size:11px;
+  letter-spacing:.18em;
+  color:var(--gold,#B8924A);
+  text-transform:uppercase;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.auth-card h1{
+  color:var(--navy,#1F3864);
+  font-size:28px;
+  line-height:1.18;
+  margin-bottom:9px;
+  letter-spacing:-.04em;
+}
+.auth-desc{
+  color:var(--muted,#6B7280);
+  font-size:14px;
+  line-height:1.65;
+  margin-bottom:20px;
+}
+.auth-label{
+  display:block;
+  color:var(--navy,#1F3864);
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:8px;
+}
+.auth-input-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+.auth-input-row input{
+  border:1px solid var(--line,#E3DFD4) !important;
+  border-radius:12px !important;
+  padding:12px 14px !important;
+  font-size:15px !important;
+}
+.auth-input-row button{
+  border:0;
+  border-radius:12px;
+  padding:0 18px;
+  background:var(--navy,#1F3864);
+  color:#fff;
+  font-weight:850;
+  cursor:pointer;
+}
+.auth-input-row button:hover{
+  background:var(--navy-soft,#2E4D80);
+}
+.auth-error{
+  min-height:20px;
+  margin-top:9px;
+  color:var(--danger,#A32D2D);
+  font-size:12px;
+  font-weight:700;
+}
+.auth-foot{
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--line,#E3DFD4);
+  color:var(--muted,#6B7280);
+  font-size:12px;
+  line-height:1.55;
+}
+.auth-logout{
+  color:var(--danger,#A32D2D) !important;
+}
+@media(max-width:560px){
+  .auth-card{padding:26px 20px;border-radius:20px}
+  .auth-input-row{grid-template-columns:1fr}
+  .auth-input-row button{padding:12px 16px}
+}
+
 </style>
+
+
+<script>
+(function(){
+  const AUTH_KEY='buzzicorgi_auth';
+  const AUTH_EXPIRES_KEY='buzzicorgi_auth_expires';
+  try{
+    const auth=localStorage.getItem(AUTH_KEY);
+    const expires=Number(localStorage.getItem(AUTH_EXPIRES_KEY)||0);
+    const valid=auth==='true' && Date.now()<expires;
+    document.documentElement.classList.add(valid?'auth-unlocked':'auth-locked');
+    if(!valid){
+      localStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(AUTH_EXPIRES_KEY);
+    }
+  }catch(e){
+    document.documentElement.classList.add('auth-locked');
+  }
+})();
+</script>
 
 </head>
 <body>
+
+<div id="authGate" class="auth-gate">
+  <div class="auth-card" role="dialog" aria-labelledby="authTitle" aria-describedby="authDesc">
+    <div class="auth-eyebrow">Buzzicorgi Private OS</div>
+    <h1 id="authTitle">Enter password</h1>
+    <p id="authDesc" class="auth-desc">이 페이지는 디디 개인 Life OS라서 비밀번호 입력 후 열리게 했어.</p>
+    <form id="authForm" autocomplete="off">
+      <label class="auth-label" for="authPassword">Password</label>
+      <div class="auth-input-row">
+        <input id="authPassword" type="password" autocomplete="current-password" placeholder="Password" />
+        <button type="submit">Enter</button>
+      </div>
+      <p id="authError" class="auth-error" aria-live="polite"></p>
+    </form>
+    <div class="auth-foot">로그인 성공 시 이 브라우저에서 90일간 유지돼. 새로고침/재방문 때는 다시 묻지 않음.</div>
+  </div>
+</div>
+
+
 <div class="wrap">
 
   <div class="toolbar">
@@ -2344,6 +2491,7 @@ input:focus,textarea:focus,select:focus{
       <span class="reset" id="exportBtnTop">Export</span>
       <span class="reset" id="importBtnTop">Import</span>
       <span class="reset" id="resetBtnTop">Reset</span>
+      <span class="reset auth-logout" id="logoutBtnTop">Logout</span>
       <input type="file" id="importFile" accept="application/json" style="display:none;">
     </div>
   </div>
@@ -7156,5 +7304,84 @@ function renderWeekMetrics(){
   initCloud();
 })();
 </script>
+
+<script>
+(function(){
+  const AUTH_KEY='buzzicorgi_auth';
+  const AUTH_EXPIRES_KEY='buzzicorgi_auth_expires';
+  const AUTH_DURATION=1000*60*60*24*90;
+  const PASSWORD_SHA256='56bd199fde762b620319103e55a58662bb5773ea3290f361206ff09b2b2c646a';
+
+  function unlock(){
+    document.documentElement.classList.remove('auth-locked');
+    document.documentElement.classList.add('auth-unlocked');
+    const gate=document.getElementById('authGate');
+    if(gate) gate.style.display='none';
+  }
+
+  function lock(){
+    try{
+      localStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(AUTH_EXPIRES_KEY);
+    }catch(e){}
+    document.documentElement.classList.remove('auth-unlocked');
+    document.documentElement.classList.add('auth-locked');
+    const gate=document.getElementById('authGate');
+    if(gate) gate.style.display='';
+    setTimeout(()=>{
+      const input=document.getElementById('authPassword');
+      if(input) input.focus();
+    },50);
+  }
+
+  async function sha256(value){
+    const data=new TextEncoder().encode(value);
+    const digest=await crypto.subtle.digest('SHA-256',data);
+    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const form=document.getElementById('authForm');
+    const input=document.getElementById('authPassword');
+    const error=document.getElementById('authError');
+    const logout=document.getElementById('logoutBtnTop');
+
+    if(document.documentElement.classList.contains('auth-locked') && input){
+      setTimeout(()=>input.focus(),80);
+    }
+
+    if(form){
+      form.addEventListener('submit',async(e)=>{
+        e.preventDefault();
+        if(error) error.textContent='';
+        const value=(input&&input.value||'').trim();
+        if(!value){
+          if(error) error.textContent='비밀번호를 입력해줘.';
+          return;
+        }
+        try{
+          const hash=await sha256(value);
+          if(hash===PASSWORD_SHA256){
+            localStorage.setItem(AUTH_KEY,'true');
+            localStorage.setItem(AUTH_EXPIRES_KEY,String(Date.now()+AUTH_DURATION));
+            if(input) input.value='';
+            unlock();
+          }else{
+            if(error) error.textContent='비밀번호가 달라.';
+            if(input) input.select();
+          }
+        }catch(err){
+          if(error) error.textContent='브라우저 인증 처리에 실패했어. 다시 시도해줘.';
+        }
+      });
+    }
+
+    if(logout){
+      logout.addEventListener('click',lock);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
