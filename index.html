@@ -3143,11 +3143,13 @@ input:focus,textarea:focus,select:focus{
       done:!!f.done, completedDate:typeof f.completedDate==='string'?f.completedDate:''
     }));
 
+    // Advance any overdue (past-dated, incomplete) scheduled items to today, every boot.
+    if(typeof carryOverScheduled==='function') carryOverScheduled();
     // If the app was opened on a later day than last used, drop completed items from Today.
     if(__wasStaleDay){
       if(typeof clearStaleTodayFocus==='function') clearStaleTodayFocus();
-      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
     }
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
   }
 
   function normalizeDraft(draft, forDate){
@@ -6719,19 +6721,24 @@ function renderWeekMetrics(){
   // --- Scheduler helpers ---
   function ensureScheduled(){ if(!Array.isArray(state.scheduled)) state.scheduled=[]; return state.scheduled; }
   // Items that belong on the board for a given day:
-  //  - not done and scheduled for that day or earlier (auto carry-over of overdue items)
+  //  - not done and dated exactly that day (overdue items are advanced to today by carryOverScheduled)
   //  - done on exactly that day (so finishing keeps it visible until the next day)
+  // Safety net: when viewing *today*, also surface any overdue items not yet carried over.
   function scheduledForDay(day){
+    const today=todayStr();
     return ensureScheduled().filter(f=>{
       if(f.done) return (f.completedDate||f.date)===day;
-      return (f.date||day)<=day;
+      if((f.date||day)===day) return true;
+      // viewing today: catch overdue stragglers (e.g. carry-over hasn't run yet this session)
+      if(day===today && f.date && f.date<today) return true;
+      return false;
     });
   }
   function upcomingScheduled(day){
     return ensureScheduled().filter(f=>!f.done && (f.date||day)>day)
       .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
   }
-  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:(typeof activeZone==='function'?activeZone():'after'), date:viewDateStr(), completedDate:''}; }
+  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:'work', date:viewDateStr(), completedDate:''}; }
 
   function renderTodayFocus(){
     const box=document.getElementById('todayFocusBoard'); if(!box) return;
@@ -6777,12 +6784,14 @@ function renderWeekMetrics(){
     const add=document.createElement('div'); add.className='focus-add';
     const draft=newFocusItem();
     buildFocusEditor(add,draft,()=>{
-      // Allow add as long as the item has *something* to identify it: a project, an action,
-      // a note, or a future date. Only a completely empty form is ignored.
+      // Add as long as ANY one field is set: Value(pillar), Project, Action, note, or a date
+      // other than today's default. Only a totally untouched form is ignored.
       const hasFutureDate=(draft.date||day) > day;
-      if(!draft.projectId && !draft.subId && !draft.note.trim() && !hasFutureDate) return;
+      const hasAnyInput = !!draft.pillar || !!draft.projectId || !!draft.subId
+        || !!draft.note.trim() || (draft.date && draft.date!==day);
+      if(!hasAnyInput) return;
       draft.done=false;
-      draft.zone='work';
+      if(draft.zone!=='work' && draft.zone!=='after') draft.zone='work';
       // Future-dated items: if no note was written, auto-label it so it reads clearly
       // on its scheduled day and in the upcoming list. Also open the upcoming panel so
       // the new future item is visible immediately.
@@ -6855,8 +6864,16 @@ function renderWeekMetrics(){
     const summary=document.createElement('div'); summary.className='focus-summary';
     const tag=document.createElement('span'); tag.className='focus-vtag'; tag.textContent=pi?(String(pi.emo||'')+' '+String(pi.name||'')).trim():'Value';
     const main=document.createElement('span'); main.className='focus-main';
-    // If there's no project, this is a note-only card → use the note as the title.
-    main.textContent = p ? (p.title+(s?' › '+s.title:'')) : (f.note||'(메모 없음)');
+    if(p && s){
+      // Project + Action
+      main.textContent = p.title+' › '+s.title;
+    } else if(p && !s){
+      // Project but no Action → use the note (bold) in the action slot
+      main.innerHTML = escape(p.title)+' › <b>'+escape(f.note||'(내용 없음)')+'</b>';
+    } else {
+      // No project → note-only card, note is the title
+      main.textContent = f.note||'(메모 없음)';
+    }
     summary.append(tag,main);
 
     const actions=document.createElement('div'); actions.className='focus-card-actions';
@@ -6866,8 +6883,8 @@ function renderWeekMetrics(){
     actions.append(edit,del);
 
     const memo=document.createElement('div'); memo.className='focus-memo';
-    // Don't repeat the note when it's already used as the title (note-only card).
-    memo.textContent = p ? (f.note||'오늘 어떻게 할지 한 줄') : '';
+    // Show the memo line only when there's a real Action (note wasn't already used as title/action).
+    memo.textContent = (p && s) ? (f.note||'오늘 어떻게 할지 한 줄') : '';
     if(!memo.textContent) memo.style.display='none';
     row.append(summary,actions,memo);
     row.onclick=(e)=>{
@@ -7070,8 +7087,9 @@ function renderWeekMetrics(){
     dateInput.type='date'; dateInput.className='focus-date-input';
     dateInput.value=f.date||viewDateStr(); dateInput.title='예정일';
     dateInput.onchange=()=>{ f.date=dateInput.value||viewDateStr(); };
-    // Everything goes to Work Flow now (zone simplified away).
-    f.zone='work';
+    // Default zone only for brand-new items; never overwrite an existing item's zone
+    // (that was wiping out drag-sorted Work/After placement).
+    if(f.zone!=='work' && f.zone!=='after') f.zone='work';
     const btn=document.createElement('button'); btn.className='btn small '+(isNew?'today':'ghost'); btn.textContent=isNew?'+ 추가':'저장';
 
     const fillProjects=()=>{
@@ -7586,6 +7604,16 @@ function renderWeekMetrics(){
     });
     return changed;
   }
+  // Carry over: any incomplete scheduled item whose date is now in the past gets its date
+  // advanced to today. This is what makes "안 끝내면 다음 날로 이월" work WITHOUT polluting
+  // future days you navigate to (those only show items actually dated for them).
+  function carryOverScheduled(){
+    const today=todayStr(); let changed=false;
+    ensureScheduled().forEach(f=>{
+      if(!f.done && f.date && f.date<today){ f.date=today; changed=true; }
+    });
+    return changed;
+  }
   function checkDayRollover(){
     const now=todayStr();
     if(now===__realDay) return;        // same calendar day, nothing to do
@@ -7595,6 +7623,7 @@ function renderWeekMetrics(){
     // If they had navigated to some past/other day, leave their view alone.
     if((state.viewDate||prev)===prev){
       clearStaleTodayFocus();          // drop completed items from Today (keep their done record)
+      carryOverScheduled();            // unfinished scheduled items move to the new today
       loadDay(now);                    // fresh blank draft for the new day; routines + focus board reset
       save();
       renderAllLinked();
