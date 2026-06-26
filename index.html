@@ -1512,6 +1512,63 @@ input:focus,textarea:focus,select:focus{
   .toolbar.shrink .quote-ticker #tickerText{font-size:12.5px !important;}
 }
 
+
+
+/* v14.2.2 Focus add/edit control size lock
+   Scope: Today Focus add/edit forms only. CSS-only; no JS or drag/drop logic touched. */
+.focus-add,
+.focus-edit,
+.focus-edit-up{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+}
+.focus-add > select,
+.focus-add > input,
+.focus-edit > select,
+.focus-edit > input,
+.focus-edit-up > select,
+.focus-edit-up > input{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  display:block !important;
+  height:34px !important;
+  min-height:34px !important;
+  max-height:34px !important;
+  margin:0 !important;
+  padding:6px 9px !important;
+  border-radius:9px !important;
+  font-size:12px !important;
+  line-height:20px !important;
+  overflow:hidden !important;
+}
+.focus-add > .focus-date-input,
+.focus-edit > .focus-date-input,
+.focus-edit-up > .focus-date-input{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  color:var(--navy) !important;
+  font-weight:700 !important;
+  text-align:center !important;
+  background:#fff !important;
+}
+.focus-add > .focus-date-input::-webkit-date-and-time-value,
+.focus-edit > .focus-date-input::-webkit-date-and-time-value,
+.focus-edit-up > .focus-date-input::-webkit-date-and-time-value{
+  height:20px !important;
+  min-height:20px !important;
+  line-height:20px !important;
+  text-align:center !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.focus-add > .focus-date-input::-webkit-calendar-picker-indicator,
+.focus-edit > .focus-date-input::-webkit-calendar-picker-indicator,
+.focus-edit-up > .focus-date-input::-webkit-calendar-picker-indicator{
+  margin:0 !important;
+  padding:0 !important;
+}
+
 </style>
 
 
