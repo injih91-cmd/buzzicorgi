@@ -33,7 +33,7 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 .sync-status.err{color:var(--danger)}.sync-status.err:before{background:var(--danger)}
 .reset{font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer}
 .quote-ticker{flex:1;min-width:0;overflow:hidden}
-.quote-ticker #tickerText{display:inline-block;font-family:Georgia,serif;font-style:italic;font-size:17px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;transition:opacity .5s;opacity:1;font-weight:400;letter-spacing:-0.005em}
+.quote-ticker #tickerText{display:inline-block;font-family:inherit;font-style:normal;font-size:14px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;transition:opacity .5s;opacity:1;font-weight:600;letter-spacing:-0.01em}
 .quote-ticker #tickerText.fade{opacity:0}
 
 /* original-style header */
@@ -58,10 +58,10 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 .quote-cnt{font-size:11px;color:rgba(255,255,255,.5)}
 .quote-body{display:none;margin-top:14px}
 .quote-box.open .quote-body{display:block}
-.quote-item{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;margin-bottom:8px}
-.quote-item .qmark{font-family:Georgia,serif;font-size:24px;color:var(--gold-soft);line-height:1;margin-top:2px}
+.quote-item{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--gold-soft);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.quote-item .qmark{display:none}
 .quote-item .qfields{flex:1;min-width:0}
-.quote-item .qtext{width:100%;background:transparent;border:none;color:#fff;font-family:Georgia,serif;font-size:16px;font-style:italic;outline:none;padding:2px 0;line-height:1.5}
+.quote-item .qtext{width:100%;background:transparent;border:none;color:#fff;font-family:inherit;font-size:14.5px;font-style:normal;font-weight:600;outline:none;padding:2px 0;line-height:1.5}
 .quote-item .qsrc{width:100%;background:transparent;border:none;border-top:1px dashed rgba(255,255,255,.15);color:var(--gold-soft);font-size:12px;outline:none;padding:5px 0 2px;margin-top:5px}
 .quote-item .qx{color:#fff;opacity:.35;cursor:pointer;font-size:12px}
 .quote-item .qx:hover{opacity:.9}
@@ -424,9 +424,9 @@ td.memo{text-align:left;color:var(--muted)}
 .date-today-btn:hover{background:var(--gold,#b8924a);color:#fff}
 
 /* Yesterday's note shown atop Today's 3 */
-.yesterday-note{display:flex;flex-direction:column;gap:3px;background:linear-gradient(135deg,#fbf6ea,#f7f5ef);border:1px solid var(--gold-soft,#e9cfa0);border-radius:12px;padding:11px 14px;margin:4px 0 14px}
+.yesterday-note{display:flex;flex-direction:column;gap:3px;background:linear-gradient(135deg,#fbf6ea,#f7f5ef);border:1px solid var(--gold-soft,#e9cfa0);border-left:3px solid var(--gold,#b8924a);border-radius:9px;padding:11px 14px;margin:4px 0 14px}
 .yesterday-note .yn-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold,#b8924a);font-weight:700}
-.yesterday-note .yn-text{font-size:14px;color:var(--navy,#1f3864);font-weight:600;font-family:Georgia,serif;font-style:italic}
+.yesterday-note .yn-text{font-size:14px;color:var(--navy,#1f3864);font-weight:600;font-family:inherit;font-style:normal;line-height:1.45}
 
 /* Drag & drop */
 .project-tile,.today-project{cursor:grab}
@@ -570,7 +570,7 @@ textarea{min-height:88px}
 }
 .focus-reason{
   font-size:12px !important;
-  font-style:italic;
+  font-style:normal;
   letter-spacing:-0.01em;
 }
 .sub{
@@ -610,7 +610,7 @@ textarea{min-height:88px}
 }
 .scale-help{
   font-size:12px !important;
-  font-style:italic;
+  font-style:normal;
   line-height:1.45 !important;
   text-align:right;
   max-width:45%;
@@ -1153,7 +1153,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .focus-date-input{color:var(--navy);font-weight:700}
 .pledge-check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;background:#fbfaf6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.4}
 .pledge-check input{margin-top:2px;width:17px;height:17px;flex:0 0 auto;accent-color:#006C4A;cursor:pointer}
-.pledge-text{font-size:13px;color:var(--ink);font-style:italic}
+.pledge-text{font-size:13px;color:var(--ink);font-style:normal}
 .autosave-note{font-size:11.5px;color:#6f8a7e;text-align:center;padding:8px;border-radius:9px;background:rgba(0,168,107,.07);border:1px dashed rgba(0,168,107,.25)}
 .meal-diary{display:grid;gap:12px;margin-top:6px}
 .meal-card{background:#fbfaf6;border:1px solid var(--line);border-radius:13px;padding:12px 13px}
@@ -1489,19 +1489,20 @@ input:focus,textarea:focus,select:focus{
   overflow:hidden !important;
   background:rgba(255,255,255,.72) !important;
   border:1px solid rgba(217,213,203,.95) !important;
-  border-radius:999px !important;
-  padding:5px 13px !important;
+  border-left:3px solid var(--navy,#1f3864) !important;
+  border-radius:7px !important;
+  padding:6px 13px !important;
   display:flex !important;
   align-items:center !important;
   min-height:32px !important;
 }
 .quote-ticker #tickerText{
-  font-family:Georgia,serif !important;
-  font-style:italic !important;
-  font-weight:400 !important;
-  font-size:15px !important;
-  line-height:1.2 !important;
-  letter-spacing:-0.005em !important;
+  font-family:inherit !important;
+  font-style:normal !important;
+  font-weight:600 !important;
+  font-size:14px !important;
+  line-height:1.3 !important;
+  letter-spacing:-0.01em !important;
   color:var(--navy) !important;
 }
 .toolbar.shrink .quote-ticker{min-height:26px !important;padding:3px 11px !important;}
