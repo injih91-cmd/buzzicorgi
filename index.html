@@ -68,7 +68,7 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 
 /* tabs */
 .tabs{position:sticky;top:0;z-index:20;background:rgba(244,242,236,.88);backdrop-filter:blur(12px);padding:10px 0;margin:-6px 0 14px;border-bottom:1px solid rgba(227,223,212,.72)}
-.tabrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tabrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .tab{border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:800;border-radius:999px;padding:11px 10px}
 .tab small{display:block;font-weight:500;font-size:10px;opacity:.7;margin-top:2px}
 .ko-gloss{font-size:12px;font-weight:500;color:var(--muted,#6b7280);margin-left:6px}
@@ -414,11 +414,12 @@ td.memo{text-align:left;color:var(--muted)}
 .date-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 16px;flex-wrap:wrap}
 .date-arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--line,#e3dfd4);background:#fff;font-size:22px;line-height:1;color:var(--navy,#1f3864);cursor:pointer;font-family:inherit}
 .date-arrow:hover{background:var(--soft,#f7f5ef)}
-.date-current{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:150px;border:1px solid var(--line,#e3dfd4);background:#fff;border-radius:12px;padding:8px 18px;cursor:default;font-family:inherit}
+.date-current{display:flex;flex-direction:row;align-items:baseline;gap:7px;min-width:150px;justify-content:center;border:1px solid var(--line,#e3dfd4);background:#fff;border-radius:12px;padding:9px 18px;cursor:default;font-family:inherit;white-space:nowrap}
 .date-current.is-today{border-color:var(--navy,#1f3864);background:var(--navy,#1f3864)}
 .date-current.is-today .dn-date,.date-current.is-today .dn-rel{color:#fff}
-.date-current .dn-date{font-size:16px;font-weight:800;color:var(--navy,#1f3864)}
-.date-current .dn-rel{font-size:11px;color:var(--muted,#6b7280)}
+.date-current .dn-date{font-size:15px;font-weight:800;color:var(--navy,#1f3864)}
+.date-current .dn-rel{font-size:12px;color:var(--muted,#6b7280);font-weight:700}
+.date-current .dn-rel:not(:empty)::before{content:'· ';opacity:.6}
 .date-today-btn{border:1px solid var(--gold,#b8924a);background:#fff;color:var(--gold,#b8924a);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .date-today-btn:hover{background:var(--gold,#b8924a);color:#fff}
 
@@ -1117,7 +1118,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 }
 @media(max-width:560px){
   body{padding:8px 8px 44px !important}
-  .tabrow{display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
+  .tabrow{display:grid !important;grid-template-columns:repeat(5,1fr) !important;gap:4px !important}
   .tab{font-size:11px !important;padding:7px 3px !important;border-radius:10px !important;min-height:30px !important}
   .section,.card,.modal-body{padding:11px 12px !important}
   .card>h3,h3{font-size:16px !important}
@@ -1154,6 +1155,21 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .pledge-check input{margin-top:2px;width:17px;height:17px;flex:0 0 auto;accent-color:#006C4A;cursor:pointer}
 .pledge-text{font-size:13px;color:var(--ink);font-style:italic}
 .autosave-note{font-size:11.5px;color:#6f8a7e;text-align:center;padding:8px;border-radius:9px;background:rgba(0,168,107,.07);border:1px dashed rgba(0,168,107,.25)}
+.meal-diary{display:grid;gap:12px;margin-top:6px}
+.meal-card{background:#fbfaf6;border:1px solid var(--line);border-radius:13px;padding:12px 13px}
+.meal-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.meal-emo{font-size:17px}
+.meal-label{font-size:14px;font-weight:800;color:var(--navy)}
+.meal-input{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:13.5px;line-height:1.5;color:var(--ink);padding:9px 11px;resize:none;overflow:hidden;min-height:44px}
+.meal-input:focus{outline:none;border-color:var(--sage-active,#788c5c)}
+.meal-rate{display:flex;gap:6px;margin-top:9px}
+.meal-rate-btn{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;transition:.13s}
+.meal-rate-btn .mr-emo{font-size:18px;filter:grayscale(.6);opacity:.55;transition:.13s}
+.meal-rate-btn .mr-t{font-size:10px;color:var(--muted);font-weight:700}
+.meal-rate-btn:hover{border-color:var(--sage-active,#788c5c)}
+.meal-rate-btn.on{border-color:#006C4A;background:rgba(0,168,107,.10)}
+.meal-rate-btn.on .mr-emo{filter:none;opacity:1;transform:scale(1.12)}
+.meal-rate-btn.on .mr-t{color:#006C4A}
 .pledge-check input:checked + .pledge-text{color:#006C4A;text-decoration:line-through;text-decoration-color:rgba(0,108,74,.5)}
 /* Upcoming (future-dated) collapsible */
 .focus-upcoming{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;overflow:hidden}
@@ -2461,9 +2477,10 @@ input:focus,textarea:focus,select:focus{
   <nav class="tabs">
     <div class="tabrow">
       <button class="tab active" data-tab="today">Today<small>오늘</small></button>
-      <button class="tab" data-tab="life">Value Pillars<small>가치 축 · 프로젝트 · 루틴</small></button>
+      <button class="tab" data-tab="life">Value<small>가치 축 · 프로젝트 · 루틴</small></button>
       <button class="tab" data-tab="money">Money<small>자산</small></button>
-      <button class="tab" data-tab="records">Memo<small>메모 · 기록</small></button>
+      <button class="tab" data-tab="records">Note<small>노트 · 기록</small></button>
+      <button class="tab" data-tab="health">Health<small>식사 일기</small></button>
     </div>
   </nav>
 
@@ -2741,7 +2758,7 @@ input:focus,textarea:focus,select:focus{
   <section class="panel" id="tab-records">
     <div class="grid">
       <div class="card span-12">
-        <h3>메모 <small style="font-weight:600;color:var(--muted)">5대 필러 기준</small></h3>
+        <h3>Note <small style="font-weight:600;color:var(--muted)">5대 필러 기준</small></h3>
         <div class="hint">필러별로 떠오르는 생각·아이디어·기록을 자유롭게 남기세요.</div>
         <div id="pillarNotes"></div>
       </div>
@@ -2760,6 +2777,22 @@ input:focus,textarea:focus,select:focus{
         <button class="btn ghost" id="importBtn">Import</button>
         <button class="btn danger" id="resetBtn">Reset</button>
         <button id="aiExportBtn"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="tab-health">
+    <div class="date-nav">
+      <button class="date-arrow" id="hDayPrev" aria-label="이전 날">‹</button>
+      <button class="date-current" id="hDayLabel">오늘</button>
+      <button class="date-arrow" id="hDayNext" aria-label="다음 날">›</button>
+      <button class="date-today-btn" id="hDayToday">오늘로</button>
+    </div>
+    <div class="grid">
+      <div class="card span-12">
+        <h3>🍽️ 식사 일기 <small style="font-weight:600;color:var(--muted)">Meal Diary</small></h3>
+        <div class="hint">오늘 뭘 먹었는지 편하게 적어요. 자동 저장되고, 날짜를 넘기면 그날 기록을 볼 수 있어요.</div>
+        <div id="mealDiary" class="meal-diary"></div>
       </div>
     </div>
   </section>
@@ -3392,6 +3425,12 @@ input:focus,textarea:focus,select:focus{
   }
   let __noteTimer=null;
   function saveDebouncedNote(){ clearTimeout(__noteTimer); __noteTimer=setTimeout(()=>save(), 600); }
+  // Safety net: if the page is backgrounded or closed while a memo edit is still within the
+  // 600ms debounce window, flush it immediately so qualitative notes are never lost.
+  function flushPendingNote(){ if(__noteTimer){ clearTimeout(__noteTimer); __noteTimer=null; try{ save(); }catch(e){} } }
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) flushPendingNote(); });
+  window.addEventListener('pagehide', flushPendingNote);
+  window.addEventListener('beforeunload', flushPendingNote);
 
   function renderActivityLog(){
     const box=document.getElementById('activityLog');
@@ -3526,6 +3565,7 @@ input:focus,textarea:focus,select:focus{
         btn.classList.add('active');
         document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
         if(btn.dataset.tab==='money') setTimeout(refreshMoney,40);
+        if(btn.dataset.tab==='health') setTimeout(renderHealth,20);
       };
     });
   }
@@ -4235,6 +4275,10 @@ input:focus,textarea:focus,select:focus{
     if(prev&&!prev._bound){ prev._bound=true; prev.onclick=()=>shiftDay(-1); }
     if(next&&!next._bound){ next._bound=true; next.onclick=()=>shiftDay(1); }
     if(todayBtn&&!todayBtn._bound){ todayBtn._bound=true; todayBtn.onclick=()=>goToday(); }
+    const hPrev=document.getElementById('hDayPrev'), hNext=document.getElementById('hDayNext'), hToday=document.getElementById('hDayToday');
+    if(hPrev&&!hPrev._bound){ hPrev._bound=true; hPrev.onclick=()=>{ shiftDay(-1); renderHealth(); }; }
+    if(hNext&&!hNext._bound){ hNext._bound=true; hNext.onclick=()=>{ shiftDay(1); renderHealth(); }; }
+    if(hToday&&!hToday._bound){ hToday._bound=true; hToday.onclick=()=>{ goToday(); renderHealth(); }; }
   }
 
   function renderYesterdayNote(){
@@ -6406,6 +6450,11 @@ function renderWeekMetrics(){
       done:!!f.done,
       zone:(f.zone==='work'||f.zone==='after')?f.zone:'after'
     }));
+    // Health: per-day meal diary
+    if(!draft.meals || typeof draft.meals!=='object') draft.meals={};
+    ['breakfast','lunch','dinner','snack','alcohol'].forEach(k=>{ if(typeof draft.meals[k]!=='string') draft.meals[k]=''; });
+    if(!draft.mealRatings || typeof draft.mealRatings!=='object') draft.mealRatings={};
+    ['breakfast','lunch','dinner','snack','alcohol'].forEach(k=>{ if(typeof draft.mealRatings[k]!=='number') draft.mealRatings[k]=0; });
     return draft;
   }
 
@@ -7303,6 +7352,62 @@ function renderWeekMetrics(){
     if(el) el.innerHTML=metrics.map(m=>'<div class="metric"><div class="num">'+m[1]+'</div><div class="label">'+m[0]+'</div></div>').join('');
   }
 
+  // Health tab: per-day meal diary. Reads/writes state.todayDraft.meals (keyed by viewed day).
+  const MEAL_DEF=[
+    {key:'breakfast', emo:'🌅', label:'아침', ph:'예: 그릭요거트 + 베리, 블랙커피'},
+    {key:'lunch',     emo:'☀️', label:'점심', ph:'예: 회사 근처 백반'},
+    {key:'dinner',    emo:'🌙', label:'저녁', ph:'예: 집에서 연어구이'},
+    {key:'snack',     emo:'🍪', label:'간식', ph:'예: 아메리카노, 약과 하나'},
+    {key:'alcohol',   emo:'🍷', label:'음주', ph:'예: 와인 2잔 / 안 마심'}
+  ];
+  const MEAL_RATINGS=[
+    {v:1, emo:'😖', t:'별로'},
+    {v:2, emo:'😐', t:'보통'},
+    {v:3, emo:'😋', t:'좋음'},
+    {v:4, emo:'🤤', t:'최고'}
+  ];
+  function renderHealth(){
+    const box=document.getElementById('mealDiary'); if(!box) return;
+    const lbl=document.getElementById('hDayLabel');
+    if(lbl){
+      const vd=viewDateStr();
+      const d=new Date(vd+'T00:00:00');
+      const isToday=vd===todayStr();
+      const diff=Math.round((d-new Date(todayStr()+'T00:00:00'))/86400000);
+      let rel=''; if(diff===0) rel='오늘'; else if(diff===-1) rel='어제'; else if(diff===1) rel='내일'; else if(diff<0) rel=(-diff)+'일 전'; else rel=diff+'일 후';
+      const wk=['일','월','화','수','목','금','토'][d.getDay()];
+      lbl.innerHTML='<span class="dn-date">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+wk+')</span><span class="dn-rel">'+rel+'</span>';
+      lbl.classList.toggle('is-today',isToday);
+      const hToday=document.getElementById('hDayToday'); if(hToday) hToday.style.display=isToday?'none':'';
+    }
+    const meals=(state.todayDraft && state.todayDraft.meals) || {};
+    const ratings=(state.todayDraft && state.todayDraft.mealRatings) || {};
+    box.innerHTML='';
+    MEAL_DEF.forEach(m=>{
+      const card=document.createElement('div'); card.className='meal-card';
+      const head=document.createElement('div'); head.className='meal-head';
+      head.innerHTML='<span class="meal-emo">'+m.emo+'</span><span class="meal-label">'+m.label+'</span>';
+      const ta=document.createElement('textarea'); ta.className='meal-input'; ta.placeholder=m.ph;
+      ta.value=meals[m.key]||'';
+      const autosize=()=>{ ta.style.height='auto'; ta.style.height=Math.max(44,ta.scrollHeight)+'px'; };
+      ta.oninput=()=>{ if(!state.todayDraft.meals)state.todayDraft.meals={}; state.todayDraft.meals[m.key]=ta.value; autosize(); saveDebouncedNote(); };
+      // satisfaction vote — tap an emoji; tap again to clear
+      const rate=document.createElement('div'); rate.className='meal-rate';
+      MEAL_RATINGS.forEach(r=>{
+        const btn=document.createElement('button'); btn.type='button'; btn.className='meal-rate-btn';
+        btn.innerHTML='<span class="mr-emo">'+r.emo+'</span><span class="mr-t">'+r.t+'</span>';
+        if((ratings[m.key]||0)===r.v) btn.classList.add('on');
+        btn.onclick=()=>{
+          if(!state.todayDraft.mealRatings)state.todayDraft.mealRatings={};
+          state.todayDraft.mealRatings[m.key]=(state.todayDraft.mealRatings[m.key]===r.v)?0:r.v;
+          save(); renderHealth();
+        };
+        rate.appendChild(btn);
+      });
+      card.append(head,ta,rate); box.appendChild(card);
+      setTimeout(autosize,0);
+    });
+  }
   function renderTodayLogs(){
     const box=document.getElementById('todayLogs'); 
     if(!box) return;
