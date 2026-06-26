@@ -1150,6 +1150,11 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .focus-edit > input:not(.focus-date-input){grid-column:1/3}
 .focus-edit > button{grid-column:1/3}
 .focus-date-input{color:var(--navy);font-weight:700}
+.pledge-check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;background:#fbfaf6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.4}
+.pledge-check input{margin-top:2px;width:17px;height:17px;flex:0 0 auto;accent-color:#006C4A;cursor:pointer}
+.pledge-text{font-size:13px;color:var(--ink);font-style:italic}
+.autosave-note{font-size:11.5px;color:#6f8a7e;text-align:center;padding:8px;border-radius:9px;background:rgba(0,168,107,.07);border:1px dashed rgba(0,168,107,.25)}
+.pledge-check input:checked + .pledge-text{color:#006C4A;text-decoration:line-through;text-decoration-color:rgba(0,108,74,.5)}
 /* Upcoming (future-dated) collapsible */
 .focus-upcoming{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;overflow:hidden}
 .focus-upcoming-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 13px;background:transparent;border:0;cursor:pointer;font-size:13px;font-weight:800;color:var(--navy)}
@@ -2577,6 +2582,13 @@ input:focus,textarea:focus,select:focus{
           <div class="big mini-score" id="checkoutScore">0%</div>
         </div>
         <div id="checkoutScales" class="scale-stack"></div>
+        <div class="field" id="pledgeCheckField" style="display:none">
+          <label>오늘의 다짐 지켰나요?</label>
+          <label class="pledge-check" id="pledgeCheckRow">
+            <input type="checkbox" id="pledgeKept">
+            <span class="pledge-text" id="pledgeText"></span>
+          </label>
+        </div>
         <div class="field">
           <label>Win of the Day</label>
           <textarea id="checkoutGood" placeholder="예: 비올라 20분이라도 했다."></textarea>
@@ -2589,7 +2601,8 @@ input:focus,textarea:focus,select:focus{
           <label>내일의 나에게 한 줄 <span class="ko-gloss">→ 내일 Today Focus 맨 위에 떠요</span></label>
           <textarea id="checkoutTomorrow" placeholder="예: 오전에 제일 중요한 것 하나만 먼저."></textarea>
         </div>
-        <button class="btn today" id="saveToday">Save</button>
+        <div class="autosave-note" id="autosaveNote">✓ 자동 저장됨 · Daily Log에 기록돼요</div>
+        <button class="btn today" id="saveToday" style="display:none" aria-hidden="true">Save</button>
         <div class="mini-chart"><canvas id="checkoutChart"></canvas></div>
       </div>
 
@@ -3398,7 +3411,44 @@ input:focus,textarea:focus,select:focus{
     if(list.length>400) html+='<div class="act-more">+ '+(list.length-400)+'개 더 (검색으로 좁혀보세요)</div>';
     box.innerHTML=html;
   }
+  // Build/refresh today's Daily Log snapshot. Called automatically on every save()
+  // so the day's record stays current without a manual Save button.
+  function upsertTodayLog(){
+    try{
+      if(!Array.isArray(state.todayLogs)) state.todayLogs=[];
+      // Only log the *current* real day, and only once there's something worth recording.
+      if(viewDateStr()!==todayStr()) return;
+      const ci=state.todayDraft.checkin||{}, co=state.todayDraft.checkout||{};
+      const hasContent = (ci.note||'').trim() || (co.good||'').trim() || (co.hard||'').trim()
+        || (co.tomorrow||'').trim() || state.habits.some(h=>habitDoneOn(h))
+        || (state.todayDraft.focuses||[]).length>0;
+      if(!hasContent) return;
+      const j=getTodayJudgement(), score=getTodayScore();
+      const completedHabits=state.habits.filter(h=>habitDoneOn(h)).map(h=>h.title);
+      const focuses=(state.todayDraft.focuses||[]).map(f=>{
+        const p=getProject(f.projectId), s=p?(p.subs||[]).find(x=>String(x.id)===String(f.subId)):null;
+        return { kind:'focus', done:!!f.done,
+          title:(p?p.title:'Project')+(s?' · '+s.title:''),
+          text:(p?p.title:'Project')+(s?' · '+s.title:'')+(f.note?' · '+f.note:''),
+          memo:f.note||'' };
+      });
+      const completedProjectActions=focuses.filter(f=>f.done).map(f=>f.title);
+      const log={
+        date:todayStr(),
+        display:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}),
+        score, judge:j.title,
+        checkin:JSON.parse(JSON.stringify(ci)),
+        checkout:JSON.parse(JSON.stringify(co)),
+        focuses, completedHabits, completedProjectActions,
+        review:[co.good,co.hard,co.tomorrow].filter(Boolean).join(' / ')
+      };
+      const idx=state.todayLogs.findIndex(x=>x.date===todayStr());
+      if(idx>=0) state.todayLogs[idx]=log; else state.todayLogs.unshift(log);
+      state.todayLogs=state.todayLogs.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,160);
+    }catch(e){}
+  }
   function save(){
+    try{ upsertTodayLog(); }catch(e){}
     try{
       const cur=actSnapshot(state);
       diffActivity(__actPrev, cur);
@@ -6600,6 +6650,19 @@ function renderWeekMetrics(){
     document.getElementById('checkoutGood').value=co.good||'';
     document.getElementById('checkoutHard').value=co.hard||'';
     document.getElementById('checkoutTomorrow').value=co.tomorrow||'';
+    // Morning Operating Note -> carry it down to checkout as a single "지켰나요?" check.
+    (function(){
+      const field=document.getElementById('pledgeCheckField');
+      const txt=document.getElementById('pledgeText');
+      const cb=document.getElementById('pledgeKept');
+      if(!field||!txt||!cb) return;
+      const pledge=(co && state.todayDraft.checkin && state.todayDraft.checkin.note || '').trim();
+      if(!pledge){ field.style.display='none'; return; }
+      field.style.display='';
+      txt.textContent=pledge;
+      cb.checked=!!co.pledgeKept;
+      cb.onchange=()=>{ co.pledgeKept=cb.checked; save(); if(typeof renderCheckoutSignal==='function')renderCheckoutSignal(); };
+    })();
     document.getElementById('checkoutGood').oninput=()=>{ co.good=document.getElementById('checkoutGood').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
     document.getElementById('checkoutHard').oninput=()=>{ co.hard=document.getElementById('checkoutHard').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
     document.getElementById('checkoutTomorrow').oninput=()=>{ co.tomorrow=document.getElementById('checkoutTomorrow').value; save(); renderCheckoutSignal(); renderBiorhythmCharts(); };
@@ -7059,6 +7122,7 @@ function renderWeekMetrics(){
   function updateFocusFromKanban(root){
     const byId=new Map(ensureScheduled().map(f=>[String(f.id),f]));
     const day=viewDateStr();
+    // 1) update zone/done from whichever column each card now sits in
     root.querySelectorAll('.focus-col-list').forEach(list=>{
       const zone=list.dataset.zone; // 'work' | 'after' | 'done'
       list.querySelectorAll('.focus-line').forEach(card=>{
@@ -7067,6 +7131,17 @@ function renderWeekMetrics(){
         if(zone==='done'){ if(!f.done){ f.done=true; f.completedDate=day; } }
         else { f.done=false; f.completedDate=''; f.zone=zone; }
       });
+    });
+    // 2) reorder state.scheduled to match the on-screen card order (so same-column
+    //    reordering actually persists). Cards not currently on the board keep their
+    //    relative order, appended after the visible ones.
+    const domOrder=[...root.querySelectorAll('.focus-line')].map(c=>String(c.getAttribute('data-dragid')));
+    const rank=new Map(domOrder.map((id,i)=>[id,i]));
+    const arr=ensureScheduled();
+    arr.sort((a,b)=>{
+      const ra=rank.has(String(a.id))?rank.get(String(a.id)):Infinity;
+      const rb=rank.has(String(b.id))?rank.get(String(b.id)):Infinity;
+      return ra-rb;
     });
     save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
   }
