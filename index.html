@@ -1510,11 +1510,12 @@ input:focus,textarea:focus,select:focus{
 .habit-list{gap:5px !important;}
 .habit.compact-habit{
   display:grid !important;
-  grid-template-columns:minmax(130px,1.2fr) minmax(100px,.8fr) 76px minmax(150px,auto) 28px !important;
-  align-items:center !important;gap:6px !important;padding:6px 7px !important;border-radius:10px !important;
+  grid-template-columns:minmax(110px,1.1fr) minmax(86px,.7fr) 64px 40px minmax(96px,.7fr) minmax(150px,auto) 26px !important;
+  align-items:center !important;gap:5px !important;padding:6px 7px !important;border-radius:10px !important;
   box-shadow:none !important;
 }
-.habit.compact-habit input,.habit.compact-habit select{font-size:11px !important;padding:5px 7px !important;border-radius:8px !important;}
+.habit.compact-habit input,.habit.compact-habit select{font-size:11px !important;padding:5px 6px !important;border-radius:8px !important;min-width:0 !important;}
+.habit.compact-habit .habit-target{text-align:center !important;padding:5px 2px !important;}
 .compact-week{display:flex !important;gap:3px !important;margin:0 !important;justify-content:flex-end !important;}
 .compact-week .day{width:21px !important;height:21px !important;border-radius:6px !important;font-size:9px !important;}
 .habit-del{
@@ -1525,8 +1526,14 @@ input:focus,textarea:focus,select:focus{
 @media(max-width:720px){
   .quick-habit.routine-line{grid-template-columns:24px auto minmax(80px,1fr) auto !important;}
   .routine-line .habit-spark{display:none !important;}
-  .habit.compact-habit{grid-template-columns:1fr 1fr 66px 28px !important;}
-  .compact-week{grid-column:1/-1;justify-content:flex-start !important;}
+  .habit.compact-habit{
+    display:flex !important;flex-wrap:wrap !important;align-items:center !important;gap:5px !important;
+  }
+  .habit.compact-habit > input:first-child{flex:1 1 100% !important;}      /* name: full row */
+  .habit.compact-habit select{flex:1 1 auto !important;min-width:64px !important;}
+  .habit.compact-habit .habit-target{flex:0 0 44px !important;width:44px !important;}
+  .compact-week{flex:1 1 100% !important;justify-content:flex-start !important;order:9 !important;}
+  .habit-del{order:8 !important;margin-left:auto !important;}
 }
 
 /* v14.5 focus board refinement: project edit on card click + stronger Done */
@@ -2236,9 +2243,9 @@ input:focus,textarea:focus,select:focus{
 .zone-filter button.on:hover{background:var(--sage-active,#788c5c);color:#fff;}
 
 /* v22 pointer-based kanban drag (PC + mobile) */
-.focus-line, .quick-habit.routine-line{ touch-action:auto; }
+.focus-line, .quick-habit.routine-line, .idea-chip{ touch-action:pan-y; }
 .kb-dragging-active{ touch-action:none !important; }
-.kb-dragging-active .focus-line, .kb-dragging-active .quick-habit.routine-line{ touch-action:none; }
+.kb-dragging-active .focus-line, .kb-dragging-active .quick-habit.routine-line, .kb-dragging-active .idea-chip{ touch-action:none !important; }
 .kb-dragging{ opacity:0; }
 .kb-placeholder{
   border:1.5px dashed var(--sage-active,#788c5c);
@@ -2270,6 +2277,18 @@ input:focus,textarea:focus,select:focus{
 .routine-streak.avoid{
   color:var(--navy,#1F3864);
   background:rgba(31,56,100,.10);
+}
+.routine-streak.weekly{
+  color:#b45309;
+  background:rgba(245,158,11,.14);
+}
+.routine-streak.weekdone{
+  color:#15803d;
+  background:rgba(34,197,94,.14);
+}
+.routine-zone.zone-active .routine-streak.weekly,
+.routine-zone.zone-active .routine-streak.weekdone{
+  background:rgba(255,255,255,.22);color:#fff;
 }
 .routine-zone.zone-active .routine-streak.avoid{
   background:rgba(0,0,0,.28);color:#fff;
@@ -3021,6 +3040,21 @@ input:focus,textarea:focus,select:focus{
     ALL_PILLARS.forEach(p=>{ if(!state.pillarMeta[p.key]) state.pillarMeta[p.key]={cap:p.cap}; if(typeof state.pillarMeta[p.key].cap!=='string') state.pillarMeta[p.key].cap=p.cap; });
 
     state.habits=state.habits.map(normalizeHabit);
+
+    // One-time: classify existing routines by name into the 3 types.
+    // 🛡️ avoid(참는 습관) / 🌟 weekly 주N회 / 🔥 daily todo. Runs once; later manual edits stick.
+    if(!state._routineTypesV1){
+      const isAvoid=(t)=>/금식|금주|no\s*alc|알콜|알코올|쇼츠|shorts|안보기|안 보기|끊기/i.test(t);
+      const weeklyTarget=(t)=>{ const m=t.match(/주\s*([0-9])\s*회/); if(m) return +m[1]; if(/필테|필라테스|pilates/i.test(t)) return 2; return null; };
+      state.habits.forEach(h=>{
+        const t=h.title||'';
+        const wt=weeklyTarget(t);
+        if(wt){ h.freq='weekly'; h.target=wt; h.kind='todo'; }
+        else if(isAvoid(t)){ h.kind='avoid'; h.freq='daily'; }
+        else { h.kind='todo'; h.freq='daily'; }
+      });
+      state._routineTypesV1=true;
+    }
     state.projects=state.projects.map(normalizeProject);
 
     // Legacy 5-pillar cards become real projects, once.
@@ -3052,10 +3086,17 @@ input:focus,textarea:focus,select:focus{
     }
     // normalize every stored day
     Object.keys(state.dayLogs).forEach(d=>{ state.dayLogs[d]=normalizeDraft(state.dayLogs[d], d); });
-    // viewDate defaults to today
-    if(!state.viewDate) state.viewDate=todayStr();
+    // viewDate defaults to today; if a stale (past) viewDate was stored from a previous
+    // session, snap forward to today so the app always opens on the current day.
+    const __wasStaleDay = state.viewDate && state.viewDate < todayStr();
+    if(!state.viewDate || state.viewDate < todayStr()) state.viewDate=todayStr();
     // ensure the viewed day exists and point todayDraft at it
     loadDay(state.viewDate);
+    // If the app was opened on a later day than last used, drop completed items from Today.
+    if(__wasStaleDay){
+      if(typeof clearStaleTodayFocus==='function') clearStaleTodayFocus();
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    }
   }
 
   function normalizeDraft(draft, forDate){
@@ -6721,6 +6762,14 @@ function renderWeekMetrics(){
   // Universal pointer-based kanban drag — works with mouse, touch, and pen.
   // opts: { cardSel, listSel, handleIgnore, onDrop(cardEl, targetList, beforeEl) }
   function bindPointerKanban(root, opts){
+    if(!root) return;
+    // Bind the pointer listeners only once per element. Re-renders replace inner cards/lists,
+    // but this handler uses live DOM queries + global state, so a single binding stays correct.
+    // Without this guard, every re-render stacked another listener and they fought each other,
+    // which silently killed drag-and-drop.
+    if(root._kanbanBound){ root._kanbanOpts=opts; return; }
+    root._kanbanBound=true;
+    root._kanbanOpts=opts;
     const cardSel=opts.cardSel, listSel=opts.listSel;
     const ignore=opts.handleIgnore||'button,input,select,textarea,a,label';
     const HOLD=450, MOVE_CANCEL=10;
@@ -6755,26 +6804,53 @@ function renderWeekMetrics(){
         const d=(x-cx)*(x-cx)+(y-cy)*(y-cy); if(d<bestD){bestD=d;best=l;} });
       return best;
     }
-    function afterEl(list,y){
+    function afterEl(list,x,y){
       const els=[...list.querySelectorAll(cardSel+':not(.kb-dragging)')];
+      if(!els.length) return null;
+      // Detect a horizontally-wrapped (inline/flex-wrap) layout like the idea chips:
+      // if any two cards share roughly the same row (overlapping Y) but differ in X.
+      let wrapped=false;
+      for(let i=0;i<els.length && !wrapped;i++){
+        const a=els[i].getBoundingClientRect();
+        for(let j=i+1;j<els.length;j++){
+          const b=els[j].getBoundingClientRect();
+          if(Math.abs(a.top-b.top)<a.height*0.6 && Math.abs(a.left-b.left)>4){ wrapped=true; break; }
+        }
+      }
+      if(wrapped){
+        // pick the card whose center is closest to the pointer; insert before it if the
+        // pointer is left-of-center (same row) or above it, else after.
+        let best=null,bestD=Infinity,insertBefore=true;
+        els.forEach(ch=>{
+          const b=ch.getBoundingClientRect();
+          const cx=b.left+b.width/2, cy=b.top+b.height/2;
+          const d=(x-cx)*(x-cx)+(y-cy)*(y-cy);
+          if(d<bestD){ bestD=d; best=ch; insertBefore=(y<cy-b.height*0.3) || (Math.abs(y-cy)<=b.height*0.6 && x<cx); }
+        });
+        if(!best) return null;
+        return insertBefore ? best : best.nextElementSibling;
+      }
+      // vertical list (routines / focus columns): compare Y only
       return els.reduce((c,ch)=>{ const b=ch.getBoundingClientRect(); const off=y-b.top-b.height/2;
         if(off<0 && off>c.off) return {off,el:ch}; return c; },{off:-Infinity,el:null}).el;
     }
     function onMove(e){
-      // before drag is armed: ANY movement = scrolling/tapping -> cancel, let browser scroll
       if(!dragging){
-        if(Math.abs(e.clientX-startX)>MOVE_CANCEL || Math.abs(e.clientY-startY)>MOVE_CANCEL){
-          teardown(); card=null;
+        // Once the press is armed (held long enough), the next movement starts the drag.
+        // Only treat movement as scroll/tap-cancel while still UN-armed.
+        if(!armed){
+          if(Math.abs(e.clientX-startX)>MOVE_CANCEL || Math.abs(e.clientY-startY)>MOVE_CANCEL){
+            teardown(); card=null;
+          }
           return;
         }
-        if(!armed) return;
         begin();
       }
       e.preventDefault();
       clone.style.left=(e.clientX-offX)+'px'; clone.style.top=(e.clientY-offY)+'px';
       const list=nearestList(e.clientX,e.clientY); if(!list) return;
       const hint=list.querySelector('.focus-drop-hint,.routine-empty-note'); if(hint) hint.remove();
-      const after=afterEl(list,e.clientY);
+      const after=afterEl(list,e.clientX,e.clientY);
       if(after==null) list.appendChild(ph); else list.insertBefore(ph,after);
     }
     function onUp(){
@@ -6788,13 +6864,17 @@ function renderWeekMetrics(){
         window._justDragged=Date.now();
         const moved=card;
         if(clone){ clone.remove(); } clone=null; ph=null; card=null; dragging=false;
-        try{ opts.onDrop(moved, targetList, beforeEl); }catch(_e){}
+        try{ (root._kanbanOpts||opts).onDrop(moved, targetList, beforeEl); }catch(_e){}
         return;
       }
       if(clone){clone.remove();clone=null;} if(ph){ph.remove();ph=null;}
       if(card){ card.classList.remove('kb-dragging'); card.style.display=''; card=null; }
       dragging=false;
     }
+    // On touch, the browser will scroll (and fire pointercancel) unless we preventDefault
+    // the touchmove ourselves. We allow normal scrolling until the press is "armed" (held),
+    // then start swallowing touchmove so the drag can take over.
+    const onTouchMove=(ev)=>{ if(armed || dragging){ ev.preventDefault(); } };
     root.addEventListener('pointerdown', e=>{
       if(e.button!=null && e.button!==0) return;
       const t=e.target.closest(cardSel);
@@ -6802,8 +6882,12 @@ function renderWeekMetrics(){
       if(e.target.closest(ignore)) return;
       card=t; startX=e.clientX; startY=e.clientY; dragging=false; armed=false;
       document.addEventListener('pointermove', onMove, {passive:false});
+      document.addEventListener('touchmove', onTouchMove, {passive:false});
+      const cleanup=()=>{ document.removeEventListener('touchmove', onTouchMove, {passive:false}); document.removeEventListener('pointerup', cleanup); document.removeEventListener('pointercancel', cleanup); };
       document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointerup', cleanup);
       document.addEventListener('pointercancel', onUp);
+      document.addEventListener('pointercancel', cleanup);
       clearHold();
       holdTimer=setTimeout(()=>{ armed=true; }, HOLD);
     });
@@ -7163,14 +7247,22 @@ function renderWeekMetrics(){
       b.onclick=()=>{ setHabitDone(h,viewDateStr(),!habitDoneOn(h,viewDateStr())); save(); renderAllLinked(); };
       div.appendChild(b);
       const hasPrin=!!(h.principles&&h.principles.trim());
-      const stk=habitStreak(h);
-      const stkUnit=(h.freq==='daily')?'':'주';
-      const stkIcon=(h.kind==='avoid')?'🛡️':'🔥';
-      const stkSuffix=(h.kind==='avoid')?(stkUnit?' ':'')+(stkUnit?'주째 사수':'일째 사수'):(stkUnit?'주':'');
-      const stkText=(h.kind==='avoid')
-        ? stkIcon+stk+(h.freq==='daily'?'일째 사수':'주째 사수')
-        : stkIcon+stk+stkUnit;
-      const stkHtml=stk>=1?'<span class="routine-streak'+(h.kind==='avoid'?' avoid':'')+'">'+stkText+'</span>':'';
+      // 3 routine types: daily-do(🔥 N일 연속) / daily-avoid(🛡️ N일 사수) / weekly(🌟 N More‼️ → 💚 N주 성공)
+      let stkText='', stkCls='', stkShow=false;
+      if(h.freq==='weekly'){
+        const tg=h.target||3;
+        const wc=habitCountInWeekOf(h,new Date());
+        const remain=Math.max(0,tg-wc);
+        if(remain>0){ stkText='🌟 '+remain+' More‼️'; stkCls=' weekly'; stkShow=true; }
+        else { const wk=habitStreakWeeks(h); stkText='💚 '+wk+'주 성공'; stkCls=' weekdone'; stkShow=wk>=1; }
+      } else if(h.kind==='avoid'){
+        const stk=habitStreakDays(h);
+        stkText='🛡️ '+stk+'일 사수'; stkCls=' avoid'; stkShow=stk>=1;
+      } else {
+        const stk=habitStreakDays(h);
+        stkText='🔥 '+stk+'일 연속'; stkShow=stk>=1;
+      }
+      const stkHtml=stkShow?'<span class="routine-streak'+stkCls+'">'+stkText+'</span>':'';
       div.insertAdjacentHTML('beforeend',
         '<span class="routine-pillar">'+escape((pi.emo||'')+' '+(pi.name||''))+'</span>'+ 
         '<span class="routine-name">'+escape(h.title||'Routine')+(hasPrin?'<button class="routine-prin-btn" type="button" aria-label="원칙 보기">ⓘ</button>':'')+stkHtml+'</span>'+ 
@@ -7255,7 +7347,24 @@ function renderWeekMetrics(){
       const freqSel=document.createElement('select');
       freqSel.innerHTML='<option value="daily">매일</option><option value="weekly">주 N회</option>';
       freqSel.value=h.freq;
-      freqSel.onchange=()=>{ h.freq=freqSel.value; h.target=h.freq==='daily'?7:3; save(); renderAllLinked(); };
+
+      // weekly target (N회) input — only relevant when freq is weekly
+      const targetInput=document.createElement('input');
+      targetInput.type='number'; targetInput.min='1'; targetInput.max='7';
+      targetInput.className='habit-target';
+      targetInput.value=(h.freq==='weekly')?(h.target||2):'';
+      targetInput.title='주 몇 회';
+      const syncTargetUI=()=>{
+        const wk=freqSel.value==='weekly';
+        targetInput.style.display=wk?'':'none';
+        if(wk && !targetInput.value) targetInput.value=h.target||2;
+      };
+      targetInput.oninput=()=>{
+        let n=parseInt(targetInput.value,10); if(isNaN(n)) return;
+        n=Math.max(1,Math.min(7,n)); h.target=n; save(); renderAllLinked();
+      };
+      freqSel.onchange=()=>{ h.freq=freqSel.value; h.target=h.freq==='daily'?7:(h.target&&h.target<7?h.target:2); targetInput.value=h.freq==='weekly'?h.target:''; syncTargetUI(); save(); renderAllLinked(); };
+      syncTargetUI();
 
       const kindSel=document.createElement('select');
       kindSel.className='habit-kind';
@@ -7278,7 +7387,7 @@ function renderWeekMetrics(){
       del.textContent='×';
       del.title='삭제';
       del.onclick=()=>{ if(confirm('삭제할까요?')){ clearSlotsReferencingHabit(h.id); state.habits=state.habits.filter(x=>x.id!==h.id); save(); renderAllLinked(); } };
-      el.append(nameInput,pillarSel,freqSel,kindSel,week,del);
+      el.append(nameInput,pillarSel,freqSel,targetInput,kindSel,week,del);
 
       const prin=document.createElement('textarea');
       prin.className='habit-principles';
@@ -7327,10 +7436,43 @@ function renderWeekMetrics(){
     try{ syncZoneFilterUI(); }catch(e){}
   })();
 
+  // --- Midnight rollover: at 00:00 advance Today to the new day so routines reset (re-checkable)
+  // and the Today tab follows the new date. Projects/subs are untouched (they persist by design).
+  let __realDay=todayStr();
+  // Remove the "focus today" pin from anything already completed, so items finished on a
+  // previous day fall off the Today board. Incomplete pinned items stay (carry over).
+  // Done/completedDate records are preserved — we only clear the today-pin, never un-complete.
+  function clearStaleTodayFocus(){
+    let changed=false;
+    (state.projects||[]).forEach(p=>{
+      if(p.todayFocus && p.subs && p.subs.length && p.subs.every(s=>s.done)){ p.todayFocus=false; changed=true; }
+      (p.subs||[]).forEach(s=>{
+        if(s.done && s.todayFocus){ s.todayFocus=false; changed=true; }
+        (s.children||[]).forEach(ch=>{ /* children have no todayFocus pin; nothing to clear */ });
+      });
+    });
+    return changed;
+  }
+  function checkDayRollover(){
+    const now=todayStr();
+    if(now===__realDay) return;        // same calendar day, nothing to do
+    const prev=__realDay;
+    __realDay=now;
+    // Only auto-jump if the user was viewing the day that just ended (i.e. "today").
+    // If they had navigated to some past/other day, leave their view alone.
+    if((state.viewDate||prev)===prev){
+      clearStaleTodayFocus();          // drop completed items from Today (keep their done record)
+      loadDay(now);                    // fresh blank draft for the new day; routines + focus board reset
+      save();
+      renderAllLinked();
+    }
+  }
+
   // Auto-refresh active-zone highlight when the clock crosses a boundary (e.g. 5pm).
   let __lastActiveZone=(typeof activeZone==='function')?activeZone():'after';
   setInterval(()=>{
     try{
+      checkDayRollover();
       const z=activeZone();
       const changed=(z!==__lastActiveZone);
       if(changed) __lastActiveZone=z;
@@ -7343,6 +7485,12 @@ function renderWeekMetrics(){
       }
     }catch(e){}
   }, 60000);
+
+  // Phone unlocked / tab refocused next morning → catch the rollover immediately, don't wait 60s.
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ try{ checkDayRollover(); }catch(e){} } });
+  window.addEventListener('focus',()=>{ try{ checkDayRollover(); }catch(e){} });
+  // Mobile Safari restores the page from bfcache without firing focus/visibility — pageshow covers it.
+  window.addEventListener('pageshow',()=>{ try{ checkDayRollover(); }catch(e){} });
 
   function cloudPullTimed(ms){
     return Promise.race([
