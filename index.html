@@ -1182,7 +1182,10 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .focus-upcoming-head b{color:#006C4A}
 .focus-upcoming-head .fu-caret{font-size:11px;color:#9aa0aa}
 .focus-upcoming-list{display:grid;gap:6px;padding:0 10px 10px}
-.focus-upcoming-row{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.focus-upcoming-row{display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer}
+.focus-upcoming-row:hover{border-color:var(--sage-active,#788c5c)}
+.focus-upcoming-row.is-editing{border-color:#006C4A;background:rgba(0,168,107,.06)}
+.fur-rep{display:inline-block;font-size:10.5px;font-weight:800;color:#006C4A;background:rgba(0,168,107,.12);border-radius:6px;padding:1px 6px;margin-right:2px}
 .fur-date{font-size:12px;font-weight:800;color:var(--navy);white-space:nowrap}
 .fur-zone{font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap}
 .fur-zone.work{color:#1F3864;background:rgba(31,56,100,.10)}
@@ -1209,7 +1212,6 @@ th,td{padding:6px 7px !important;font-size:11px !important}
   .focus-add > input:not(.focus-date-input),.focus-edit > input:not(.focus-date-input){grid-column:1/3 !important}
   .focus-add > button,.focus-edit > button{grid-column:1/3 !important}
   .focus-upcoming-row{grid-template-columns:auto auto 1fr auto;gap:6px}
-  .focus-upcoming-row .fur-edit{display:none}
   .idea-row{grid-template-columns:1fr auto}
   .idea-row-memo{grid-column:1/3}
   .idea-compose-row{grid-template-columns:1fr 1fr}
@@ -3196,7 +3198,8 @@ input:focus,textarea:focus,select:focus{
       zone:(f.zone==='work')?'work':'after',
       date:(typeof f.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(f.date))?f.date:todayStr(),
       done:!!f.done, completedDate:typeof f.completedDate==='string'?f.completedDate:'',
-      repeat:['none','daily','weekly','monthly'].includes(f.repeat)?f.repeat:'none'
+      repeat:['none','daily','weekly','monthly'].includes(f.repeat)?f.repeat:'none',
+      doneDates:Array.isArray(f.doneDates)?f.doneDates.filter(x=>typeof x==='string'):[]
     }));
 
     // Advance any overdue (past-dated, incomplete) scheduled items to today, every boot.
@@ -6842,43 +6845,78 @@ function renderWeekMetrics(){
 
   // --- Scheduler helpers ---
   function ensureScheduled(){ if(!Array.isArray(state.scheduled)) state.scheduled=[]; return state.scheduled; }
-  // When a repeating scheduled item is completed, create its next occurrence.
-  function nextRepeatDate(dateStr, repeat){
-    const d=new Date((dateStr||todayStr())+'T00:00:00');
-    if(repeat==='daily') d.setDate(d.getDate()+1);
-    else if(repeat==='weekly') d.setDate(d.getDate()+7);
-    else if(repeat==='monthly') d.setMonth(d.getMonth()+1);
-    else return null;
-    return ymd(d);
+
+  // A repeating item is a RULE anchored at its `date`. We never pre-create future copies;
+  // instead we compute whether the rule "occurs" on a given day. Per-day completion is
+  // tracked in f.doneDates[] so finishing one day doesn't end the rule.
+  function occursOn(f, day){
+    if(!f.repeat || f.repeat==='none') return (f.date||day)===day;
+    const anchor=f.date||day;
+    if(day<anchor) return false;               // rule hasn't started yet
+    const a=new Date(anchor+'T00:00:00'), d=new Date(day+'T00:00:00');
+    if(f.repeat==='daily') return true;
+    if(f.repeat==='weekly') return a.getDay()===d.getDay();      // same weekday
+    if(f.repeat==='monthly') return a.getDate()===d.getDate();   // same day-of-month
+    return false;
   }
-  function spawnNextRepeat(f){
-    const nd=nextRepeatDate(f.date||todayStr(), f.repeat);
-    if(!nd) return;
-    ensureScheduled().push({
-      id:uid(), pillar:f.pillar||'', projectId:f.projectId||'', subId:f.subId||'',
-      note:f.note||'', zone:f.zone||'work', date:nd, done:false, completedDate:'',
-      repeat:f.repeat
-    });
+  function isDoneOn(f, day){
+    if(f.repeat && f.repeat!=='none') return Array.isArray(f.doneDates) && f.doneDates.includes(day);
+    return !!f.done && (f.completedDate||f.date)===day;
   }
-  // Items that belong on the board for a given day:
-  //  - not done and dated exactly that day (overdue items are advanced to today by carryOverScheduled)
-  //  - done on exactly that day (so finishing keeps it visible until the next day)
-  // Safety net: when viewing *today*, also surface any overdue items not yet carried over.
+  function setDoneOn(f, day, val){
+    if(f.repeat && f.repeat!=='none'){
+      if(!Array.isArray(f.doneDates)) f.doneDates=[];
+      const i=f.doneDates.indexOf(day);
+      if(val && i<0) f.doneDates.push(day);
+      else if(!val && i>=0) f.doneDates.splice(i,1);
+    } else {
+      f.done=val; f.completedDate=val?day:'';
+    }
+  }
+  // Nearest occurrence of a rule on/after a given day. incl=true allows the day itself.
+  function nextOccurrence(f, fromDay, incl){
+    const start=fromDay||todayStr();
+    let d=new Date(start+'T00:00:00');
+    if(!incl) d.setDate(d.getDate()+1);   // strictly after
+    for(let i=0;i<420;i++){               // scan up to ~14 months ahead
+      const ds=ymd(d);
+      if(occursOn(f,ds)) return ds;
+      d.setDate(d.getDate()+1);
+    }
+    return null;
+  }
+
+  // Items that belong on the board for a given day.
   function scheduledForDay(day){
     const today=todayStr();
-    return ensureScheduled().filter(f=>{
-      if(f.done) return (f.completedDate||f.date)===day;
-      if((f.date||day)===day) return true;
-      // viewing today: catch overdue stragglers (e.g. carry-over hasn't run yet this session)
-      if(day===today && f.date && f.date<today) return true;
-      return false;
+    const out=[];
+    ensureScheduled().forEach(f=>{
+      if(f.repeat && f.repeat!=='none'){
+        if(occursOn(f,day)) out.push(f);     // rule fires this day (done state read per-day)
+        return;
+      }
+      // one-off item
+      if((f.date||day)===day) { out.push(f); return; }  // its own day (done or not)
+      // On *today* only, surface still-unfinished past items so they aren't forgotten,
+      // without moving them off their original day.
+      if(day===today && f.date && f.date<today && !isDoneOn(f, f.date)) out.push(f);
     });
+    return out;
   }
+  // Upcoming list: one-offs by date, PLUS each repeat rule shown once at its nearest future date.
   function upcomingScheduled(day){
-    return ensureScheduled().filter(f=>!f.done && (f.date||day)>day)
-      .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const list=[];
+    ensureScheduled().forEach(f=>{
+      if(f.repeat && f.repeat!=='none'){
+        const nd=nextOccurrence(f, day, false);   // nearest occurrence after the viewed day
+        if(nd) list.push(Object.assign({}, f, {__occDate:nd, __isRule:true}));
+      } else {
+        if(!isDoneOn(f, f.date) && (f.date||day)>day) list.push(Object.assign({}, f, {__occDate:f.date}));
+      }
+    });
+    return list.sort((a,b)=>(a.__occDate||'').localeCompare(b.__occDate||''));
   }
-  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:'work', date:viewDateStr(), completedDate:'', repeat:'none'}; }
+  function newFocusItem(){ return {id:uid(), pillar:'', projectId:'', subId:'', note:'', done:false, zone:'work', date:viewDateStr(), completedDate:'', repeat:'none', doneDates:[]}; }
 
   function renderTodayFocus(){
     const box=document.getElementById('todayFocusBoard'); if(!box) return;
@@ -6889,9 +6927,9 @@ function renderWeekMetrics(){
     const kanban=document.createElement('div');
     kanban.className='focus-kanban focus-kanban-3';
     const dayItems=scheduledForDay(day);
-    const workItems=dayItems.filter(f=>!f.done && (f.zone||'after')==='work');
-    const afterItems=dayItems.filter(f=>!f.done && (f.zone||'after')!=='work');
-    const doneItems=dayItems.filter(f=>!!f.done);
+    const workItems=dayItems.filter(f=>!isDoneOn(f,day) && (f.zone||'after')==='work');
+    const afterItems=dayItems.filter(f=>!isDoneOn(f,day) && (f.zone||'after')!=='work');
+    const doneItems=dayItems.filter(f=>isDoneOn(f,day));
     const az=activeZone();
 
     const makeCol=(key,title,sub,items)=>{
@@ -6972,22 +7010,28 @@ function renderWeekMetrics(){
     const pillarKey=f.pillar || (p&&p.pillar) || '';
     const pi=PRIMARY_PILLARS.find(x=>x.key===pillarKey) || (pillarKey==='etc'?ETC_PILLAR:null);
     const row=document.createElement('div'); row.className='focus-upcoming-row';
-    const d=new Date((f.date||todayStr())+'T00:00:00');
+    const occ=f.__occDate||f.date||todayStr();
+    const d=new Date(occ+'T00:00:00');
     const dateLabel=(d.getMonth()+1)+'/'+d.getDate()+' ('+['일','월','화','수','목','금','토'][d.getDay()]+')';
+    const repTag=(f.repeat&&f.repeat!=='none')?{daily:'매일',weekly:'매주',monthly:'매월'}[f.repeat]:'';
     const zoneLabel=(f.zone==='work')?'업무':'퇴근후';
     row.innerHTML='<span class="fur-date">'+dateLabel+'</span>'+
       '<span class="fur-zone '+(f.zone==='work'?'work':'after')+'">'+zoneLabel+'</span>'+
-      '<span class="fur-main">'+escape( p ? ((pi?(pi.emo+' '):'')+p.title+(s?' › '+s.title:'')+(f.note?' · '+f.note:'')) : (f.note||'(메모 없음)') )+'</span>'+
-      '<button class="focus-mini-btn fur-edit">수정</button>'+
+      '<span class="fur-main">'+(repTag?'<span class="fur-rep">🔁 '+repTag+'</span> ':'')+escape( p ? ((pi?(pi.emo+' '):'')+p.title+(s?' › '+s.title:'')+(f.note?' · '+f.note:'')) : (f.note||'(메모 없음)') )+'</span>'+
       '<button class="focus-mini-btn fur-del">삭제</button>';
-    row.querySelector('.fur-del').onclick=()=>{ state.scheduled=ensureScheduled().filter(x=>x.id!==f.id); save(); renderTodayFocus(); };
-    row.querySelector('.fur-edit').onclick=()=>{
+    row.querySelector('.fur-del').onclick=(e)=>{ e.stopPropagation(); state.scheduled=ensureScheduled().filter(x=>x.id!==f.id); save(); renderTodayFocus(); };
+    // Tap the row (anywhere except 삭제) to open/close an inline editor.
+    const openEdit=()=>{
       let ed=row.nextElementSibling;
-      if(ed && ed.classList.contains('focus-edit-up')){ ed.remove(); return; }
+      if(ed && ed.classList.contains('focus-edit-up')){ ed.remove(); row.classList.remove('is-editing'); return; }
       ed=document.createElement('div'); ed.className='focus-edit focus-edit-up'; ed.style.display='grid';
-      buildFocusEditor(ed,f,()=>{ syncFocusNote(f); save(); renderTodayFocus(); }, false);
+      const real=ensureScheduled().find(x=>String(x.id)===String(f.id)) || f;
+      buildFocusEditor(ed,real,()=>{ syncFocusNote(real); save(); renderTodayFocus(); }, false);
       row.insertAdjacentElement('afterend',ed);
+      row.classList.add('is-editing');
     };
+    row.style.cursor='pointer';
+    row.onclick=openEdit;
     return row;
   }
 
@@ -6996,8 +7040,8 @@ function renderWeekMetrics(){
     const s=p?(p.subs||[]).find(x=>String(x.id)===String(f.subId)):null;
     const pillarKey=f.pillar || (p&&p.pillar) || '';
     const pi=PRIMARY_PILLARS.find(x=>x.key===pillarKey) || (pillarKey==='etc'?ETC_PILLAR:null);
-    const row=document.createElement('div');
-    row.className='focus-line '+(f.done?'done':'');
+    const row=document.createElement('div'); const __day=viewDateStr();
+    row.className='focus-line '+(isDoneOn(f,__day)?'done':'');
     row.setAttribute('data-dragid',String(f.id));
     row.draggable=true;
 
@@ -7103,22 +7147,29 @@ function renderWeekMetrics(){
         }
       }
       if(wrapped){
-        // Multi-row flex-wrap (idea chips): find the insertion point by reading rows.
-        // Group cards into rows by their top, pick the row closest to pointer Y, then
-        // within that row insert before the first card whose horizontal center is past X.
+        // Flex-wrap layout (idea chips, possibly multiple rows).
+        // 1) pick the row whose vertical band contains the pointer (fallback: nearest row).
+        // 2) within that row, insert before the first chip whose horizontal center is right of X.
         const rects=els.map(ch=>({ch, r:ch.getBoundingClientRect()}));
         const rowH=rects[0].r.height||34;
-        // sort by visual order (top, then left)
-        rects.sort((a,b)=> (Math.abs(a.r.top-b.r.top)>rowH*0.6) ? (a.r.top-b.r.top) : (a.r.left-b.r.left));
-        // find the card in the row nearest to pointer Y, scanning by X within rows
-        let target=null;
-        for(const {ch,r} of rects){
-          const cy=r.top+r.height/2;
-          const sameRowish=Math.abs(y-cy)<=r.height*0.75;
-          if(y < r.top){ target=ch; break; }                 // pointer above this row → insert before it
-          if(sameRowish && x < r.left+r.width/2){ target=ch; break; } // within row, left of center
+        // group into rows
+        const rows=[];
+        rects.slice().sort((a,b)=>a.r.top-b.r.top).forEach(item=>{
+          let row=rows.find(R=>Math.abs(R.top-item.r.top)<rowH*0.6);
+          if(!row){ row={top:item.r.top, items:[]}; rows.push(row); }
+          row.items.push(item);
+        });
+        // choose row by Y (pointer inside band, else nearest by center)
+        let row=rows.find(R=>{ const b=R.items[0].r; return y>=b.top-rowH*0.4 && y<=b.top+b.height+rowH*0.4; });
+        if(!row){ row=rows.reduce((best,R)=>{ const cy=R.items[0].r.top+R.items[0].r.height/2; const d=Math.abs(y-cy); return (!best||d<best.d)?{R,d}:best; },null).R; }
+        const ordered=row.items.slice().sort((a,b)=>a.r.left-b.r.left);
+        for(const {ch,r} of ordered){
+          if(x < r.left+r.width/2) return ch;   // insert before this chip
         }
-        return target;  // null → append to end
+        // past the last chip in this row → insert before the first chip of the NEXT row (or end)
+        const ri=rows.indexOf(row);
+        if(ri>=0 && ri<rows.length-1){ return rows[ri+1].items.sort((a,b)=>a.r.left-b.r.left)[0].ch; }
+        return null;   // end of list
       }
       // vertical list (routines / focus columns): compare Y only
       return els.reduce((c,ch)=>{ const b=ch.getBoundingClientRect(); const off=y-b.top-b.height/2;
@@ -7211,13 +7262,11 @@ function renderWeekMetrics(){
         const f=byId.get(String(card.getAttribute('data-dragid')));
         if(!f) return;
         if(zone==='done'){
-          if(!f.done){
-            f.done=true; f.completedDate=day;
-            // Repeating item completed → spawn the next occurrence (no extra column needed).
-            if(f.repeat && f.repeat!=='none'){ spawnNextRepeat(f); }
-          }
+          setDoneOn(f, day, true);   // per-day for rules; single flag for one-offs
+        } else {
+          setDoneOn(f, day, false);
+          f.zone=zone;
         }
-        else { f.done=false; f.completedDate=''; f.zone=zone; }
       });
     });
     // 2) reorder state.scheduled to match the on-screen card order (so same-column
@@ -7844,13 +7893,10 @@ function renderWeekMetrics(){
   // Carry over: any incomplete scheduled item whose date is now in the past gets its date
   // advanced to today. This is what makes "안 끝내면 다음 날로 이월" work WITHOUT polluting
   // future days you navigate to (those only show items actually dated for them).
-  function carryOverScheduled(){
-    const today=todayStr(); let changed=false;
-    ensureScheduled().forEach(f=>{
-      if(!f.done && f.date && f.date<today){ f.date=today; changed=true; }
-    });
-    return changed;
-  }
+  // Historical integrity: we do NOT rewrite past dates. Each card stays on the day it was
+  // created so you can revisit "what did I do on 6/20". Unfinished past items still appear
+  // on *today* via scheduledForDay's overdue rule below — without losing their original date.
+  function carryOverScheduled(){ return false; }
   function checkDayRollover(){
     const now=todayStr();
     if(now===__realDay) return;        // same calendar day, nothing to do
