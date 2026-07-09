@@ -3217,27 +3217,20 @@ input:focus,textarea:focus,select:focus{
       }
       state._scheduledMigratedV1=true;
     }
-    if(!state._scheduledMigratedV2){
-      // Recover PAST days' focuses too, keeping each card on its ORIGINAL date so history
-      // isn't lost. (V1 only imported today's, so earlier cards were stranded in dayLogs.)
-      const seen=new Set(state.scheduled.map(s=>String(s.id)));
+    // Undo the earlier V2 migration that wrongly resurrected old cards from past dayLogs.
+    // Remove scheduled items that were copied from a past day's focuses (same id still lives
+    // in dayLogs[d].focuses on a non-today date), so they stop flooding Today.
+    if(state._scheduledMigratedV2 && !state._scheduledV2CleanedUp){
+      const pastFocusIds=new Set();
       Object.keys(state.dayLogs||{}).forEach(d=>{
-        if(d===todayStr()) return;                 // today's already handled by V1
+        if(d===todayStr()) return;
         const dl=state.dayLogs[d];
-        if(!dl || !Array.isArray(dl.focuses)) return;
-        dl.focuses.forEach(f=>{
-          const id=f.id||uid();
-          if(seen.has(String(id))) return;
-          seen.add(String(id));
-          state.scheduled.push({
-            id:id, pillar:f.pillar||'', projectId:f.projectId?String(f.projectId):'',
-            subId:f.subId?String(f.subId):'', note:typeof f.note==='string'?f.note:'',
-            zone:(f.zone==='work')?'work':'after', date:d,
-            done:!!f.done, completedDate:f.done?d:'', repeat:'none', doneDates:[]
-          });
-        });
+        if(dl && Array.isArray(dl.focuses)) dl.focuses.forEach(f=>{ if(f && f.id!=null) pastFocusIds.add(String(f.id)); });
       });
-      state._scheduledMigratedV2=true;
+      if(pastFocusIds.size){
+        state.scheduled=(state.scheduled||[]).filter(s=>!pastFocusIds.has(String(s.id)));
+      }
+      state._scheduledV2CleanedUp=true;
     }
     // Normalize every scheduled item (guard against bad/partial data).
     state.scheduled=state.scheduled.filter(x=>x&&typeof x==='object').map(f=>({
