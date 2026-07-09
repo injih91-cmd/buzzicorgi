@@ -3217,6 +3217,28 @@ input:focus,textarea:focus,select:focus{
       }
       state._scheduledMigratedV1=true;
     }
+    if(!state._scheduledMigratedV2){
+      // Recover PAST days' focuses too, keeping each card on its ORIGINAL date so history
+      // isn't lost. (V1 only imported today's, so earlier cards were stranded in dayLogs.)
+      const seen=new Set(state.scheduled.map(s=>String(s.id)));
+      Object.keys(state.dayLogs||{}).forEach(d=>{
+        if(d===todayStr()) return;                 // today's already handled by V1
+        const dl=state.dayLogs[d];
+        if(!dl || !Array.isArray(dl.focuses)) return;
+        dl.focuses.forEach(f=>{
+          const id=f.id||uid();
+          if(seen.has(String(id))) return;
+          seen.add(String(id));
+          state.scheduled.push({
+            id:id, pillar:f.pillar||'', projectId:f.projectId?String(f.projectId):'',
+            subId:f.subId?String(f.subId):'', note:typeof f.note==='string'?f.note:'',
+            zone:(f.zone==='work')?'work':'after', date:d,
+            done:!!f.done, completedDate:f.done?d:'', repeat:'none', doneDates:[]
+          });
+        });
+      });
+      state._scheduledMigratedV2=true;
+    }
     // Normalize every scheduled item (guard against bad/partial data).
     state.scheduled=state.scheduled.filter(x=>x&&typeof x==='object').map(f=>({
       id:f.id||uid(), pillar:f.pillar||'',
