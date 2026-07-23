@@ -3217,21 +3217,6 @@ input:focus,textarea:focus,select:focus{
       }
       state._scheduledMigratedV1=true;
     }
-    // Undo the earlier V2 migration that wrongly resurrected old cards from past dayLogs.
-    // Remove scheduled items that were copied from a past day's focuses (same id still lives
-    // in dayLogs[d].focuses on a non-today date), so they stop flooding Today.
-    if(state._scheduledMigratedV2 && !state._scheduledV2CleanedUp){
-      const pastFocusIds=new Set();
-      Object.keys(state.dayLogs||{}).forEach(d=>{
-        if(d===todayStr()) return;
-        const dl=state.dayLogs[d];
-        if(dl && Array.isArray(dl.focuses)) dl.focuses.forEach(f=>{ if(f && f.id!=null) pastFocusIds.add(String(f.id)); });
-      });
-      if(pastFocusIds.size){
-        state.scheduled=(state.scheduled||[]).filter(s=>!pastFocusIds.has(String(s.id)));
-      }
-      state._scheduledV2CleanedUp=true;
-    }
     // Normalize every scheduled item (guard against bad/partial data).
     state.scheduled=state.scheduled.filter(x=>x&&typeof x==='object').map(f=>({
       id:f.id||uid(), pillar:f.pillar||'',
@@ -6897,6 +6882,13 @@ function renderWeekMetrics(){
 
   // --- Scheduler helpers ---
   function ensureScheduled(){ if(!Array.isArray(state.scheduled)) state.scheduled=[]; return state.scheduled; }
+  // Unfinished cards are mirrored onto Today as carry copies, but only for the recent past —
+  // otherwise months-old leftovers pile up on Today. They always stay on their own day.
+  const CARRY_WINDOW_DAYS=14;
+  function daysBetween(a,b){
+    const d1=new Date(a+'T00:00:00'), d2=new Date(b+'T00:00:00');
+    return Math.round((d2-d1)/86400000);
+  }
 
   // A repeating item is a RULE anchored at its `date`. We never pre-create future copies;
   // instead we compute whether the rule "occurs" on a given day. Per-day completion is
@@ -6953,7 +6945,7 @@ function renderWeekMetrics(){
       // work them today without touching the original. Completing/moving the copy never
       // changes the original's past-day record. The copy keeps coming back each day until
       // the ORIGINAL is completed.
-      if(day===today && f.date && f.date<today && !f.done){
+      if(day===today && f.date && f.date<today && !f.done && daysBetween(f.date, today)<=CARRY_WINDOW_DAYS){
         const carryDoneToday = f.carryDone && f.carryDone[today];
         out.push(Object.assign({}, f, {
           __carry:true, __srcId:f.id,
