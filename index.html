@@ -6947,10 +6947,12 @@ function renderWeekMetrics(){
       // the ORIGINAL is completed.
       if(day===today && f.date && f.date<today && !f.done && daysBetween(f.date, today)<=CARRY_WINDOW_DAYS){
         const carryDoneToday = f.carryDone && f.carryDone[today];
+        const carryZoneToday = (f.carryZone && f.carryZone[today]) || f.zone || 'work';
         out.push(Object.assign({}, f, {
           __carry:true, __srcId:f.id,
           id:'carry:'+f.id+':'+today,     // stable per-day id (so drag/reorder works)
           date:today,
+          zone:carryZoneToday,
           done:!!carryDoneToday,
           completedDate:carryDoneToday?today:''
         }));
@@ -7330,10 +7332,14 @@ function renderWeekMetrics(){
         if(!r) return;
         const f=r.item;
         if(r.isCarry){
-          // Carry copy: record completion for TODAY only; never touch the original's past record.
+          // Carry copy: completion + column choice are recorded for TODAY only,
+          // so the original's past-day record is never modified.
           if(!f.carryDone) f.carryDone={};
           if(zone==='done') f.carryDone[today]=true; else delete f.carryDone[today];
-          // zone changes on a carry copy don't alter the original's stored zone
+          if(zone==='work' || zone==='after'){
+            if(!f.carryZone) f.carryZone={};
+            f.carryZone[today]=zone;
+          }
         } else {
           if(zone==='done'){ setDoneOn(f, day, true); }
           else { setDoneOn(f, day, false); f.zone=zone; }
@@ -7341,9 +7347,14 @@ function renderWeekMetrics(){
       });
     });
     // 2) reorder state.scheduled to match the on-screen card order (so same-column
-    //    reordering actually persists). Cards not currently on the board keep their
-    //    relative order, appended after the visible ones.
-    const domOrder=[...root.querySelectorAll('.focus-line')].map(c=>String(c.getAttribute('data-dragid')));
+    //    reordering actually persists). Carry copies carry a 'carry:<origId>:<date>' id,
+    //    so map those back to the original id before ranking — otherwise carried cards
+    //    can't be reordered at all.
+    const realId=(rawId)=>{
+      const s=String(rawId);
+      return s.indexOf('carry:')===0 ? s.split(':')[1] : s;
+    };
+    const domOrder=[...root.querySelectorAll('.focus-line')].map(c=>realId(c.getAttribute('data-dragid')));
     const rank=new Map(domOrder.map((id,i)=>[id,i]));
     const arr=ensureScheduled();
     arr.sort((a,b)=>{
