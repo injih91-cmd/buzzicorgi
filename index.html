@@ -3217,6 +3217,30 @@ input:focus,textarea:focus,select:focus{
       }
       state._scheduledMigratedV1=true;
     }
+    if(!state._scheduledMigratedV3){
+      // Import EVERY day's focuses (old per-day storage) into the scheduler, keeping each
+      // card on its ORIGINAL date. This is additive and idempotent: we only ADD cards whose
+      // id isn't already in scheduled, and we NEVER delete anything. (Fixes cards that were
+      // stranded in dayLogs[pastDate].focuses and therefore invisible on the board.)
+      const have=new Set((state.scheduled||[]).map(s=>String(s.id)));
+      Object.keys(state.dayLogs||{}).forEach(d=>{
+        const dl=state.dayLogs[d];
+        if(!dl || !Array.isArray(dl.focuses)) return;
+        dl.focuses.forEach(f=>{
+          const id=String(f.id||uid());
+          if(have.has(id)) return;
+          have.add(id);
+          state.scheduled.push({
+            id:id, pillar:f.pillar||'', projectId:f.projectId?String(f.projectId):'',
+            subId:f.subId?String(f.subId):'', note:typeof f.note==='string'?f.note:'',
+            zone:(f.zone==='work')?'work':'after',
+            date:(typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d))?d:todayStr(),
+            done:!!f.done, completedDate:f.done?d:'', repeat:'none', doneDates:[]
+          });
+        });
+      });
+      state._scheduledMigratedV3=true;
+    }
     // Normalize every scheduled item (guard against bad/partial data).
     state.scheduled=state.scheduled.filter(x=>x&&typeof x==='object').map(f=>({
       id:f.id||uid(), pillar:f.pillar||'',
@@ -3226,7 +3250,9 @@ input:focus,textarea:focus,select:focus{
       date:(typeof f.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(f.date))?f.date:todayStr(),
       done:!!f.done, completedDate:typeof f.completedDate==='string'?f.completedDate:'',
       repeat:['none','daily','weekly','monthly'].includes(f.repeat)?f.repeat:'none',
-      doneDates:Array.isArray(f.doneDates)?f.doneDates.filter(x=>typeof x==='string'):[]
+      doneDates:Array.isArray(f.doneDates)?f.doneDates.filter(x=>typeof x==='string'):[],
+      carryZone:(f.carryZone&&typeof f.carryZone==='object')?f.carryZone:{},
+      carryDone:(f.carryDone&&typeof f.carryDone==='object')?f.carryDone:{}
     }));
 
     // Advance any overdue (past-dated, incomplete) scheduled items to today, every boot.
