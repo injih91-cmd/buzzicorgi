@@ -3217,11 +3217,10 @@ input:focus,textarea:focus,select:focus{
       }
       state._scheduledMigratedV1=true;
     }
-    if(!state._scheduledMigratedV3){
-      // Import EVERY day's focuses (old per-day storage) into the scheduler, keeping each
-      // card on its ORIGINAL date. This is additive and idempotent: we only ADD cards whose
-      // id isn't already in scheduled, and we NEVER delete anything. (Fixes cards that were
-      // stranded in dayLogs[pastDate].focuses and therefore invisible on the board.)
+    {
+      // Recover cards stranded in old per-day storage (dayLogs[date].focuses) into the
+      // scheduler, keeping each on its ORIGINAL date. Runs EVERY boot on purpose: add-only
+      // + dedup by id, so it self-heals regardless of flag state, and NEVER deletes anything.
       const have=new Set((state.scheduled||[]).map(s=>String(s.id)));
       Object.keys(state.dayLogs||{}).forEach(d=>{
         const dl=state.dayLogs[d];
