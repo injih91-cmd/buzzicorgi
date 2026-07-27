@@ -3251,8 +3251,24 @@ input:focus,textarea:focus,select:focus{
       repeat:['none','daily','weekly','monthly'].includes(f.repeat)?f.repeat:'none',
       doneDates:Array.isArray(f.doneDates)?f.doneDates.filter(x=>typeof x==='string'):[],
       carryZone:(f.carryZone&&typeof f.carryZone==='object')?f.carryZone:{},
-      carryDone:(f.carryDone&&typeof f.carryDone==='object')?f.carryDone:{}
+      carryDone:(f.carryDone&&typeof f.carryDone==='object')?f.carryDone:{},
+      carryHidden:(f.carryHidden&&typeof f.carryHidden==='object')?f.carryHidden:{}
     }));
+
+    // Reconcile legacy carry completions: earlier versions recorded a carry-copy "Done" only
+    // in carryDone[day] and left the original unfinished, so those tasks kept carrying forward.
+    // Under the current rule (finishing a copy finishes the task), mark such originals done,
+    // dated to the earliest day they were checked off. Keeps their creation date intact.
+    state.scheduled.forEach(f=>{
+      if(!f.done && f.carryDone && typeof f.carryDone==='object'){
+        const days=Object.keys(f.carryDone).filter(d=>f.carryDone[d]);
+        if(days.length){
+          days.sort();
+          f.done=true;
+          if(!f.completedDate) f.completedDate=days[0];
+        }
+      }
+    });
 
     // Advance any overdue (past-dated, incomplete) scheduled items to today, every boot.
     if(typeof carryOverScheduled==='function') carryOverScheduled();
@@ -6981,6 +6997,7 @@ function renderWeekMetrics(){
       // the original's own-day record. Bounded to the recent past so ancient leftovers don't
       // pile up. Future days never show a carry copy.
       if(f.date && f.date<day && day<=today && !f.done && daysBetween(f.date, day)<=CARRY_WINDOW_DAYS){
+        if(f.carryHidden && f.carryHidden[day]) return;   // dismissed for this day
         const carryDoneOnDay = f.carryDone && f.carryDone[day];
         const carryZoneOnDay = (f.carryZone && f.carryZone[day]) || f.zone || 'work';
         out.push(Object.assign({}, f, {
@@ -7155,7 +7172,16 @@ function renderWeekMetrics(){
     const actions=document.createElement('div'); actions.className='focus-card-actions';
     const edit=document.createElement('button'); edit.className='focus-mini-btn'; edit.textContent='수정'; edit.draggable=false;
     const del=document.createElement('button'); del.className='focus-mini-btn'; del.textContent='삭제'; del.draggable=false;
-    del.onclick=()=>{ const rid=f.__carry?f.__srcId:f.id; state.scheduled=ensureScheduled().filter(x=>x.id!==rid); save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow(); };
+    del.onclick=()=>{
+      if(f.__carry){
+        // Deleting a carry copy only dismisses it for THIS day — the original stays put.
+        const orig=ensureScheduled().find(x=>String(x.id)===String(f.__srcId));
+        if(orig){ if(!orig.carryHidden) orig.carryHidden={}; orig.carryHidden[viewDateStr()]=true; }
+      } else {
+        state.scheduled=ensureScheduled().filter(x=>x.id!==f.id);
+      }
+      save(); renderTodayFocus(); renderTodaySignals(); renderTodayFlow();
+    };
     actions.append(edit,del);
 
     const memo=document.createElement('div'); memo.className='focus-memo';
