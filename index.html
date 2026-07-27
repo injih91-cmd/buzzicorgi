@@ -6966,6 +6966,15 @@ function renderWeekMetrics(){
       }
       // one-off item: shows on its own original day (done or not) — history stays intact.
       if((f.date||day)===day) { out.push(f); return; }
+      // If it was completed on THIS day (via a carry copy on a later day), show it here as done.
+      if(f.done && f.completedDate===day && f.date!==day){
+        out.push(Object.assign({}, f, {
+          __carry:true, __srcId:f.id, id:'carry:'+f.id+':'+day,
+          date:day, zone:(f.carryZone&&f.carryZone[day])||f.zone||'work',
+          done:true, completedDate:day
+        }));
+        return;
+      }
       // Method A: an unfinished item appears as a VIRTUAL CARRY COPY on every day AFTER its
       // creation date, up to today, so it follows you forward until the ORIGINAL is completed.
       // Completing/moving a copy is tracked per-day (carryDone/carryZone) and never touches
@@ -7358,13 +7367,21 @@ function renderWeekMetrics(){
         if(!r) return;
         const f=r.item;
         if(r.isCarry){
-          // Carry copy: completion + column choice are recorded for the VIEWED day only,
-          // so the original's own-day record is never modified.
-          if(!f.carryDone) f.carryDone={};
-          if(zone==='done') f.carryDone[day]=true; else delete f.carryDone[day];
-          if(zone==='work' || zone==='after'){
-            if(!f.carryZone) f.carryZone={};
-            f.carryZone[day]=zone;
+          // Completing a carry copy (on any day) finishes the ORIGINAL task entirely, so it
+          // stops carrying forward. We stamp the original's completedDate with the day it was
+          // actually checked off, but keep its own `date` (creation day) intact for history.
+          if(zone==='done'){
+            f.done=true;
+            if(!f.completedDate) f.completedDate=day;
+            if(f.carryDone) f.carryDone[day]=true;
+          } else {
+            // moved back out of Done → reopen the task
+            f.done=false; f.completedDate='';
+            if(f.carryDone) delete f.carryDone[day];
+            if(zone==='work' || zone==='after'){
+              if(!f.carryZone) f.carryZone={};
+              f.carryZone[day]=zone;
+            }
           }
         } else {
           if(zone==='done'){ setDoneOn(f, day, true); }
