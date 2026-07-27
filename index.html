@@ -6966,20 +6966,21 @@ function renderWeekMetrics(){
       }
       // one-off item: shows on its own original day (done or not) — history stays intact.
       if((f.date||day)===day) { out.push(f); return; }
-      // On *today* only: unfinished past items appear as a VIRTUAL CARRY COPY so you can
-      // work them today without touching the original. Completing/moving the copy never
-      // changes the original's past-day record. The copy keeps coming back each day until
-      // the ORIGINAL is completed.
-      if(day===today && f.date && f.date<today && !f.done && daysBetween(f.date, today)<=CARRY_WINDOW_DAYS){
-        const carryDoneToday = f.carryDone && f.carryDone[today];
-        const carryZoneToday = (f.carryZone && f.carryZone[today]) || f.zone || 'work';
+      // Method A: an unfinished item appears as a VIRTUAL CARRY COPY on every day AFTER its
+      // creation date, up to today, so it follows you forward until the ORIGINAL is completed.
+      // Completing/moving a copy is tracked per-day (carryDone/carryZone) and never touches
+      // the original's own-day record. Bounded to the recent past so ancient leftovers don't
+      // pile up. Future days never show a carry copy.
+      if(f.date && f.date<day && day<=today && !f.done && daysBetween(f.date, day)<=CARRY_WINDOW_DAYS){
+        const carryDoneOnDay = f.carryDone && f.carryDone[day];
+        const carryZoneOnDay = (f.carryZone && f.carryZone[day]) || f.zone || 'work';
         out.push(Object.assign({}, f, {
           __carry:true, __srcId:f.id,
-          id:'carry:'+f.id+':'+today,     // stable per-day id (so drag/reorder works)
-          date:today,
-          zone:carryZoneToday,
-          done:!!carryDoneToday,
-          completedDate:carryDoneToday?today:''
+          id:'carry:'+f.id+':'+day,        // stable per-day id (so drag/reorder works)
+          date:day,
+          zone:carryZoneOnDay,
+          done:!!carryDoneOnDay,
+          completedDate:carryDoneOnDay?day:''
         }));
       }
     });
@@ -7357,13 +7358,13 @@ function renderWeekMetrics(){
         if(!r) return;
         const f=r.item;
         if(r.isCarry){
-          // Carry copy: completion + column choice are recorded for TODAY only,
-          // so the original's past-day record is never modified.
+          // Carry copy: completion + column choice are recorded for the VIEWED day only,
+          // so the original's own-day record is never modified.
           if(!f.carryDone) f.carryDone={};
-          if(zone==='done') f.carryDone[today]=true; else delete f.carryDone[today];
+          if(zone==='done') f.carryDone[day]=true; else delete f.carryDone[day];
           if(zone==='work' || zone==='after'){
             if(!f.carryZone) f.carryZone={};
-            f.carryZone[today]=zone;
+            f.carryZone[day]=zone;
           }
         } else {
           if(zone==='done'){ setDoneOn(f, day, true); }
