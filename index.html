@@ -1134,6 +1134,9 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .focus-list{display:grid;gap:6px}
 .focus-line{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 9px}
 .focus-line.done{background:#f3f8f5;border-color:rgba(29,122,90,.28)}
+.focus-line.dropped{background:#f4f4f5;border-color:#e2e2e5;opacity:.6}
+.focus-line.dropped .focus-summary,.focus-line.dropped .focus-memo{text-decoration:line-through;color:#9a9aa0}
+.focus-drop-badge{display:inline-block;font-size:10px;font-weight:800;color:#8a8a90;background:#e7e7ea;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:middle;text-decoration:none}
 .focus-line input[type=checkbox]{width:16px;height:16px;accent-color:var(--ok)}
 .focus-summary{min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .focus-vtag{font-size:11px;font-weight:850;background:#f1efe8;color:#5f5e5a;border-radius:999px;padding:2px 7px;white-space:nowrap}
@@ -1411,12 +1414,16 @@ input:focus,textarea:focus,select:focus{
 .idea-filter{border:1px solid rgba(82,109,91,.24) !important;background:#fff !important;color:#526D5B !important;border-radius:999px !important;padding:5px 9px !important;font-size:11px !important;font-weight:900 !important;line-height:1.1 !important;cursor:pointer !important}
 .idea-filter.active{background:#526D5B !important;border-color:#526D5B !important;color:#fff !important}
 .idea-chip-board{display:block !important;margin-bottom:8px !important}
+.idea-chip.is-editing{outline:2px solid #006C4A;outline-offset:1px}
+.idea-edit-pop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin:6px 0 4px}
+.idea-edit-pop input{flex:1;min-width:120px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
+.idea-edit-pop .ie-actions{display:flex;gap:6px;margin-left:auto}
 .idea-chipwrap{display:flex !important;flex-wrap:wrap !important;gap:7px !important;align-items:flex-start !important}
 .idea-group{width:100%;margin:0 0 10px !important}
 .idea-group-title{font-size:12px !important;font-weight:950 !important;color:#526D5B !important;margin:0 0 7px 2px !important}
 .idea-chip{display:inline-flex !important;align-items:center !important;gap:7px !important;background:#fff !important;border:1px solid rgba(82,109,91,.22) !important;border-radius:999px !important;padding:7px 11px !important;min-height:34px !important;max-width:100% !important;box-shadow:0 3px 10px rgba(38,53,46,.04) !important}
 .idea-chip-main{font-size:13px !important;font-weight:900 !important;color:#26352E !important;white-space:nowrap !important;max-width:260px !important;overflow:hidden !important;text-overflow:ellipsis !important}
-.idea-chip-tag{font-size:10px !important;font-weight:950 !important;color:#006C4A !important;background:#E7F8EF !important;border:1px solid rgba(0,168,107,.22) !important;border-radius:999px !important;padding:2px 7px !important;line-height:1.2 !important;white-space:nowrap !important}
+.idea-chip-tag{font-size:10px !important;font-weight:950 !important;color:#006C4A;background:#E7F8EF;border:1px solid rgba(0,168,107,.22);border-radius:999px !important;padding:2px 7px !important;line-height:1.2 !important;white-space:nowrap !important}
 .idea-chip-del{border:0 !important;background:transparent !important;color:#AEB7B0 !important;font-size:15px !important;line-height:1 !important;cursor:pointer !important;padding:0 1px !important;margin-left:1px !important}
 .idea-chip-del:hover{color:#D64545 !important}
 .idea-empty{width:100% !important;padding:14px !important}
@@ -3252,7 +3259,8 @@ input:focus,textarea:focus,select:focus{
       doneDates:Array.isArray(f.doneDates)?f.doneDates.filter(x=>typeof x==='string'):[],
       carryZone:(f.carryZone&&typeof f.carryZone==='object')?f.carryZone:{},
       carryDone:(f.carryDone&&typeof f.carryDone==='object')?f.carryDone:{},
-      carryHidden:(f.carryHidden&&typeof f.carryHidden==='object')?f.carryHidden:{}
+      carryHidden:(f.carryHidden&&typeof f.carryHidden==='object')?f.carryHidden:{},
+      dropped:!!f.dropped, droppedDate:typeof f.droppedDate==='string'?f.droppedDate:''
     }));
 
     // Reconcile legacy carry completions: earlier versions recorded a carry-copy "Done" only
@@ -6996,7 +7004,7 @@ function renderWeekMetrics(){
       // Completing/moving a copy is tracked per-day (carryDone/carryZone) and never touches
       // the original's own-day record. Bounded to the recent past so ancient leftovers don't
       // pile up. Future days never show a carry copy.
-      if(f.date && f.date<day && day<=today && !f.done && daysBetween(f.date, day)<=CARRY_WINDOW_DAYS){
+      if(f.date && f.date<day && day<=today && !f.done && !f.dropped && daysBetween(f.date, day)<=CARRY_WINDOW_DAYS){
         if(f.carryHidden && f.carryHidden[day]) return;   // dismissed for this day
         const carryDoneOnDay = f.carryDone && f.carryDone[day];
         const carryZoneOnDay = (f.carryZone && f.carryZone[day]) || f.zone || 'work';
@@ -7124,9 +7132,18 @@ function renderWeekMetrics(){
     const dateLabel=(d.getMonth()+1)+'/'+d.getDate()+' ('+['일','월','화','수','목','금','토'][d.getDay()]+')';
     const repTag=(f.repeat&&f.repeat!=='none')?{daily:'매일',weekly:'매주',monthly:'매월'}[f.repeat]:'';
     const zoneLabel=(f.zone==='work')?'업무':'퇴근후';
+    // Build the label so the Value (pillar) is ALWAYS visible — even when there's no project.
+    const pillarBadge = pi ? (String(pi.emo||'')+' '+String(pi.name||'')).trim() : '';
+    let mainText;
+    if(p){
+      mainText=(pi?(pi.emo+' '):'')+p.title+(s?' › '+s.title:'')+(f.note?' · '+f.note:'');
+    } else {
+      // no project: show pillar emoji/name (if any) + the note
+      mainText=(pillarBadge?pillarBadge+' · ':'')+(f.note||'(메모 없음)');
+    }
     row.innerHTML='<span class="fur-date">'+dateLabel+'</span>'+
       '<span class="fur-zone '+(f.zone==='work'?'work':'after')+'">'+zoneLabel+'</span>'+
-      '<span class="fur-main">'+(repTag?'<span class="fur-rep">🔁 '+repTag+'</span> ':'')+escape( p ? ((pi?(pi.emo+' '):'')+p.title+(s?' › '+s.title:'')+(f.note?' · '+f.note:'')) : (f.note||'(메모 없음)') )+'</span>'+
+      '<span class="fur-main">'+(repTag?'<span class="fur-rep">🔁 '+repTag+'</span> ':'')+escape(mainText)+'</span>'+
       '<button class="focus-mini-btn fur-del">삭제</button>';
     row.querySelector('.fur-del').onclick=(e)=>{ e.stopPropagation(); state.scheduled=ensureScheduled().filter(x=>x.id!==f.id); save(); renderTodayFocus(); };
     // Tap the row (anywhere except 삭제) to open/close an inline editor.
@@ -7150,7 +7167,7 @@ function renderWeekMetrics(){
     const pillarKey=f.pillar || (p&&p.pillar) || '';
     const pi=PRIMARY_PILLARS.find(x=>x.key===pillarKey) || (pillarKey==='etc'?ETC_PILLAR:null);
     const row=document.createElement('div'); const __day=viewDateStr();
-    row.className='focus-line '+(isDoneOn(f,__day)?'done':'');
+    row.className='focus-line '+(isDoneOn(f,__day)?'done':'')+(f.dropped?' dropped':'');
     row.setAttribute('data-dragid',String(f.id));
     row.draggable=true;
 
@@ -7168,15 +7185,17 @@ function renderWeekMetrics(){
       main.textContent = f.note||'(메모 없음)';
     }
     summary.append(tag,main);
+    if(f.dropped){ const db=document.createElement('span'); db.className='focus-drop-badge'; db.textContent='폐기됨'; summary.append(db); }
 
     const actions=document.createElement('div'); actions.className='focus-card-actions';
     const edit=document.createElement('button'); edit.className='focus-mini-btn'; edit.textContent='수정'; edit.draggable=false;
     const del=document.createElement('button'); del.className='focus-mini-btn'; del.textContent='삭제'; del.draggable=false;
     del.onclick=()=>{
       if(f.__carry){
-        // Deleting a carry copy only dismisses it for THIS day — the original stays put.
+        // Deleting a carry copy = DISCARD the task ("폐기"): it stops carrying forward, but
+        // the original stays on its own day marked as dropped (not completed) for history.
         const orig=ensureScheduled().find(x=>String(x.id)===String(f.__srcId));
-        if(orig){ if(!orig.carryHidden) orig.carryHidden={}; orig.carryHidden[viewDateStr()]=true; }
+        if(orig){ orig.dropped=true; orig.droppedDate=viewDateStr(); }
       } else {
         state.scheduled=ensureScheduled().filter(x=>x.id!==f.id);
       }
@@ -7531,13 +7550,65 @@ function renderWeekMetrics(){
     box.appendChild(toolbar);
 
     const visibleIdeas = ui.filterTag ? state.ideas.filter(idea => (idea.tags||[]).includes(ui.filterTag)) : state.ideas.slice();
+    const openIdeaEditor=(idea, chip)=>{
+      // close any other open editor first
+      board.querySelectorAll('.idea-edit-pop').forEach(e=>e.remove());
+      board.querySelectorAll('.idea-chip.is-editing').forEach(c=>c.classList.remove('is-editing'));
+      const pop=document.createElement('div'); pop.className='idea-edit-pop';
+      pop.innerHTML='<input class="ie-title" placeholder="아이디어"><input class="ie-tags" placeholder="태그 1, 태그 2">'+
+        '<div class="ie-actions"><button class="btn small ghost ie-save">저장</button><button class="btn small ie-cancel">취소</button></div>';
+      pop.querySelector('.ie-title').value=idea.title||'';
+      pop.querySelector('.ie-tags').value=(idea.tags||[]).join(', ');
+      const close=()=>{ pop.remove(); chip.classList.remove('is-editing'); };
+      pop.querySelector('.ie-cancel').onclick=(e)=>{ e.stopPropagation(); close(); };
+      pop.querySelector('.ie-save').onclick=(e)=>{
+        e.stopPropagation();
+        const t=pop.querySelector('.ie-title').value.trim();
+        const tg=pop.querySelector('.ie-tags').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,2);
+        if(t){ idea.title=t; idea.tags=tg; save(); renderIdeaBoard(); renderTodayFlow(); }
+      };
+      pop.addEventListener('click',e=>e.stopPropagation());
+      chip.classList.add('is-editing');
+      chip.insertAdjacentElement('afterend', pop);
+      const ti=pop.querySelector('.ie-title'); ti.focus(); ti.select();
+    };
+    // Each tag gets a consistent color from a curated, muted palette (same tag → same color).
+    const TAG_COLORS=[
+      {bg:'#E7F8EF', fg:'#006C4A', bd:'rgba(0,108,74,.22)'},   // green
+      {bg:'#E8F0FB', fg:'#1F3864', bd:'rgba(31,56,100,.22)'},  // navy
+      {bg:'#FBF1E0', fg:'#9A6B12', bd:'rgba(154,107,18,.24)'}, // gold
+      {bg:'#F5E9F4', fg:'#7A3B72', bd:'rgba(122,59,114,.22)'}, // plum
+      {bg:'#FDEAE6', fg:'#B23A2A', bd:'rgba(178,58,42,.20)'},  // coral
+      {bg:'#E6F5F7', fg:'#0E6E7C', bd:'rgba(14,110,124,.22)'}, // teal
+      {bg:'#EEF1E4', fg:'#5B6B2E', bd:'rgba(91,107,46,.24)'},  // olive
+      {bg:'#F0ECFB', fg:'#4B3B9A', bd:'rgba(75,59,154,.20)'}   // indigo
+    ];
+    // Assign colors by the tag's position in the sorted list of all tags → even spread,
+    // stable as long as the tag set is stable, and same tag always same color in one render.
+    const sortedAllTags=[...new Set((state.ideas||[]).flatMap(x=>x.tags||[]))].sort();
+    const tagColor=(tag)=>{
+      let idx=sortedAllTags.indexOf(tag);
+      if(idx<0){ // fallback hash for any tag not in the list
+        let h=2166136261>>>0; const s=String(tag);
+        for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+        idx=h;
+      }
+      return TAG_COLORS[idx % TAG_COLORS.length];
+    };
     const makeChip=(idea)=>{
       const chip=document.createElement('div'); chip.className='idea-chip'; chip.setAttribute('data-dragid',String(idea.id));
       const tags=(idea.tags||[]).slice(0,2);
       chip.innerHTML='<span class="idea-chip-main">'+escape(idea.title||'Untitled')+'</span>'+
-        tags.map(t=>'<span class="idea-chip-tag">'+escape(t)+'</span>').join('')+
+        tags.map(t=>{ const c=tagColor(t); return '<span class="idea-chip-tag" style="background:'+c.bg+';color:'+c.fg+';border-color:'+c.bd+'">'+escape(t)+'</span>'; }).join('')+
         '<button class="idea-chip-del" aria-label="삭제">×</button>';
       chip.querySelector('.idea-chip-del').onclick=(e)=>{ e.stopPropagation(); state.ideas=state.ideas.filter(x=>x.id!==idea.id); save(); renderIdeaBoard(); renderTodayFlow(); };
+      // Tap the chip (not the × ) to edit its title + tags. Drag uses press-and-hold, so a
+      // quick tap won't be swallowed by dragging.
+      chip.addEventListener('click',(e)=>{
+        if(e.target.closest('.idea-chip-del')) return;
+        if(chip.classList.contains('kb-dragging')) return;   // ignore if a drag just happened
+        openIdeaEditor(idea, chip);
+      });
       return chip;
     };
 
