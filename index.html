@@ -68,7 +68,7 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 
 /* tabs */
 .tabs{position:sticky;top:0;z-index:20;background:rgba(244,242,236,.88);backdrop-filter:blur(12px);padding:10px 0;margin:-6px 0 14px;border-bottom:1px solid rgba(227,223,212,.72)}
-.tabrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tabrow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .tab{border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:800;border-radius:999px;padding:11px 10px}
 .tab small{display:block;font-weight:500;font-size:10px;opacity:.7;margin-top:2px}
 .ko-gloss{font-size:12px;font-weight:500;color:var(--muted,#6b7280);margin-left:6px}
@@ -1118,7 +1118,7 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 }
 @media(max-width:560px){
   body{padding:8px 8px 44px !important}
-  .tabrow{display:grid !important;grid-template-columns:repeat(5,1fr) !important;gap:4px !important}
+  .tabrow{display:grid !important;grid-template-columns:repeat(6,1fr) !important;gap:3px !important}
   .tab{font-size:11px !important;padding:7px 3px !important;border-radius:10px !important;min-height:30px !important}
   .section,.card,.modal-body{padding:11px 12px !important}
   .card>h3,h3{font-size:16px !important}
@@ -1164,6 +1164,73 @@ th,td{padding:6px 7px !important;font-size:11px !important}
 .pledge-text{font-size:13px;color:var(--ink);font-style:normal}
 .autosave-note{font-size:11.5px;color:#6f8a7e;text-align:center;padding:8px;border-radius:9px;background:rgba(0,168,107,.07);border:1px dashed rgba(0,168,107,.25)}
 .meal-diary{display:grid;gap:12px;margin-top:6px}
+/* 마음 나침반 */
+.compass-choices{display:grid;gap:12px;margin-top:12px}
+.compass-choice{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:18px;border-radius:16px;border:1px solid var(--line);background:#fff;cursor:pointer;transition:transform .08s,box-shadow .12s}
+.compass-choice:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.compass-choice.reality{background:linear-gradient(135deg,#eef4fb,#f7fafd);border-color:rgba(31,56,100,.18)}
+.compass-choice.life{background:linear-gradient(135deg,#eef7ef,#f6fbf6);border-color:rgba(0,108,74,.18)}
+.cc-emoji{font-size:26px}
+.cc-title{font-size:15px;font-weight:800;color:var(--ink)}
+.cc-sub{font-size:12px;color:var(--muted);font-weight:600}
+.compass-history-wrap{margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
+.compass-hist-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;cursor:pointer;font-size:13px;font-weight:800;color:var(--muted);padding:4px 0}
+.compass-hist-list{display:grid;gap:10px;margin-top:8px}
+.compass-hist-card{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fbfaf6;position:relative}
+.compass-hist-card.reality{border-left:3px solid #1f3864}
+.compass-hist-card.life{border-left:3px solid #006C4A}
+.chc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.chc-kind{font-size:11px;font-weight:900;color:var(--ink)}
+.chc-date{font-size:11px;color:var(--muted)}
+.chc-main{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.5;margin:2px 0}
+.chc-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.chc-verdict{font-size:12px;font-weight:700;color:var(--ink);margin-top:4px}
+.chc-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.chc-chips span{font-size:10.5px;font-weight:700;background:#ececee;color:#555;border-radius:6px;padding:1px 6px}
+.chc-del{position:absolute;top:9px;right:10px;font-size:10px;color:#b9b9be;background:none;border:none;cursor:pointer}
+.compass-form .compass-back{background:none;border:none;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;padding:0;margin-bottom:6px}
+.compass-q{display:block;font-size:13.5px;font-weight:800;color:var(--ink);margin:16px 0 7px}
+.compass-q small{font-weight:600;color:var(--muted);margin-left:4px}
+.compass-q.balance{color:#006C4A}
+.compass-input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;resize:vertical;box-sizing:border-box;line-height:1.5}
+.compass-input:focus{outline:none;border-color:var(--sage-active,#788c5c)}
+.balance-input{background:#f6fbf8;border-color:rgba(0,108,74,.25)}
+.compass-tags{display:flex;flex-wrap:wrap;gap:7px}
+.ctag{font-size:12.5px;font-weight:700;color:var(--muted);background:#f3f3f2;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;transition:all .1s}
+.ctag.on{background:#006C4A;color:#fff;border-color:#006C4A}
+.compass-twocol{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ctc-head{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px}
+.compass-radio{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.compass-radio.wrap{grid-template-columns:1fr}
+.cradio{font-size:12.5px;font-weight:700;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;cursor:pointer;text-align:left}
+.cradio.on{background:#eef4fb;color:#1f3864;border-color:#1f3864}
+.life-areas{display:grid;gap:10px}
+.life-area-row{border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:#fff}
+.la-name{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:7px}
+.la-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.la-opt{font-size:11.5px;font-weight:700;color:var(--muted);background:#f6f6f5;border:1px solid var(--line);border-radius:8px;padding:7px 8px;cursor:pointer;text-align:center}
+.la-opt.on{background:var(--lac,#2e7d55);color:#fff;border-color:var(--lac,#2e7d55)}
+.lc3-q{font-size:12.5px;font-weight:700;color:var(--ink);margin:9px 0 5px}
+.compass-save{width:100%;margin-top:20px}
+/* 나의 축 (만다라트 Goal) */
+.goal-areas{margin-top:10px}
+.goal-list{display:grid;gap:12px}
+.goal-area{border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:#fff;touch-action:pan-y}
+.ga-drag{color:#c8c8cd;font-size:14px;cursor:grab;margin-right:2px;user-select:none}
+.ga-head{display:flex;align-items:center;gap:7px}
+.ga-title{font-size:14.5px;font-weight:800;color:var(--ink)}
+.ga-count{font-size:11px;font-weight:800;color:#2e7d55;background:#eaf5ee;border-radius:6px;padding:1px 7px}
+.ga-state{font-size:10.5px;font-weight:800;border-radius:6px;padding:2px 7px;white-space:nowrap;margin-left:auto}
+.ga-aspire{font-size:12px;color:var(--muted);font-weight:600;margin:3px 0 10px}
+.ga-board{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.ga-col{background:#faf9f5;border:1px solid var(--line);border-radius:10px;padding:6px;min-height:60px}
+.ga-col[data-z=done]{background:#f2f8f4;border-color:rgba(0,108,74,.18)}
+.ga-col[data-z=doing]{background:#fbf6ea;border-color:rgba(201,138,18,.18)}
+.ga-col-h{font-size:10.5px;font-weight:800;color:var(--muted);text-align:center;margin-bottom:5px}
+.ga-col-list{display:flex;flex-direction:column;gap:5px;min-height:34px}
+.ga-item{font-size:11px;font-weight:700;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 7px;line-height:1.35;cursor:grab;touch-action:pan-y;word-break:keep-all}
+.ga-col[data-z=done] .ga-item{color:#2e7d55;border-color:rgba(0,108,74,.2);text-decoration:none}
+.ga-col[data-z=doing] .ga-item{color:#9a6b12;border-color:rgba(201,138,18,.22)}
 .meal-card{background:#fbfaf6;border:1px solid var(--line);border-radius:13px;padding:12px 13px}
 .meal-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .meal-emo{font-size:17px}
@@ -2508,6 +2575,7 @@ input:focus,textarea:focus,select:focus{
       <button class="tab" data-tab="money">Money<small>자산</small></button>
       <button class="tab" data-tab="records">Note<small>노트 · 기록</small></button>
       <button class="tab" data-tab="health">Health<small>식사 일기</small></button>
+      <button class="tab" data-tab="compass">Mind<small>마음 점검</small></button>
     </div>
   </nav>
 
@@ -2838,6 +2906,128 @@ input:focus,textarea:focus,select:focus{
         <h3>🍽️ 식사 일기 <small style="font-weight:600;color:var(--muted)">Meal Diary</small></h3>
         <div class="hint">오늘 뭘 먹었는지 편하게 적어요. 자동 저장되고, 날짜를 넘기면 그날 기록을 볼 수 있어요.</div>
         <div id="mealDiary" class="meal-diary"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="tab-compass">
+    <div class="grid">
+      <!-- HOME: choose which check -->
+      <div class="card span-12" id="compassHome">
+        <h3>🧭 마음 나침반</h3>
+        <div class="hint">지금 무엇을 확인하고 싶어요?</div>
+        <div class="compass-choices">
+          <button class="compass-choice reality" id="goReality" type="button">
+            <span class="cc-emoji">🌊</span>
+            <span class="cc-title">생각이 너무 멀리 갔는지 점검하기</span>
+            <span class="cc-sub">Reality Check · 생각이 폭주할 때</span>
+          </button>
+          <button class="compass-choice life" id="goLife" type="button">
+            <span class="cc-emoji">🍃</span>
+            <span class="cc-title">요즘 내가 잘 살고 있는지 돌아보기</span>
+            <span class="cc-sub">Life Check · 한 달에 한 번쯤</span>
+          </button>
+        </div>
+        <div class="compass-history-wrap">
+          <button class="compass-hist-toggle" id="compassHistToggle" type="button"><span>지난 기록 모아보기</span><span id="compassHistCaret">▼</span></button>
+          <div id="compassHistBody" style="display:none"><div id="compassHistList" class="compass-hist-list"></div></div>
+        </div>
+      </div>
+
+      <!-- 나의 축 (GOAL) -->
+      <div class="card span-12" id="compassGoalCard">
+        <h3>🎯 나의 축 <small style="font-weight:600;color:var(--muted)">8대 영역</small></h3>
+        <div class="hint">각 영역에서 <b>지금 굴리는 것</b>과 <b>올해 이룬 것</b>을 담아요. 감점표가 아니라, 방향과 흔적을 보는 곳이에요.</div>
+        <div id="goalAreas" class="goal-areas"><div class="goal-list" id="goalList"></div></div>
+      </div>
+
+      <!-- REALITY CHECK -->
+      <div class="card span-12 compass-form" id="realityForm" style="display:none">
+        <button class="compass-back" data-back="reality" type="button">← 돌아가기</button>
+        <h3>🌊 Reality Check</h3>
+        <div class="hint">내 생각이 현실보다 너무 멀리 가고 있는지 확인하고, 판단력을 회수하는 것.</div>
+
+        <label class="compass-q">1. 무슨 일이 있었나? <small>해석 없이 사건만</small></label>
+        <textarea class="compass-input" id="rc1" rows="2" placeholder="일어난 일만 담담하게…"></textarea>
+
+        <label class="compass-q">2. 내 머릿속 결론은 어디까지 갔나? <small>지금 예상하는 최악의 이야기</small></label>
+        <textarea class="compass-input" id="rc2" rows="2" placeholder="머릿속이 그린 최악의 시나리오…"></textarea>
+
+        <label class="compass-q">3. 지금 섞여 있는 사고방식은?</label>
+        <div class="compass-tags" id="rc3">
+          <button type="button" class="ctag" data-v="파국화">파국화</button>
+          <button type="button" class="ctag" data-v="독심술">독심술</button>
+          <button type="button" class="ctag" data-v="과잉 일반화">과잉 일반화</button>
+          <button type="button" class="ctag" data-v="흑백논리">흑백논리</button>
+          <button type="button" class="ctag" data-v="감정적 추론">감정적 추론</button>
+          <button type="button" class="ctag" data-v="자기 탓">자기 탓</button>
+        </div>
+
+        <label class="compass-q">4. 확실히 아는 것과 모르는 것은?</label>
+        <div class="compass-twocol">
+          <div><div class="ctc-head">확인된 사실</div><textarea class="compass-input" id="rc4a" rows="3" placeholder="확실한 것…"></textarea></div>
+          <div><div class="ctc-head">아직 모르는 것</div><textarea class="compass-input" id="rc4b" rows="3" placeholder="아직 알 수 없는 것…"></textarea></div>
+        </div>
+
+        <label class="compass-q">5. 가장 가능성 높은 현실은? <small>최선도 최악도 아닌 현실적 설명</small></label>
+        <textarea class="compass-input" id="rc5" rows="2" placeholder="담담하게 가장 그럴듯한 설명…"></textarea>
+
+        <label class="compass-q">6. 지금 결정할 일인가, 기다려도 되는가?</label>
+        <div class="compass-radio" id="rc6">
+          <button type="button" class="cradio" data-v="지금 행동">지금 행동</button>
+          <button type="button" class="cradio" data-v="정보 추가 확인">정보 추가 확인</button>
+          <button type="button" class="cradio" data-v="하루 보류">하루 보류</button>
+          <button type="button" class="cradio" data-v="아무 행동도 불필요">행동 불필요</button>
+        </div>
+
+        <label class="compass-q balance">🧭 현재 기준, 내가 믿을 수 있는 가장 균형 잡힌 결론 한 문장</label>
+        <textarea class="compass-input balance-input" id="rcFinal" rows="2" placeholder="예: 이 사람의 지속성이 낮아 보이는 건 맞지만, 이 한 번이 내 연애 전체의 미래를 뜻하진 않는다."></textarea>
+
+        <button class="btn compass-save" id="saveReality" type="button">저장하기</button>
+      </div>
+
+      <!-- LIFE CHECK -->
+      <div class="card span-12 compass-form" id="lifeForm" style="display:none">
+        <button class="compass-back" data-back="life" type="button">← 돌아가기</button>
+        <h3>🍃 Life Check</h3>
+        <div class="hint">나는 내가 원하는 방향으로 살고 있나? 어떤 영역이 삶 전체를 잡아먹고 있나?</div>
+
+        <label class="compass-q">1. 최근의 삶은 어떤 느낌인가? <small>복수 선택</small></label>
+        <div class="compass-tags" id="lc1">
+          <button type="button" class="ctag" data-v="충만함">충만함</button>
+          <button type="button" class="ctag" data-v="평온함">평온함</button>
+          <button type="button" class="ctag" data-v="활기">활기</button>
+          <button type="button" class="ctag" data-v="성장">성장</button>
+          <button type="button" class="ctag" data-v="무료함">무료함</button>
+          <button type="button" class="ctag" data-v="대기실">대기실</button>
+          <button type="button" class="ctag" data-v="과부하">과부하</button>
+          <button type="button" class="ctag" data-v="표류">표류</button>
+        </div>
+
+        <label class="compass-q">2. 최근 2~4주, 각 영역이 얼마나 살아 있었나?</label>
+        <div id="lc2" class="life-areas"></div>
+
+        <label class="compass-q">3. 세 가지 핵심 질문</label>
+        <div class="lc3-q">요즘 내가 충분히 누리고 있는 것은?</div>
+        <textarea class="compass-input" id="lc3a" rows="2"></textarea>
+        <div class="lc3-q">무언가 시작되기만 기다리며 미루고 있는 것은?</div>
+        <textarea class="compass-input" id="lc3b" rows="2"></textarea>
+        <div class="lc3-q">내 삶을 조금 더 좋아지게 만들 조정 하나는?</div>
+        <textarea class="compass-input" id="lc3c" rows="2"></textarea>
+
+        <label class="compass-q">4. 마지막 판정</label>
+        <div class="compass-radio wrap" id="lc4">
+          <button type="button" class="cradio" data-v="지금 방향이 좋다">지금 방향이 좋다</button>
+          <button type="button" class="cradio" data-v="조금 조정하면 된다">조금 조정하면 된다</button>
+          <button type="button" class="cradio" data-v="한 영역이 삶을 너무 많이 차지한다">한 영역이 너무 크다</button>
+          <button type="button" class="cradio" data-v="삶에 기쁨을 의도적으로 보충해야 한다">기쁨을 보충해야 한다</button>
+          <button type="button" class="cradio" data-v="중요한 결정을 다시 검토해야 한다">결정을 재검토해야 한다</button>
+        </div>
+
+        <label class="compass-q balance">🍃 다음 2주간, 딱 하나 바꿀 것</label>
+        <textarea class="compass-input balance-input" id="lcFinal" rows="2" placeholder="하나만. 작아도 좋아요."></textarea>
+
+        <button class="btn compass-save" id="saveLife" type="button">저장하기</button>
       </div>
     </div>
   </section>
@@ -3655,6 +3845,7 @@ input:focus,textarea:focus,select:focus{
         document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
         if(btn.dataset.tab==='money') setTimeout(refreshMoney,40);
         if(btn.dataset.tab==='health') setTimeout(renderHealth,20);
+        if(btn.dataset.tab==='compass') setTimeout(initCompass,20);
       };
     });
   }
@@ -7770,6 +7961,277 @@ function renderWeekMetrics(){
     {v:3, emo:'😋', t:'좋음'},
     {v:4, emo:'🤤', t:'최고'}
   ];
+  // ===== 마음 나침반 (Compass): Reality Check + Life Check =====
+  function toast(msg){
+    let t=document.getElementById('__toast');
+    if(!t){ t=document.createElement('div'); t.id='__toast'; t.style.cssText='position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:rgba(30,40,35,.94);color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none'; document.body.appendChild(t); }
+    t.textContent=msg; t.style.opacity='1';
+    clearTimeout(t.__h); t.__h=setTimeout(()=>{ t.style.opacity='0'; }, 1600);
+  }
+  function ensureCompassLog(){ if(!Array.isArray(state.compassLog)) state.compassLog=[]; return state.compassLog; }
+
+  // 8대 영역 정의 (제목 · 지향 문장 · 초기 '이룬 것' 씨앗)
+  // 8대 영역 × 세부목표(만다라트 64칸). done:true = 이미 이룬 것(문서의 ✓)
+  const GOAL_AREAS=[
+    {key:'self', emo:'🕊', name:'나의 편 되기', aspire:'나를 사랑하고 보호하며 잘 데리고 살기', items:[
+      '내 감정을 먼저 알아차리기','힘들 때 나를 쉬게 하기','실수한 나를 벌주지 않고 수습하기',
+      '남의 반응으로 내 가치를 판단하지 않기','해로운 관계에서 빠져나오기','혼자인 시간을 충만하게 보내기',
+      '나에게 좋은 것을 아끼지 않기','오늘 나는 내 편이었나 돌아보기']},
+    {key:'viola', emo:'🎻', name:'비올라와 음악', aspire:'시간이 쌓이는 나만의 예술', items:[
+      {t:'향상음악회 연주',done:true},{t:'스즈키 2권 완주',done:true},'스즈키 3권 진입','오케스트라 공연',
+      '연습 주 3회','악기 개인 피팅 완료','편안한 어깨받침·턱받침 세팅','내년 스즈키 4권 기반 만들기']},
+    {key:'bvichi', emo:'🐾', name:'버찌와 함께 사는 삶', aspire:'버찌와 보내는 지금을 충분히 사랑하기', items:[
+      {t:'버찌 건강검진',done:true},'버찌와 매일 산책','침대 조식과 느긋한 시간','버찌와 드라이브하기',
+      '버찌와 새로운 장소 가보기','사진과 영상 충분히 남기기','컨디션·보행 상태 세심히 보기','지금 함께 있는 시간 누리기']},
+    {key:'nest', emo:'🏠', name:'둥지가 되는 관계', aspire:'평범한 화요일을 함께 살아갈 수 있는 사람', items:[
+      '술 없이 천천히 알아가기','빠른 친밀감을 깊이로 착각하지 않기','말보다 지속성과 행동 보기',
+      '평범한 화요일의 생활 리듬 확인','서로 감정·일상을 보듬을 능력 보기','실수 뒤 수습할 줄 아는 사람',
+      '나도 상대에게 편안한 둥지 되기','나를 잃어야 유지되는 관계는 선택 안 함']},
+    {key:'body', emo:'💪', name:'몸과 컨디션', aspire:'내 몸을 벌주지 않고 가볍게 돌보기', items:[
+      '건강하고 편안한 체중 범위','52kg','필라테스·요가 꾸준히','목·허리 통증 줄이기',
+      '충분히 자기','폭음하지 않기','내 몸의 주기와 신호 존중','입었을 때 만족스러운 몸']},
+    {key:'work', emo:'💼', name:'영리하게 일하기', aspire:'적게 소모되고 선명하게 기여하기', items:[
+      '중요한 일과 잡일 구분','임원 보고 역량 높이기','반복 업무 체계화','AI로 업무시간 줄이기',
+      '회사 감정에 과몰입하지 않기','성과·기여 명확하게 남기기','불필요한 책임 안 떠안기','회사 밖에서도 통하는 역량']},
+    {key:'money', emo:'💰', name:'Project 44', aspire:'돈으로 삶의 선택권 만들기', items:[
+      {t:'카드값 월 150만 원 이하',done:true},'월 투자금 유지','자산 현황 정기 점검','부채 이자 관리',
+      '감정적 매매 줄이기','순자산 목표 업데이트','불필요한 소비 줄이기','회사 없이 살 수 있는 기간 늘리기']},
+    {key:'life', emo:'🌿', name:'풍요로운 일상과 확장', aspire:'평범한 날에도 삶을 충분히 누리기', items:[
+      '독서 월 1권','공연·전시 보기','사우나 주 1회','좋은 친구와 안부 나누기',
+      '혼자서도 좋은 식사 즐기기','새로운 장소와 경험','여행·장기체류 가능성 탐색','목적 생긴 배움만 선택']}
+  ];
+  // Flatten to {area, id, text, seedDone} for status tracking
+  function areaItems(area){
+    return area.items.map((it,idx)=>{
+      if(typeof it==='string') return {id:area.key+':'+idx, text:it, seedDone:false};
+      return {id:area.key+':'+idx, text:it.t, seedDone:!!it.done};
+    });
+  }
+  // state.mandarat = { '<itemId>': 'todo'|'doing'|'done' }. Seed ✓ items to 'done' once.
+  function ensureGoals(){
+    if(!state.mandarat || typeof state.mandarat!=='object' || Array.isArray(state.mandarat)) state.mandarat={};
+    if(!state._mandaratSeeded){
+      GOAL_AREAS.forEach(a=>areaItems(a).forEach(it=>{
+        if(it.seedDone && !state.mandarat[it.id]) state.mandarat[it.id]='done';
+      }));
+      state._mandaratSeeded=true;
+    }
+    return state.mandarat;
+  }
+  function itemStatus(id){ const m=ensureGoals(); return m[id]||'todo'; }
+  function setItemStatus(id,st){ ensureGoals()[id]=st; save(); }
+  // 가장 최근 Life Check에서 이 영역이 어떤 상태였는지 찾아 반환 (없으면 null)
+  function latestAreaState(areaKey){
+    const log=ensureCompassLog();
+    for(const e of log){
+      if(e.kind!=='life' || !Array.isArray(e.areas)) continue;
+      const hit=e.areas.find(x=>x.key===areaKey);
+      if(hit && hit.state) return hit.state;
+    }
+    return null;
+  }
+  const AREA_STATE_STYLE={
+    '충분히 살아 있음':{c:'#2e7d55',bg:'#eaf5ee'},
+    '조금 부족함':{c:'#c98a12',bg:'#fbf3e2'},
+    '거의 사라짐':{c:'#b23a2a',bg:'#fdeae6'},
+    '지금은 중요하지 않음':{c:'#8a8a90',bg:'#efeff1'}
+  };
+  function orderedAreas(){
+    // Respect a user-defined order if present; unknown/new keys append in default order.
+    const order=Array.isArray(state.areaOrder)?state.areaOrder:[];
+    const byKey=Object.fromEntries(GOAL_AREAS.map(a=>[a.key,a]));
+    const out=[];
+    order.forEach(k=>{ if(byKey[k]){ out.push(byKey[k]); delete byKey[k]; } });
+    GOAL_AREAS.forEach(a=>{ if(byKey[a.key]) out.push(a); });
+    return out;
+  }
+  const GA_COLS=[
+    {z:'todo', label:'안함'},
+    {z:'doing', label:'진행중'},
+    {z:'done', label:'완료'}
+  ];
+  function renderGoalAreas(){
+    const root=document.getElementById('goalAreas'); if(!root) return;
+    let box=document.getElementById('goalList');
+    if(!box){ box=document.createElement('div'); box.className='goal-list'; box.id='goalList'; root.appendChild(box); }
+    ensureGoals();
+    box.innerHTML='';
+    orderedAreas().forEach(a=>{
+      const st=latestAreaState(a.key);
+      const stStyle=st?AREA_STATE_STYLE[st]:null;
+      const items=areaItems(a);
+      const total=items.length;
+      const doneN=items.filter(it=>itemStatus(it.id)==='done').length;
+      const card=document.createElement('div'); card.className='goal-area'; card.setAttribute('data-dragid', a.key);
+      // header
+      let h='<div class="ga-head"><span class="ga-drag" aria-hidden="true">⠿</span>'+
+        '<span class="ga-title">'+a.emo+' '+escape(a.name)+'</span>'+
+        '<span class="ga-count">'+doneN+'/'+total+'</span>'+
+        (st?'<span class="ga-state" style="color:'+stStyle.c+';background:'+stStyle.bg+'">'+escape(st)+'</span>':'')+
+        '</div><div class="ga-aspire">'+escape(a.aspire)+'</div>';
+      // 3-col board
+      h+='<div class="ga-board" data-area="'+a.key+'">';
+      GA_COLS.forEach(col=>{
+        h+='<div class="ga-col" data-z="'+col.z+'"><div class="ga-col-h">'+col.label+'</div><div class="ga-col-list" data-z="'+col.z+'">';
+        items.filter(it=>itemStatus(it.id)===col.z).forEach(it=>{
+          h+='<div class="ga-item" data-dragid="'+it.id+'">'+escape(it.text)+'</div>';
+        });
+        h+='</div></div>';
+      });
+      h+='</div>';
+      card.innerHTML=h;
+      box.appendChild(card);
+      // bind drag within this area's board (chips move between 안함/진행중/완료)
+      const board=card.querySelector('.ga-board');
+      bindPointerKanban(board, {
+        cardSel:'.ga-item',
+        listSel:'.ga-col-list',
+        onDrop:()=>{
+          board.querySelectorAll('.ga-col-list').forEach(list=>{
+            const z=list.dataset.z;
+            list.querySelectorAll('.ga-item').forEach(chip=>{ setItemStatus(chip.getAttribute('data-dragid'), z); });
+          });
+          // refresh counts
+          const dn=areaItems(a).filter(it=>itemStatus(it.id)==='done').length;
+          const cnt=card.querySelector('.ga-count'); if(cnt) cnt.textContent=dn+'/'+total;
+        }
+      });
+    });
+    // area reorder (drag the whole card by its ⠿ handle / body)
+    bindPointerKanban(root, {
+      cardSel:'.goal-area',
+      listSel:'.goal-list',
+      handleIgnore:'.ga-item,.ga-col-list,button,input,select,textarea',
+      onDrop:()=>{
+        const order=[...box.querySelectorAll('.goal-area')].map(c=>c.getAttribute('data-dragid'));
+        state.areaOrder=order; save();
+      }
+    });
+  }
+  let __compassInited=false;
+  function initCompass(){
+    showCompassView('home');
+    renderCompassHistory();
+    renderGoalAreas();
+    if(__compassInited) return;
+    __compassInited=true;
+    const $=(id)=>document.getElementById(id);
+    // navigation
+    if($('goReality')) $('goReality').onclick=()=>showCompassView('reality');
+    if($('goLife')) $('goLife').onclick=()=>{ buildLifeAreas(); showCompassView('life'); };
+    document.querySelectorAll('#tab-compass .compass-back').forEach(b=>{ b.onclick=()=>showCompassView('home'); });
+    // multi-select tag groups (toggle .on)
+    ['rc3','lc1'].forEach(gid=>{ const g=$(gid); if(g) g.querySelectorAll('.ctag').forEach(btn=>{ btn.onclick=()=>btn.classList.toggle('on'); }); });
+    // single-select radio groups
+    ['rc6','lc4'].forEach(gid=>{ const g=$(gid); if(g) g.querySelectorAll('.cradio').forEach(btn=>{ btn.onclick=()=>{ g.querySelectorAll('.cradio').forEach(x=>x.classList.remove('on')); btn.classList.add('on'); }; }); });
+    // history toggle
+    const ht=$('compassHistToggle');
+    if(ht) ht.onclick=()=>{ const body=$('compassHistBody'), car=$('compassHistCaret'); const open=body.style.display!=='none'; body.style.display=open?'none':'block'; if(car) car.textContent=open?'▼':'▲'; if(!open) renderCompassHistory(); };
+    // saves
+    if($('saveReality')) $('saveReality').onclick=saveReality;
+    if($('saveLife')) $('saveLife').onclick=saveLife;
+  }
+  function showCompassView(which){
+    const home=document.getElementById('compassHome');
+    const rf=document.getElementById('realityForm');
+    const lf=document.getElementById('lifeForm');
+    if(home) home.style.display = which==='home' ? '' : 'none';
+    if(rf) rf.style.display = which==='reality' ? '' : 'none';
+    if(lf) lf.style.display = which==='life' ? '' : 'none';
+    try{ document.getElementById('tab-compass').scrollIntoView({block:'start'}); }catch(e){}
+  }
+  function buildLifeAreas(){
+    const box=document.getElementById('lc2'); if(!box) return;
+    // Use the same 8 GOAL_AREAS so Life Check states flow into the 나의 축 cards.
+    const areas=GOAL_AREAS.map(a=>({key:a.key, label:(a.emo+' '+a.name)}));
+    const STATES=[
+      {v:'충분히 살아 있음', c:'#2e7d55'},
+      {v:'조금 부족함', c:'#c98a12'},
+      {v:'거의 사라짐', c:'#b23a2a'},
+      {v:'지금은 중요하지 않음', c:'#8a8a90'}
+    ];
+    box.innerHTML='';
+    areas.forEach(a=>{
+      const row=document.createElement('div'); row.className='life-area-row'; row.dataset.key=a.key; row.dataset.label=a.label;
+      const name=document.createElement('div'); name.className='la-name'; name.textContent=a.label;
+      const opts=document.createElement('div'); opts.className='la-opts';
+      STATES.forEach(s=>{
+        const b=document.createElement('button'); b.type='button'; b.className='la-opt'; b.textContent=s.v; b.dataset.v=s.v; b.style.setProperty('--lac', s.c);
+        b.onclick=()=>{ opts.querySelectorAll('.la-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
+        opts.appendChild(b);
+      });
+      row.append(name,opts); box.appendChild(row);
+    });
+  }
+  function pickTags(gid){ return [...document.querySelectorAll('#'+gid+' .ctag.on')].map(b=>b.dataset.v); }
+  function pickRadio(gid){ const b=document.querySelector('#'+gid+' .cradio.on'); return b?b.dataset.v:''; }
+  function clearForm(ids){ ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); }
+  function clearOn(sel){ document.querySelectorAll(sel).forEach(b=>b.classList.remove('on')); }
+  function saveReality(){
+    const val=(id)=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
+    const entry={
+      id:uid(), kind:'reality', date:todayStr(), ts:Date.now(),
+      event:val('rc1'), worst:val('rc2'), distortions:pickTags('rc3'),
+      known:val('rc4a'), unknown:val('rc4b'), likely:val('rc5'),
+      timing:pickRadio('rc6'), conclusion:val('rcFinal')
+    };
+    if(!entry.event && !entry.conclusion){ toast && toast('내용을 조금만 적어주세요'); return; }
+    ensureCompassLog().unshift(entry);
+    if(state.compassLog.length>500) state.compassLog.length=500;
+    save();
+    clearForm(['rc1','rc2','rc4a','rc4b','rc5','rcFinal']); clearOn('#rc3 .ctag'); clearOn('#rc6 .cradio');
+    showCompassView('home'); renderCompassHistory();
+    toast && toast('저장했어요');
+  }
+  function saveLife(){
+    const val=(id)=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
+    const areas=[...document.querySelectorAll('#lc2 .life-area-row')].map(r=>{
+      const on=r.querySelector('.la-opt.on');
+      return {key:r.dataset.key, label:r.dataset.label, state:on?on.dataset.v:''};
+    }).filter(a=>a.state);
+    const entry={
+      id:uid(), kind:'life', date:todayStr(), ts:Date.now(),
+      feelings:pickTags('lc1'), areas,
+      enjoy:val('lc3a'), waiting:val('lc3b'), adjust:val('lc3c'),
+      verdict:pickRadio('lc4'), change:val('lcFinal')
+    };
+    if(!entry.feelings.length && !areas.length && !entry.change){ toast && toast('내용을 조금만 적어주세요'); return; }
+    ensureCompassLog().unshift(entry);
+    if(state.compassLog.length>500) state.compassLog.length=500;
+    save();
+    clearForm(['lc3a','lc3b','lc3c','lcFinal']); clearOn('#lc1 .ctag'); clearOn('#lc4 .cradio');
+    const box=document.getElementById('lc2'); if(box) box.innerHTML='';
+    showCompassView('home'); renderCompassHistory(); renderGoalAreas();
+    toast && toast('저장했어요');
+  }
+  function renderCompassHistory(){
+    const box=document.getElementById('compassHistList'); if(!box) return;
+    const log=ensureCompassLog();
+    if(!log.length){ box.innerHTML='<div class="empty">아직 기록이 없어요. 위에서 하나 시작해보세요.</div>'; return; }
+    box.innerHTML='';
+    log.forEach(e=>{
+      const d=new Date(e.date+'T00:00:00');
+      const label=(d.getMonth()+1)+'월 '+d.getDate()+'일';
+      const card=document.createElement('div'); card.className='compass-hist-card '+e.kind;
+      let inner='<div class="chc-top"><span class="chc-kind">'+(e.kind==='reality'?'🌊 Reality':'🍃 Life')+'</span><span class="chc-date">'+escape(label)+'</span></div>';
+      if(e.kind==='reality'){
+        if(e.conclusion) inner+='<div class="chc-main">'+escape(e.conclusion)+'</div>';
+        if(e.event) inner+='<div class="chc-sub">사건: '+escape(e.event)+'</div>';
+        if(e.distortions&&e.distortions.length) inner+='<div class="chc-chips">'+e.distortions.map(t=>'<span>'+escape(t)+'</span>').join('')+'</div>';
+        if(e.timing) inner+='<div class="chc-verdict">→ '+escape(e.timing)+'</div>';
+      } else {
+        if(e.change) inner+='<div class="chc-main">다음 2주: '+escape(e.change)+'</div>';
+        if(e.verdict) inner+='<div class="chc-verdict">판정: '+escape(e.verdict)+'</div>';
+        if(e.feelings&&e.feelings.length) inner+='<div class="chc-chips">'+e.feelings.map(t=>'<span>'+escape(t)+'</span>').join('')+'</div>';
+        const over=(e.areas||[]).filter(a=>a.state==='거의 사라짐');
+        if(over.length) inner+='<div class="chc-sub">사라진 영역: '+over.map(a=>escape(a.label)).join(', ')+'</div>';
+      }
+      inner+='<button class="chc-del" data-id="'+e.id+'">삭제</button>';
+      card.innerHTML=inner;
+      card.querySelector('.chc-del').onclick=()=>{ state.compassLog=ensureCompassLog().filter(x=>x.id!==e.id); save(); renderCompassHistory(); };
+      box.appendChild(card);
+    });
+  }
   function renderHealth(){
     const box=document.getElementById('mealDiary'); if(!box) return;
     const lbl=document.getElementById('hDayLabel');
