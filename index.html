@@ -39,6 +39,11 @@ h1,h2,h3,h4{font-weight:700;color:var(--navy)}
 /* original-style header */
 .vision{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-soft) 100%);color:#fff;border:none;box-shadow:var(--shadow)}
 .vision .eyebrow{font-size:12px;letter-spacing:3px;color:var(--gold-soft);text-transform:uppercase;margin-bottom:14px}
+#visionSection{position:relative}
+#visionBody{position:relative;transition:filter .18s}
+#visionBody.is-hidden{filter:blur(9px)}
+#visionBody.is-hidden > *{pointer-events:none;user-select:none}
+.vision-veil{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:12px;letter-spacing:2px;font-weight:700;color:var(--gold-soft);background:rgba(30,45,38,.20);border-radius:14px;cursor:pointer;z-index:5}
 .vis-label{font-size:12px;letter-spacing:1px;color:var(--gold-soft);margin:20px 0 6px;text-transform:uppercase;font-weight:700}
 .vis-area{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;resize:none;font-size:16px;line-height:1.6;padding:12px 14px;outline:none;overflow:hidden}
 .vis-area.big{font-size:21px;font-weight:300;background:transparent;border:none;padding:0}
@@ -2546,8 +2551,9 @@ input:focus,textarea:focus,select:focus{
     </div>
   </div>
 
-  <div class="section vision">
+  <div class="section vision" id="visionSection">
     <div class="eyebrow">디디 Life OS</div>
+    <div id="visionBody">
     <textarea class="vis-area big auto-grow" id="v-identity" rows="1" placeholder="내가 유지하고 싶은 나의 정체성/이미지"></textarea>
     <div class="vis-label">내가 살고 싶은 일상</div>
     <textarea class="vis-area auto-grow" id="v-daily" rows="1" placeholder="아침 Routine, 일과 쉼의 균형, 주말의 모습..."></textarea>
@@ -2565,6 +2571,7 @@ input:focus,textarea:focus,select:focus{
         <div id="quoteList"></div>
         <button class="grat-add" id="quoteAdd" style="margin-top:6px;">+ 문구 추가</button>
       </div>
+    </div>
     </div>
   </div>
 
@@ -6582,6 +6589,23 @@ function renderWeekMetrics(){
   function resetAll(){ if(!resetArmed){ resetArmed=true; ['resetBtn','resetBtnTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='정말 초기화?';}); setTimeout(()=>{resetArmed=false; const a=document.getElementById('resetBtn'); if(a)a.textContent='Reset'; const b=document.getElementById('resetBtnTop'); if(b)b.textContent='Reset';},2500); return;} localStorage.removeItem(KEY); state=fresh(); save(); rerenderAll(); }
   document.getElementById('exportBtn').onclick=exportBackup; document.getElementById('exportBtnTop').onclick=exportBackup; document.getElementById('importBtn').onclick=importBackup; document.getElementById('importBtnTop').onclick=importBackup; document.getElementById('resetBtn').onclick=resetAll; document.getElementById('resetBtnTop').onclick=resetAll;
   { const ai=document.getElementById('aiExportBtn'); if(ai) ai.onclick=exportAIAnalysis; }
+  // Vision quick-hide: tap the block to blur it (privacy when someone glances over),
+  // tap again to reveal. Not persisted — always starts visible on load.
+  (function(){
+    const section=document.getElementById('visionSection');
+    const body=document.getElementById('visionBody');
+    if(!section||!body) return;
+    let veil=document.getElementById('visionVeil');
+    if(!veil){ veil=document.createElement('div'); veil.id='visionVeil'; veil.className='vision-veil'; veil.textContent='탭해서 보기'; section.appendChild(veil); }
+    const setBlur=(on)=>{ body.classList.toggle('is-hidden', on); veil.style.display=on?'flex':'none'; };
+    setBlur(false);
+    veil.addEventListener('click',()=>setBlur(false));
+    body.addEventListener('click',(e)=>{
+      if(body.classList.contains('is-hidden')) return;
+      if(e.target.closest('textarea,input,button,.grat-chip,.quote-body,[contenteditable]')) return;
+      setBlur(true);
+    });
+  })();
   { const a=document.getElementById('csvSchedule'); if(a) a.onclick=exportScheduleCSV; }
   { const a=document.getElementById('csvDiary'); if(a) a.onclick=exportDiaryCSV; }
   { const t=document.getElementById('diaryToggle'); if(t) t.onclick=()=>{
